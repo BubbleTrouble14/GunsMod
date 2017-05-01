@@ -1,0 +1,6 @@
+{
+	"parent": "arkcraft:item/base_item",
+	"textures": {
+		"layer0": "arkcraft:items/wooden_club"
+	}
+}

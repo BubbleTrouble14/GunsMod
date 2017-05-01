@@ -1,0 +1,24 @@
+#Creative Tabs
+itemGroup.gunTab=Bubble's Guns
+
+#weapons
+item.simple_pistol.name=Simple Pistol
+item.simple_bullet.name=Simple Bullet
+item.advanced_bullet.name=Advanced Bullet
+item.shotgun.name=Shotgun
+item.longneck_rifle.name=Longneck Rifle
+item.fabricated_pistol.name=Fabricated Pistol
+item.simple_rifle_ammo.name=Simple Rifle Ammo
+item.simple_shotgun_ammo.name=Simple Shotgun Ammo
+item.rocket_launcher.name=Rocket Launcher
+item.rocket_propelled_grenade.name=Rocket Propelled Grenade
+
+##attachments
+item.scope.name=Scope
+item.laser.name=Laser
+item.silencer.name=Silencer
+item.holo_scope.name=Holo-Scope
+item.flash_light.name=Flashlight
+
+#Keybindings
+key.attachment=Open attachment inventory

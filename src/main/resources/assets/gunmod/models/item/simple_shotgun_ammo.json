@@ -1,0 +1,6 @@
+{
+    "parent":"gunmod:item/base_item",
+    "textures": {
+        "layer0":"gunmod:items/simple_shotgun_ammo"
+    }
+}
