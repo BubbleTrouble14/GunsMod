@@ -65,7 +65,8 @@ public class LeftGunFired implements IMessage
 				String soundPath = Main.MODID + ":" + weapon.getUnlocalizedName() + "_shoot";
 				weapon.fire(stack, player.worldObj, player, 0);
 				player.setActiveHand(EnumHand.OFF_HAND);
-			//	weapon.setFired(stack, player, true);
+			//	Main.modChannel.sendTo(new LeftGunFiredClient(), (EntityPlayerMP) player);
+				weapon.setFired(stack, player, true);
 				//TODO
 			//	InventoryAttachment att = InventoryAttachment.create(stack);
 			//	if (att != null && att.isSilencerPresent())

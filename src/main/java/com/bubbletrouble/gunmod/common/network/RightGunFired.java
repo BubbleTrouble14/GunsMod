@@ -66,7 +66,8 @@ public class RightGunFired implements IMessage
 				//TODO after Fire
 				weapon.fire(stack, player.worldObj, player, 0);
 				player.setActiveHand(EnumHand.MAIN_HAND);
-			//	weapon.setFired(stack, player, true);
+				//Main.modChannel.sendTo(new RightGunFiredClient(), (EntityPlayerMP) player);
+				weapon.setFired(stack, player, true);
 				//TODO
 			//	InventoryAttachment att = InventoryAttachment.create(stack);
 			//	if (att != null && att.isSilencerPresent())

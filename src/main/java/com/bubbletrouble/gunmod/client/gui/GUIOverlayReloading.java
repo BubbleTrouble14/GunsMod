@@ -16,6 +16,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class GUIOverlayReloading extends Gui
 {
 	private static final Minecraft mc = Minecraft.getMinecraft();
+	int color;
 
 	@SubscribeEvent
 	public void renderGUIOverlay(RenderGameOverlayEvent.Post e)
@@ -34,7 +35,7 @@ public class GUIOverlayReloading extends Gui
 				int x0 = e.getResolution().getScaledWidth() / 2 - 88 + p.inventory.currentItem * 20;
 				int y0 = e.getResolution().getScaledHeight() - 3;
 				float f;
-				int color;
+			//	int color;
 				if (rld)
 				{
 					f = 1F;
@@ -69,7 +70,7 @@ public class GUIOverlayReloading extends Gui
 				int x0 = e.getResolution().getScaledWidth() / 2 - 10 - 107;
 				int y0 = e.getResolution().getScaledHeight() - 3;
 				float f;
-				int color;
+			//	int color;
 				if (rld)
 				{
 					f = 1F;

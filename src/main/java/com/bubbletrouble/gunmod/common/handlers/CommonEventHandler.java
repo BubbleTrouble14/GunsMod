@@ -7,7 +7,9 @@ import javax.annotation.Nullable;
 import com.bubbletrouble.gunmod.Main;
 import com.bubbletrouble.gunmod.common.inventory.InventoryAttachment;
 import com.bubbletrouble.gunmod.common.item.ItemRangedWeapon;
+import com.bubbletrouble.gunmod.common.network.LeftGunFiredClient;
 import com.bubbletrouble.gunmod.common.network.LeftGunReloadFinished;
+import com.bubbletrouble.gunmod.common.network.RightGunFiredClient;
 import com.bubbletrouble.gunmod.common.network.RightGunReloadFinished;
 import com.bubbletrouble.gunmod.init.RangedWeapons;
 import com.google.common.base.Predicate;
@@ -74,19 +76,20 @@ public class CommonEventHandler
 					}
 				}
 			}
-//			if(w.fired(stackRight))
-//			{
-//				System.out.println(ticks);
-//				if(++ticks == w.recoilDelay() + 5)
-//				{
-//				//	if (p.worldObj.isRemote)
-//				//	{
-//					w.setFired(stackRight, p, false);
-//					w.recoilDown(p, w.getRecoil(), w.getRecoilSneaking(), w.getShouldRecoil());
-//					ticks = 0;
-//				//	}
-//				}
-//			}		
+			if(w.fired(stackRight))
+			{
+				System.out.println(ticks);
+				++ticks;
+				if(ticks >= w.recoilDelay() + 5)
+				{
+					if (!p.worldObj.isRemote)
+					{
+						Main.modChannel.sendTo(new RightGunFiredClient(), (EntityPlayerMP) p);
+						ticks = 0;
+						w.setFired(stackRight, p, false);
+					}
+				}
+			}		
 		}			
 			if (stackLeft != null && stackLeft.getItem() instanceof ItemRangedWeapon)
 			{			
@@ -105,17 +108,20 @@ public class CommonEventHandler
 						}
 					}
 				}
-//				if(leftgun.fired(stackLeft))
-//				{
-//					System.out.println("Recoil");
-//					++leftticks;
-//					if(leftticks >= leftgun.recoilDelay() + 5)
-//					{
-//						leftgun.recoilDown(p, leftgun.getRecoil(), leftgun.getRecoilSneaking(), leftgun.getShouldRecoil());
-//						leftticks = 0;
-//						leftgun.setFired(stackLeft, p, false);	
-//					}			
-//			}
+				if(leftgun.fired(stackLeft))
+				{
+					System.out.println("Recoil");
+					++leftticks;
+					if(leftticks >= leftgun.recoilDelay() + 5)
+					{
+						if (!p.worldObj.isRemote)
+						{
+							Main.modChannel.sendTo(new LeftGunFiredClient(), (EntityPlayerMP) p);
+							leftticks = 0;
+							leftgun.setFired(stackLeft, p, false);	
+						}
+					}			
+			}
 			}
 				InventoryAttachment inv = InventoryAttachment.create(stackRight);
 				if (inv != null && inv.isFlashPresent())

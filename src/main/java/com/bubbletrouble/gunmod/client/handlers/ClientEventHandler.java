@@ -6,6 +6,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import com.bubbletrouble.gunmod.Main;
+import com.bubbletrouble.gunmod.client.gui.GUIAttachment;
 import com.bubbletrouble.gunmod.common.inventory.InventoryAttachment;
 import com.bubbletrouble.gunmod.common.item.ItemRangedWeapon;
 import com.bubbletrouble.gunmod.common.network.LeftGunReloadFinished;
@@ -32,6 +33,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.FOVUpdateEvent;
+import net.minecraftforge.client.event.GuiScreenEvent.DrawScreenEvent;
 import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderHandEvent;
@@ -107,6 +109,7 @@ public class ClientEventHandler
 	{
 		System.out.println("Crafted" + evt.crafting);
 	}
+	
 	
 	boolean mouseclicked = false;
 	

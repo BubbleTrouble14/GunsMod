@@ -3,12 +3,13 @@ package com.bubbletrouble.gunmod.common.proxy;
 import com.bubbletrouble.gunmod.Main;
 import com.bubbletrouble.gunmod.common.handlers.CommonEventHandler;
 import com.bubbletrouble.gunmod.common.handlers.GuiHandler;
-import com.bubbletrouble.gunmod.common.network.EffectPlayer;
 import com.bubbletrouble.gunmod.common.network.LeftGunFired;
+import com.bubbletrouble.gunmod.common.network.LeftGunFiredClient;
 import com.bubbletrouble.gunmod.common.network.LeftGunReloadFinished;
 import com.bubbletrouble.gunmod.common.network.LeftGunReloadStarted;
 import com.bubbletrouble.gunmod.common.network.OpenAttachmentInventory;
 import com.bubbletrouble.gunmod.common.network.RightGunFired;
+import com.bubbletrouble.gunmod.common.network.RightGunFiredClient;
 import com.bubbletrouble.gunmod.common.network.RightGunReloadFinished;
 import com.bubbletrouble.gunmod.common.network.RightGunReloadStarted;
 import com.bubbletrouble.gunmod.init.RangedWeapons;
@@ -89,7 +90,8 @@ public abstract class CommonProxy
 		modChannel.registerMessage(LeftGunReloadStarted.Handler.class, LeftGunReloadStarted.class, id++, Side.SERVER);
 		modChannel.registerMessage(LeftGunReloadFinished.Handler.class, LeftGunReloadFinished.class, id++, Side.CLIENT);
 		modChannel.registerMessage(OpenAttachmentInventory.Handler.class, OpenAttachmentInventory.class, id++, Side.SERVER);
-		modChannel.registerMessage(EffectPlayer.Handler.class, EffectPlayer.class, id++, Side.CLIENT);
+		modChannel.registerMessage(LeftGunFiredClient.Handler.class, LeftGunFiredClient.class, id++, Side.CLIENT);
+		modChannel.registerMessage(RightGunFiredClient.Handler.class, RightGunFiredClient.class, id++, Side.CLIENT);
 	}
 	
 	public EntityPlayer getPlayer()

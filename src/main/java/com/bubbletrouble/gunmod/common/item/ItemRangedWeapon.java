@@ -15,7 +15,10 @@ import com.bubbletrouble.gunmod.common.entity.EntityProjectile;
 import com.bubbletrouble.gunmod.common.entity.ProjectileType;
 import com.bubbletrouble.gunmod.common.inventory.InventoryAttachment;
 import com.bubbletrouble.gunmod.common.network.LeftGunFired;
+import com.bubbletrouble.gunmod.common.network.LeftGunFiredClient;
 import com.bubbletrouble.gunmod.common.network.RightGunFired;
+import com.bubbletrouble.gunmod.common.network.RightGunFiredClient;
+import com.bubbletrouble.gunmod.common.network.RightGunReloadFinished;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelBakery;
@@ -25,6 +28,7 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.EnumAction;
@@ -146,7 +150,7 @@ public abstract class ItemRangedWeapon extends ItemBow{
         ModelBakery.registerItemVariants(this, scope, laser, silencer, flashlight, reload, normal);
 
         ModelLoader.setCustomMeshDefinition(this, stack -> {
-        	System.out.println("update");
+        	EntityPlayer p = Minecraft.getMinecraft().thePlayer;
             InventoryAttachment att = InventoryAttachment.create(stack);
     		if (att != null) {
     			if (att.isScopePresent()) {
@@ -157,11 +161,10 @@ public abstract class ItemRangedWeapon extends ItemBow{
     				return laser;
     			} else if (att.isSilencerPresent()) {
     				return silencer;
-    		//	} else if (att.isHoloScopePresent()) {
-    		//		return holo_scope;
     			}
     		}
-    		if (isReloading(stack)) {
+    		if (isReloading(stack))
+    		{
     			return reload;
     		}
 			return normal;
@@ -245,13 +248,13 @@ public abstract class ItemRangedWeapon extends ItemBow{
 			stack.setTagCompound(new NBTTagCompound());
 	}
 
-	private void setActiveHand(ItemStack stack, String activeHand) {
-		stack.getTagCompound().setString("activeHand", activeHand);
+	private void setAttachment(ItemStack stack, String activeHand) {
+		stack.getTagCompound().setString("attachment", activeHand);
 	}
 
-	private String getActiveHand(ItemStack stack) {
+	private String getAttachment(ItemStack stack) {
 		checkNBT(stack);
-		return stack.getTagCompound().getString("activeHand");
+		return stack.getTagCompound().getString("attachment");
 	}
 
 	public static int ticks = 0;
@@ -272,6 +275,7 @@ public abstract class ItemRangedWeapon extends ItemBow{
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) 
 	{
+		/*
 		if(entity instanceof EntityPlayer)
 		{
 		EntityPlayer p = (EntityPlayer)entity;
@@ -280,6 +284,8 @@ public abstract class ItemRangedWeapon extends ItemBow{
 		
 		if (stackLeft != null && stackLeft.getItem() instanceof ItemRangedWeapon)
 		{		
+			System.out.println(fired(stackLeft));
+
 			//ItemRangedWeapon leftgun = (ItemRangedWeapon) stackLeft.getItem();
 			if(fired(stackLeft))
 			{
@@ -295,19 +301,20 @@ public abstract class ItemRangedWeapon extends ItemBow{
 		}
 		if (stackRight != null && stackRight.getItem() instanceof ItemRangedWeapon)
 		{			
+			System.out.println(fired(stackRight));
 			//ItemRangedWeapon w = (ItemRangedWeapon) stackRight.getItem();
 			if(fired(stackRight))
 			{
 				System.out.println(ticks);
 				if(++ticks == recoilDelay() + 15)
 				{
-					recoilDown(p, getRecoil(), getRecoilSneaking(), getShouldRecoil());
+				//	recoilDown(p, getRecoil(), getRecoilSneaking(), getShouldRecoil());
 					ticks = 0;
 					setFired(stackRight, p, false);
 				}
 			}	
 		}
-		}
+		}	*/
 	
 		
 		if (isSelected) {
@@ -349,7 +356,6 @@ public abstract class ItemRangedWeapon extends ItemBow{
 			if (canFire(stack, entity)) {
 				if (this.nextShotMillis < System.currentTimeMillis()) {
 					postShootingEffects(stack, entity, world);
-					setFired(stack, entity, true);
 					Main.modChannel.sendToServer(new RightGunFired());
 				}
 			} else {
@@ -366,7 +372,6 @@ public abstract class ItemRangedWeapon extends ItemBow{
 			if (canFire(stack, entity)) {
 				if (this.nextShotMillis < System.currentTimeMillis()) {
 					postShootingEffects(stack, entity, world);
-					setFired(stack, entity, true);
 					Main.modChannel.sendToServer(new LeftGunFired());
 				}
 			} else {

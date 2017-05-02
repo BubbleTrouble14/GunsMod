@@ -1,7 +1,7 @@
 [
 {
-  "modid": "examplemod",
-  "name": "Example Mod",
+  "modid": "gunmod",
+  "name": "Bubble's Guns",
   "description": "Example placeholder mod.",
   "version": "${version}",
   "mcversion": "${mcversion}",
