@@ -481,7 +481,6 @@ public class ClientEventHandler
 			if(rightHandStack.getItem() instanceof ItemRangedWeapon)
 			{
 				ItemRangedWeapon rightWeapon = (ItemRangedWeapon) rightHandStack.getItem();	
-				System.out.println("reload");
 				if (!rightWeapon.isReloading(rightHandStack) && rightWeapon.canReload(rightHandStack, player)) 
 				{
 					Main.modChannel.sendToServer(new RightGunReloadStarted());

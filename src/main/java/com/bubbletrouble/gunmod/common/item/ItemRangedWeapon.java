@@ -570,7 +570,12 @@ public abstract class ItemRangedWeapon extends ItemBow{
 		}
 	}
 
-	public boolean canReload(ItemStack stack, EntityPlayer player) {
+	public boolean canReload(ItemStack stack, EntityPlayer player)
+	{
+		if(getMaxAmmo() == 1)
+		{
+			return !player.capabilities.isCreativeMode;
+		}
 		return getAmmoQuantity(stack) < getMaxAmmo() && !player.capabilities.isCreativeMode;
 	}
 
