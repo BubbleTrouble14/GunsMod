@@ -15,10 +15,7 @@ import com.bubbletrouble.gunmod.common.entity.EntityProjectile;
 import com.bubbletrouble.gunmod.common.entity.ProjectileType;
 import com.bubbletrouble.gunmod.common.inventory.InventoryAttachment;
 import com.bubbletrouble.gunmod.common.network.LeftGunFired;
-import com.bubbletrouble.gunmod.common.network.LeftGunFiredClient;
 import com.bubbletrouble.gunmod.common.network.RightGunFired;
-import com.bubbletrouble.gunmod.common.network.RightGunFiredClient;
-import com.bubbletrouble.gunmod.common.network.RightGunReloadFinished;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelBakery;
@@ -28,7 +25,6 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.EnumAction;
@@ -336,13 +332,15 @@ public abstract class ItemRangedWeapon extends ItemBow{
 
 	public boolean onItemleftClick() {
 		if (Mouse.getEventButtonState()) {
-			if (Mouse.getEventButton() == 0) {
+			if (Mouse.getEventButton() == 0) 
+			{
 				notClickedYet = true;
 				return false;
 			}
 		} else {
 			if (notClickedYet) {
-				if (Mouse.getEventButton() == 0) {
+				if (Mouse.getEventButton() == 0) 
+				{
 					notClickedYet = false;
 					return true;
 				}
@@ -480,7 +478,8 @@ public abstract class ItemRangedWeapon extends ItemBow{
 		}
 	}
 
-	private void resetReload(ItemStack stack, EntityPlayer player) {
+	private void resetReload(ItemStack stack, EntityPlayer player) 
+	{
 		setReloading(stack, player, false);
 		setReloadTicks(stack, 0);
 	}
@@ -736,17 +735,22 @@ public abstract class ItemRangedWeapon extends ItemBow{
 		afterFire(stack, world, player);
 	}
 
-	public void afterFire(ItemStack stack, World world, EntityPlayer player) {
+	public void afterFire(ItemStack stack, World world, EntityPlayer player) 
+	{
 		if (!player.capabilities.isCreativeMode)
 			this.setAmmoQuantity(stack, this.getAmmoQuantity(stack) - ammoConsumption);
 		int damage = 1;
 		int ammo = this.getAmmoQuantity(stack);
+		System.out.println(ammo);
+
 		if (stack.getItemDamage() + damage > stack.getMaxDamage()) {
 			String type = this.getAmmoType(stack);
 			Item i = GameRegistry.findItem(Main.MODID, type);
 			ItemStack s = new ItemStack(i, ammo);
 			player.inventory.addItemStackToInventory(s);
 		} else if (ammo < 1) {
+			System.out.println("reload guns");
+
 			if (hasAmmoInInventory(player) && FMLCommonHandler.instance().getSide().isClient()) {
 				ClientEventHandler.doReload();
 			} else {

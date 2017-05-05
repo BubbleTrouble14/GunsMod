@@ -4,6 +4,7 @@ import com.bubbletrouble.gunmod.Main;
 import com.bubbletrouble.gunmod.common.item.ItemRangedWeapon;
 
 import io.netty.buffer.ByteBuf;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;

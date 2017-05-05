@@ -78,7 +78,6 @@ public class CommonEventHandler
 			}
 			if(w.fired(stackRight))
 			{
-				System.out.println(ticks);
 				++ticks;
 				if(ticks >= w.recoilDelay() + 5)
 				{
@@ -110,7 +109,6 @@ public class CommonEventHandler
 				}
 				if(leftgun.fired(stackLeft))
 				{
-					System.out.println("Recoil");
 					++leftticks;
 					if(leftticks >= leftgun.recoilDelay() + 5)
 					{

@@ -1,5 +1,6 @@
 package com.bubbletrouble.gunmod.client.gui;
 
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import com.bubbletrouble.gunmod.common.handlers.CommonEventHandler;
@@ -16,8 +17,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class GUIOverlayReloading extends Gui
 {
 	private static final Minecraft mc = Minecraft.getMinecraft();
-	int color;
-
+	
 	@SubscribeEvent
 	public void renderGUIOverlay(RenderGameOverlayEvent.Post e)
 	{
@@ -26,7 +26,7 @@ public class GUIOverlayReloading extends Gui
 		ItemStack leftStack = p.getHeldItemOffhand();
 		if (e.getType().equals(ElementType.HOTBAR))
 		{
-			if (stack != null && stack.getItem() instanceof ItemRangedWeapon)
+			if (stack != null && stack.getItem() instanceof ItemRangedWeapon && leftStack != null && leftStack.getItem() instanceof ItemRangedWeapon)
 			{
 				ItemRangedWeapon weapon = (ItemRangedWeapon) stack.getItem();
 				boolean rld = weapon.isLoaded(stack, p);
@@ -35,11 +35,80 @@ public class GUIOverlayReloading extends Gui
 				int x0 = e.getResolution().getScaledWidth() / 2 - 88 + p.inventory.currentItem * 20;
 				int y0 = e.getResolution().getScaledHeight() - 3;
 				float f;
-			//	int color;
+				int color;
 				if (rld)
 				{
 					f = 1F;
-					if (p.getActiveItemStack() == stack)
+					if (Mouse.isButtonDown(1) && Minecraft.getMinecraft().currentScreen == null) 
+					{
+						color = 0x60C60000;
+					}
+					else
+					{
+						color = 0x60348E00;
+					}
+
+				}
+				else if (weapon.isReloading(stack))
+				{
+					f = Math.min((float) CommonEventHandler.reloadTicks / weapon.getReloadDuration(), 1F);
+					color = 0x60EAA800;
+				}
+				else
+				{
+					f = 0F;
+					color = 0;
+				}
+				drawRect(x0, y0, x0 + 16, y0 - (int) (f * 16), color);
+				
+				ItemRangedWeapon weapon2 = (ItemRangedWeapon) leftStack.getItem();
+				boolean rlda = weapon.isLoaded(leftStack, p);
+				GL11.glColor4f(1F, 1F, 1F, 1F);
+				GL11.glDisable(GL11.GL_LIGHTING);
+				int x01 = e.getResolution().getScaledWidth() / 2 - 10 - 107;
+				int y01 = e.getResolution().getScaledHeight() - 3;
+				float f1;
+				int color1;
+				if (rlda)
+				{
+					f = 1F;
+					if (Mouse.isButtonDown(0) && Minecraft.getMinecraft().currentScreen == null) 
+					{
+						color1 = 0x60C60000;
+					}
+					else
+					{
+						color1 = 0x60358E00;
+					}
+
+				}
+				else if (weapon2.isReloading(leftStack))
+				{
+					System.out.print("reloading");
+					f = Math.min((float) CommonEventHandler.reloadTicks / weapon2.getReloadDuration(), 1F);
+					color1 = 0x61EAA800;
+				}
+				else
+				{
+					f = 0F;
+					color1 = 0;
+				}
+				drawRect(x01, y01, x01 + 16, y01 - (int) (f * 16), color1);
+			}
+			else if (stack != null && stack.getItem() instanceof ItemRangedWeapon)
+			{
+				ItemRangedWeapon weapon = (ItemRangedWeapon) stack.getItem();
+				boolean rld = weapon.isLoaded(stack, p);
+				GL11.glColor4f(1F, 1F, 1F, 1F);
+				GL11.glDisable(GL11.GL_LIGHTING);
+				int x0 = e.getResolution().getScaledWidth() / 2 - 88 + p.inventory.currentItem * 20;
+				int y0 = e.getResolution().getScaledHeight() - 3;
+				float f;
+				int color;
+				if (rld)
+				{
+					f = 1F;
+					if (Mouse.isButtonDown(1) && Minecraft.getMinecraft().currentScreen == null) 
 					{
 						color = 0x60C60000;
 					}
@@ -61,7 +130,7 @@ public class GUIOverlayReloading extends Gui
 				}
 				drawRect(x0, y0, x0 + 16, y0 - (int) (f * 16), color);
 			}
-			if (leftStack != null && leftStack.getItem() instanceof ItemRangedWeapon)
+			else if (leftStack != null && leftStack.getItem() instanceof ItemRangedWeapon)
 			{
 				ItemRangedWeapon weapon = (ItemRangedWeapon) leftStack.getItem();
 				boolean rld = weapon.isLoaded(leftStack, p);
@@ -70,23 +139,23 @@ public class GUIOverlayReloading extends Gui
 				int x0 = e.getResolution().getScaledWidth() / 2 - 10 - 107;
 				int y0 = e.getResolution().getScaledHeight() - 3;
 				float f;
-			//	int color;
+				int color;
 				if (rld)
 				{
 					f = 1F;
-					if (p.getActiveItemStack() == leftStack)
+					if (Mouse.isButtonDown(1) && Minecraft.getMinecraft().currentScreen == null) 
 					{
 						color = 0x60C60000;
 					}
 					else
 					{
-						color = 0x60348E00;
+						color = 0x60358E00;
 					}
 
 				}
 				else if (weapon.isReloading(leftStack))
 				{
-					f = Math.min((float) CommonEventHandler.reloadTicks / weapon.getReloadDuration(), 1F);
+					f = Math.min((float) CommonEventHandler.leftReloadTicks / weapon.getReloadDuration(), 1F);
 					color = 0x60EAA800;
 				}
 				else
@@ -97,6 +166,8 @@ public class GUIOverlayReloading extends Gui
 				drawRect(x0, y0, x0 + 16, y0 - (int) (f * 16), color);
 			}
 		}
+		
+		//Dispaly bullet count
 		else if (e.getType().equals(ElementType.HELMET))
 		{
 			if (stack != null && stack.getItem() instanceof ItemRangedWeapon)
