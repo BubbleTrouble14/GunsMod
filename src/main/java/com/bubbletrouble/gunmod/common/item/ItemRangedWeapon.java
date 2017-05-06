@@ -32,9 +32,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
@@ -46,7 +43,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -147,7 +143,6 @@ public abstract class ItemRangedWeapon extends ItemBow{
         ModelBakery.registerItemVariants(this, scope, laser, silencer, flashlight, reload, normal);
 
         ModelLoader.setCustomMeshDefinition(this, stack -> {
-        	EntityPlayer p = Minecraft.getMinecraft().thePlayer;
             InventoryAttachment att = InventoryAttachment.create(stack);
     		if (att != null) {
     			if (att.isScopePresent()) {
@@ -223,14 +218,6 @@ public abstract class ItemRangedWeapon extends ItemBow{
 		return stack.getTagCompound().getBoolean("reloading");
 	}
 
-	public int getReloadTicks(ItemStack stack) {
-		return stack.getTagCompound().getInteger("reloadTicks");
-	}
-
-	private void setReloadTicks(ItemStack stack, int reloadTicks) {
-		stack.getTagCompound().setInteger("reloadTicks", reloadTicks);
-	}
-
 	public boolean fired(ItemStack stack) {
 		checkNBT(stack);
 		return stack.getTagCompound().getBoolean("fired");
@@ -245,45 +232,8 @@ public abstract class ItemRangedWeapon extends ItemBow{
 			stack.setTagCompound(new NBTTagCompound());
 	}
 
-	private void setAttachment(ItemStack stack, String activeHand) {
-		stack.getTagCompound().setString("attachment", activeHand);
-	}
-
-	private String getAttachment(ItemStack stack) {
-		checkNBT(stack);
-		return stack.getTagCompound().getString("attachment");
-	}
-
 	public static int ticks = 0;
 	public static int leftticks = 0;
-	
-	static boolean fired = false;
-	
-	public void fired(boolean fired)
-	{
-		this.fired = fired;
-	}
-	
-	public boolean fired()
-	{
-		return fired;
-	}
-	
-	@Override
-	public void onUpdate(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) 
-	{
-		if (isSelected) {
-			if (world.isRemote) {
-				updateClient(stack, world, (EntityPlayer) entity, itemSlot, isSelected);
-			} else
-				updateServer(stack, world, (EntityPlayer) entity, itemSlot, isSelected);
-		}
-//	
-	}
-
-	public void updateServer(ItemStack stack, World world, EntityPlayer entity, int itemSlot, boolean isSelected) {
-
-	}
 
 	public void setActiveHand() {
 
@@ -424,6 +374,7 @@ public abstract class ItemRangedWeapon extends ItemBow{
 		return 4;
 	}
 
+	/*
 	private void updateLaser(Entity entityIn) {
 		World w = entityIn.worldObj;
 		RayTraceResult mop = rayTrace(entityIn, 35, 1.0F);
@@ -440,7 +391,7 @@ public abstract class ItemRangedWeapon extends ItemBow{
 	{
 		setReloading(stack, player, false);
 		setReloadTicks(stack, 0);
-	}
+	}	*/
 	/*
 	 * private void updateFlashlight(Entity entityIn) { RayTraceResult mop =
 	 * rayTrace(entityIn, 20, 1.0F); if (mop != null && mop.typeOfHit !=
@@ -549,7 +500,7 @@ public abstract class ItemRangedWeapon extends ItemBow{
 	public int getAmmoQuantityInInventory(ItemStack stack, EntityPlayer player) {
 		InventoryPlayer inventory = player.inventory;
 		String type = getAmmoType(stack);
-		Item item = GameRegistry.findItem(Main.MODID, type);
+		Item item = Item.REGISTRY.getObject(new ResourceLocation(Main.MODID + ":" + type));//GameRegistry.findItem(Main.MODID, type);
 		int out = 0;
 		if (type != null) { // && inventory.hasItemStack(item)
 			for (ItemStack s : inventory.mainInventory) {
@@ -686,7 +637,9 @@ public abstract class ItemRangedWeapon extends ItemBow{
 
 		if (stack.getItemDamage() + damage > stack.getMaxDamage()) {
 			String type = this.getAmmoType(stack);
-			Item i = GameRegistry.findItem(Main.MODID, type);
+			//Item i = Item.REGISTRY.getValue();
+			Item i = Item.REGISTRY.getObject(new ResourceLocation(Main.MODID + ":" + type));
+	//		Item i = GameRegistry.findItem(Main.MODID, type);
 			ItemStack s = new ItemStack(i, ammo);
 			player.inventory.addItemStackToInventory(s);
 		} else if (ammo < 1) {
@@ -749,7 +702,7 @@ public abstract class ItemRangedWeapon extends ItemBow{
 		tooltip.add("§9Range §r" + this.getRange() + " blocks");
 		tooltip.add("§9Recoil §r" + this.getRecoil());
 		tooltip.add("§9Has recoil : §r" + getShouldRecoil());
-		tooltip.add("§9Duarabilty §r" + stack.getItemDamage() + "/" + getMaxDamage());
+		tooltip.add("§9Duarabilty §r" + stack.getItemDamage() + "/" + getMaxDamage(stack));
 	}
 
 	@Override
