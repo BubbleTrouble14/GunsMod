@@ -9,6 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 
@@ -17,11 +18,10 @@ public class RenderSimpleRifleAmmo extends Render<EntitySimpleRifleAmmo>
 	private static final ResourceLocation texture = new ResourceLocation(Main.MODID
 			+ ":textures/entity/bullet.png");
 
-	public RenderSimpleRifleAmmo()
+	public RenderSimpleRifleAmmo(RenderManager rm)
 	{
-		super(Minecraft.getMinecraft().getRenderManager());
+		super(rm);
 	}
-
 	@Override
 	public void doRender(EntitySimpleRifleAmmo entity, double d, double d1, double d2, float f, float f1)
 	{

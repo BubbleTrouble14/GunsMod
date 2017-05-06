@@ -9,6 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 
@@ -17,9 +18,9 @@ public class RenderSimpleShotgunAmmo extends Render<EntitySimpleShotgunAmmo>
 	private static final ResourceLocation texture = new ResourceLocation(Main.MODID
 			+ ":textures/entity/bullet.png");
 
-	public RenderSimpleShotgunAmmo()
+	public RenderSimpleShotgunAmmo(RenderManager rm)
 	{
-		super(Minecraft.getMinecraft().getRenderManager());
+		super(rm);
 	}
 
 	@Override

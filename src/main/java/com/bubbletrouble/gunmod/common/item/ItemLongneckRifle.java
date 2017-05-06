@@ -5,8 +5,6 @@ import com.bubbletrouble.gunmod.common.item.attachments.Laserable;
 import com.bubbletrouble.gunmod.common.item.attachments.Scopeable;
 import com.bubbletrouble.gunmod.common.item.attachments.Silenceable;
 
-import net.minecraft.item.Item;
-
 public class ItemLongneckRifle extends ItemRangedWeapon implements Scopeable, Silenceable, Laserable, Flashable
 {
 	public ItemLongneckRifle()
@@ -17,6 +15,6 @@ public class ItemLongneckRifle extends ItemRangedWeapon implements Scopeable, Si
 	@Override
 	public int getReloadDuration()
 	{
-		return (int) (5.0 * 20.0);
+		return (int) (4.0 * 20.0 * 2);
 	}
 }

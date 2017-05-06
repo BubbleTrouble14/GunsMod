@@ -18,7 +18,7 @@ Flashable
 	@Override
 	public int getReloadDuration()
 	{
-		return (int) (3.0 * 20.0);
+		return (int) (3.0 * 20.0 * 2);
 	}
 
 	/*

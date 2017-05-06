@@ -58,7 +58,7 @@ public abstract class CommonProxy
 		NetworkRegistry.INSTANCE.registerGuiHandler(Main.instance(), new GuiHandler());
 	}
 
-	public void registerItemRenderer(Item item, int meta, String id) {}
+//	public void registerItemRenderer(Item item, int meta, String id) {}
 		
 	public void init(FMLInitializationEvent event)
 	{
@@ -105,5 +105,5 @@ public abstract class CommonProxy
 
 	public abstract long getWorldTime();
 	
-	public abstract void registerEntityModels();
+	//public abstract void registerEntityModels();
 }

@@ -36,7 +36,7 @@ public class GUIOverlayReloading extends Gui
 				int y0 = e.getResolution().getScaledHeight() - 3;
 				float f;
 				int color;
-				if (rld && !weapon.isReloading(stack))
+				if (rld && CommonEventHandler.reloadTicks == 0)
 				{
 					f = 1F;
 					if (Mouse.isButtonDown(1) && Minecraft.getMinecraft().currentScreen == null) 
@@ -69,7 +69,7 @@ public class GUIOverlayReloading extends Gui
 				int y01 = e.getResolution().getScaledHeight() - 3;
 				float f1;
 				int color1;
-				if (rlda)
+				if (rlda && CommonEventHandler.leftReloadTicks == 0)
 				{
 					f = 1F;
 					if (Mouse.isButtonDown(0) && Minecraft.getMinecraft().currentScreen == null) 
@@ -104,10 +104,10 @@ public class GUIOverlayReloading extends Gui
 				int y0 = e.getResolution().getScaledHeight() - 3;
 				float f;
 				int color;
-				if (rld && !weapon.isReloading(stack))
+				if (rld && CommonEventHandler.reloadTicks == 0)
 				{
 					f = 1F;
-					if (Mouse.isButtonDown(1) && Minecraft.getMinecraft().currentScreen == null) 
+					if (Mouse.isButtonDown(0) && Minecraft.getMinecraft().currentScreen == null) 
 					{
 						color = 0x60C60000;
 					}
@@ -119,7 +119,6 @@ public class GUIOverlayReloading extends Gui
 				}
 				else if (weapon.isReloading(stack))
 				{
-					System.out.print("reloading");
 					f = Math.min((float) CommonEventHandler.reloadTicks / weapon.getReloadDuration(), 1F);
 					color = 0x60EAA800;
 				}
@@ -140,7 +139,7 @@ public class GUIOverlayReloading extends Gui
 				int y0 = e.getResolution().getScaledHeight() - 3;
 				float f;
 				int color;
-				if (rld && !weapon.isReloading(stack))
+				if (rld && CommonEventHandler.leftReloadTicks == 0)
 				{
 					f = 1F;
 					if (Mouse.isButtonDown(1) && Minecraft.getMinecraft().currentScreen == null) 

@@ -104,13 +104,6 @@ public class ClientEventHandler
 		return player.worldObj.rayTraceBlocks(vec3, vec32, false, false, true);
 	}
 	
-	@SubscribeEvent
-	public void craftedItem(ItemCraftedEvent evt)	
-	{
-		System.out.println("Crafted" + evt.crafting);
-	}
-	
-	
 	boolean mouseclicked = false;
 	
 	static boolean leftClick = true;
@@ -211,7 +204,6 @@ public class ClientEventHandler
 	//		evt.setCanceled(true);
 			ItemRangedWeapon leftGun = (ItemRangedWeapon)stack.getItem();
 			leftGun.shootLeftGun(stack, world, player);
-			System.out.println("Fire the left gun once too");
 		}	
 	}
 	
@@ -233,7 +225,6 @@ public class ClientEventHandler
 			evt.setCanceled(true);
 			ItemRangedWeapon rightGun = (ItemRangedWeapon)stack.getItem();
 			rightGun.shootRightGun(stack, world, player);
-			System.out.println("Fire the right gun once");
 		}
 	}
 	
@@ -244,14 +235,12 @@ public class ClientEventHandler
 			evt.setCanceled(true);
 			ItemRangedWeapon leftGun = (ItemRangedWeapon)leftStack.getItem();
 			leftGun.shootLeftGun(leftStack, world, player);
-			System.out.println("Fire the left gun once");
 		}	
 		if(onItemRightClick(evt))
 		{
 			evt.setCanceled(true);
 			ItemRangedWeapon rightGun = (ItemRangedWeapon)rightStack.getItem();
 			rightGun.shootRightGun(rightStack, world, player);
-			System.out.println("Fire the right gun once");
 		}
 	}
 	
@@ -437,11 +426,13 @@ public class ClientEventHandler
 
 				if (!rightWeapon.isReloading(rightHandStack) && rightWeapon.canReload(rightHandStack, player)) 
 				{
-					System.out.println("reload");
+					rightWeapon.soundCharge(rightHandStack, player.worldObj, player);
 					Main.modChannel.sendToServer(new RightGunReloadStarted());
 					rightWeapon.setReloading(rightHandStack, player, true);
 				}
-				if (!leftWeapon.isReloading(leftHandStack) && leftWeapon.canReload(leftHandStack, player)) {
+				if (!leftWeapon.isReloading(leftHandStack) && leftWeapon.canReload(leftHandStack, player)) 
+				{
+					leftWeapon.soundCharge(leftHandStack, player.worldObj, player);
 					Main.modChannel.sendToServer(new LeftGunReloadStarted());
 					leftWeapon.setReloading(leftHandStack, player, true);
 				}
@@ -450,6 +441,7 @@ public class ClientEventHandler
 			{
 				ItemRangedWeapon rightWeapon = (ItemRangedWeapon) rightHandStack.getItem();
 				if (!rightWeapon.isReloading(rightHandStack) && rightWeapon.canReload(rightHandStack, player)) {
+					rightWeapon.soundCharge(rightHandStack, player.worldObj, player);
 					Main.modChannel.sendToServer(new RightGunReloadStarted());
 					rightWeapon.setReloading(rightHandStack, player, true);
 				}
@@ -457,8 +449,8 @@ public class ClientEventHandler
 			else if(leftHandStack.getItem() instanceof ItemRangedWeapon)
 			{
 				ItemRangedWeapon leftWeapon = (ItemRangedWeapon) leftHandStack.getItem();
-				System.out.println("Reload");
 				if (!leftWeapon.isReloading(leftHandStack) && leftWeapon.canReload(leftHandStack, player)) {
+					leftWeapon.soundCharge(leftHandStack, player.worldObj, player);
 					Main.modChannel.sendToServer(new LeftGunReloadStarted());
 					leftWeapon.setReloading(leftHandStack, player, true);
 				}
@@ -470,8 +462,8 @@ public class ClientEventHandler
 			{
 				ItemRangedWeapon leftWeapon = (ItemRangedWeapon) leftHandStack.getItem();
 				if (!leftWeapon.isReloading(leftHandStack) && leftWeapon.canReload(leftHandStack, player)) {
+					leftWeapon.soundCharge(leftHandStack, player.worldObj, player);
 					Main.modChannel.sendToServer(new LeftGunReloadStarted());
-					System.out.println("reload");
 					leftWeapon.setReloading(leftHandStack, player, true);
 				}
 			}
@@ -483,6 +475,7 @@ public class ClientEventHandler
 				ItemRangedWeapon rightWeapon = (ItemRangedWeapon) rightHandStack.getItem();	
 				if (!rightWeapon.isReloading(rightHandStack) && rightWeapon.canReload(rightHandStack, player)) 
 				{
+					rightWeapon.soundCharge(rightHandStack, player.worldObj, player);
 					Main.modChannel.sendToServer(new RightGunReloadStarted());
 					rightWeapon.setReloading(rightHandStack, player, true);
 			}
@@ -510,7 +503,6 @@ public class ClientEventHandler
 			//if (player.getHeldItem(EnumHand.MAIN_HAND) != null && player.getHeldItem(EnumHand.MAIN_HAND).getItem() instanceof ItemRangedWeapon && !(player.getHeldItem(EnumHand.MAIN_HAND).getItem() instanceof NonSupporting)) {
 				if(player.getHeldItemMainhand().getItem() != null && player.getHeldItemMainhand().getItem() instanceof ItemRangedWeapon)
 				{
-					System.out.println("Open Inv");
 					Main.modChannel.sendToServer(new OpenAttachmentInventory());
 				}
 			//}

@@ -64,6 +64,7 @@ public class CommonEventHandler
 			ItemRangedWeapon w = (ItemRangedWeapon) stackRight.getItem();
 			if (w.isReloading(stackRight))
 			{
+			//	System.out.println(reloadTicks);
 				if (++reloadTicks >= w.getReloadDuration())
 				{
 					if (!p.worldObj.isRemote)

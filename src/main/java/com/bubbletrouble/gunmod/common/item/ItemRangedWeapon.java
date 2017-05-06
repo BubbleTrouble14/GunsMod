@@ -39,6 +39,7 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -271,48 +272,6 @@ public abstract class ItemRangedWeapon extends ItemBow{
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) 
 	{
-		/*
-		if(entity instanceof EntityPlayer)
-		{
-		EntityPlayer p = (EntityPlayer)entity;
-		ItemStack stackRight = p.getHeldItemMainhand();
-		ItemStack stackLeft = p.getHeldItemOffhand();
-		
-		if (stackLeft != null && stackLeft.getItem() instanceof ItemRangedWeapon)
-		{		
-			System.out.println(fired(stackLeft));
-
-			//ItemRangedWeapon leftgun = (ItemRangedWeapon) stackLeft.getItem();
-			if(fired(stackLeft))
-			{
-				System.out.println(leftticks);
-				++leftticks;
-				if(leftticks >= recoilDelay() + 15)
-				{
-					recoilDown(p, getRecoil(), getRecoilSneaking(), getShouldRecoil());
-					leftticks = 0;
-					setFired(stackLeft, p, false);
-				}	
-			}
-		}
-		if (stackRight != null && stackRight.getItem() instanceof ItemRangedWeapon)
-		{			
-			System.out.println(fired(stackRight));
-			//ItemRangedWeapon w = (ItemRangedWeapon) stackRight.getItem();
-			if(fired(stackRight))
-			{
-				System.out.println(ticks);
-				if(++ticks == recoilDelay() + 15)
-				{
-				//	recoilDown(p, getRecoil(), getRecoilSneaking(), getShouldRecoil());
-					ticks = 0;
-					setFired(stackRight, p, false);
-				}
-			}	
-		}
-		}	*/
-	
-		
 		if (isSelected) {
 			if (world.isRemote) {
 				updateClient(stack, world, (EntityPlayer) entity, itemSlot, isSelected);
@@ -438,7 +397,6 @@ public abstract class ItemRangedWeapon extends ItemBow{
 	 */
 
 	public void recoilDown(EntityPlayer entityIn, float recoil, float recoilSneaking, boolean shouldRecoil) {
-		System.out.println("Down");
 		float i = recoil == 0F ? 0F : recoil - 0.5F;
 		float j = recoilSneaking == 0F ? 0F : recoilSneaking - 0.5F;
 		if (shouldRecoil)
@@ -514,29 +472,6 @@ public abstract class ItemRangedWeapon extends ItemBow{
 		Vec3d vec31 = player.getLook(partialTick);
 		Vec3d vec32 = vec3.addVector(vec31.xCoord * distance, vec31.yCoord * distance, vec31.zCoord * distance);
 		return player.worldObj.rayTraceBlocks(vec3, vec32, false, false, true);
-	}
-
-	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer entity, EnumHand hand) 
-	{
-		System.out.println(hand);
-		return new ActionResult<>(EnumActionResult.SUCCESS, stack);
-
-		/*
-		 * if (itemStackIn.stackSize <= 0 || playerIn.isHandActive()) { //==
-		 * hand return new ActionResult<>(EnumActionResult.PASS, itemStackIn); }
-		 * 
-		 * if (canFire(itemStackIn, playerIn)) { if (this.nextShotMillis <
-		 * System.currentTimeMillis()) System.out.println("Fire"); // Start
-		 * aiming weapon to fire playerIn.setActiveHand(hand); return new
-		 * ActionResult<>(EnumActionResult.SUCCESS, itemStackIn);
-		 * //playerIn.setItemInUse(itemStackIn,
-		 * getMaxItemUseDuration(itemStackIn)); } else { // Can't reload; no
-		 * ammo if (!this.isReloading(itemStackIn)) { soundEmpty(itemStackIn,
-		 * worldIn, playerIn); } } return new
-		 * ActionResult<>(EnumActionResult.SUCCESS, itemStackIn);
-		 */
-
 	}
 
 	@Override
@@ -662,16 +597,18 @@ public abstract class ItemRangedWeapon extends ItemBow{
 		return getAmmoQuantity(stack) > 0 || player.capabilities.isCreativeMode;
 	}
 
-	public void soundEmpty(ItemStack itemstack, World world, EntityPlayer entityplayer) {
+	public void soundEmpty(ItemStack itemstack, World world, EntityPlayer entityplayer) 
+	{
 		world.playSound(entityplayer, entityplayer.getPosition(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.PLAYERS,
 				1.0F, 1.0F / 0.8F);
 	}
 
-	public void soundCharge(ItemStack stack, World world, EntityPlayer player) {
-		world.playSound(player, player.getPosition(),
-				SoundEvent.REGISTRY
-						.getObject(new ResourceLocation(Main.MODID + ":" + this.getUnlocalizedName() + "_reload")),
-				SoundCategory.PLAYERS, 0.7F, 0.9F / (getItemRand().nextFloat() * 0.2F + 0.0F));
+	public void soundCharge(ItemStack stack, World world, EntityPlayer player)
+	{
+		BlockPos pos = player.getPosition();
+		world.playSound(player, pos,
+				SoundEvent.REGISTRY.getObject(new ResourceLocation(Main.MODID + ":" + this.getUnlocalizedName() + "_reload")),
+				SoundCategory.PLAYERS, 0.7F, 0.9F / (getItemRand().nextFloat() * 0.2F + 0.0F));	
 	}
 
 	public abstract int getReloadDuration();
@@ -746,7 +683,6 @@ public abstract class ItemRangedWeapon extends ItemBow{
 			this.setAmmoQuantity(stack, this.getAmmoQuantity(stack) - ammoConsumption);
 		int damage = 1;
 		int ammo = this.getAmmoQuantity(stack);
-		System.out.println(ammo);
 
 		if (stack.getItemDamage() + damage > stack.getMaxDamage()) {
 			String type = this.getAmmoType(stack);
@@ -754,8 +690,6 @@ public abstract class ItemRangedWeapon extends ItemBow{
 			ItemStack s = new ItemStack(i, ammo);
 			player.inventory.addItemStackToInventory(s);
 		} else if (ammo < 1) {
-			System.out.println("reload guns");
-
 			if (hasAmmoInInventory(player) && FMLCommonHandler.instance().getSide().isClient()) {
 				ClientEventHandler.doReload();
 			} else {
@@ -808,7 +742,7 @@ public abstract class ItemRangedWeapon extends ItemBow{
 
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
-		tooltip.add("§9Reload time §r" + getReloadDuration() / 20 + "s"); // TODO
+		tooltip.add("§9Reload time §r" + getReloadDuration() / 40 + "s"); // TODO
 																			// Reload
 																			// time
 		tooltip.add("§9Damage §r" + this.getDamage());

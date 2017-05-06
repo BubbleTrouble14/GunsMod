@@ -24,6 +24,6 @@ public class ItemSimplePistol extends ItemRangedWeapon implements Scopeable, Las
 	@Override
 	public int getReloadDuration()
 	{
-		return (int) (2.5 * 20.0);
+		return (int) (2.5 * 20.0 * 2);
 	}
 }
