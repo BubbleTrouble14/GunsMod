@@ -6,13 +6,10 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import com.bubbletrouble.gunmod.Main;
-import com.bubbletrouble.gunmod.client.gui.GUIAttachment;
 import com.bubbletrouble.gunmod.common.inventory.InventoryAttachment;
 import com.bubbletrouble.gunmod.common.item.ItemRangedWeapon;
-import com.bubbletrouble.gunmod.common.network.LeftGunReloadFinished;
 import com.bubbletrouble.gunmod.common.network.LeftGunReloadStarted;
 import com.bubbletrouble.gunmod.common.network.OpenAttachmentInventory;
-import com.bubbletrouble.gunmod.common.network.RightGunReloadFinished;
 import com.bubbletrouble.gunmod.common.network.RightGunReloadStarted;
 
 import net.minecraft.client.Minecraft;
@@ -25,15 +22,14 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.FOVUpdateEvent;
-import net.minecraftforge.client.event.GuiScreenEvent.DrawScreenEvent;
 import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderHandEvent;
@@ -44,9 +40,6 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.ItemCraftedEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -54,9 +47,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @EventBusSubscriber
 public class ClientEventHandler
 {
-	private static KeyBinding reload, attachment, playerPooping, arkmode, playerCrafting;
+	private static KeyBinding reload, attachment;
 
-	private static Minecraft mc = Minecraft.getMinecraft();
+	private Minecraft mc = Minecraft.getMinecraft();
 
 	private static Random random = new Random();
 
@@ -65,9 +58,7 @@ public class ClientEventHandler
 	private static float pitchSway;
 	public static int disabledEquippItemAnimationTime = 0;
 
-	private ItemStack selected;
 	private static final ResourceLocation SCOPE_OVERLAY = new ResourceLocation(Main.MODID, "textures/gui/scope.png");
-	private static final ResourceLocation SPYGLASS_OVERLAY = new ResourceLocation(Main.MODID, "textures/gui/spyglass.png");
 	public boolean showScopeOverlap = false;
 
 	public static void init()
@@ -197,7 +188,6 @@ public class ClientEventHandler
 			{
 				showScopeOverlap = evt.isButtonstate();
 			}
-			selected = stack;
 		}
 		if(onItemRightClick(evt))
 		{
@@ -218,7 +208,6 @@ public class ClientEventHandler
 			{
 				showScopeOverlap = evt.isButtonstate();
 			}
-			selected = stack;
 		}
 		if(onItemleftClick(evt))
 		{
@@ -247,6 +236,7 @@ public class ClientEventHandler
 	public static int ticks = 0;
 	public static int leftticks = 0;
 	
+	@SideOnly(Side.CLIENT)
 	@SubscribeEvent
 	public void onMouseEvent(MouseEvent evt)
 	{		
@@ -342,7 +332,7 @@ public class ClientEventHandler
 	}
 
 	@SubscribeEvent
-	public void holding(RenderLivingEvent.Pre event)
+	public void holding(RenderLivingEvent.Pre<EntityLivingBase> event)
 	{
 		Minecraft mc = Minecraft.getMinecraft();
 		EntityPlayer thePlayer = mc.thePlayer;
@@ -491,7 +481,8 @@ public class ClientEventHandler
 			}
 		}	*/
 	}
-
+	
+	@SideOnly(Side.CLIENT)
 	@SubscribeEvent
 	public void onPlayerKeypressed(InputEvent.KeyInputEvent event)
 	{

@@ -67,7 +67,6 @@ public class GUIOverlayReloading extends Gui
 				GL11.glDisable(GL11.GL_LIGHTING);
 				int x01 = e.getResolution().getScaledWidth() / 2 - 10 - 107;
 				int y01 = e.getResolution().getScaledHeight() - 3;
-				float f1;
 				int color1;
 				if (rlda && CommonEventHandler.leftReloadTicks == 0)
 				{

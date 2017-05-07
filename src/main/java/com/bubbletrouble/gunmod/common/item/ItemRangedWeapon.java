@@ -18,15 +18,18 @@ import com.bubbletrouble.gunmod.common.network.LeftGunFired;
 import com.bubbletrouble.gunmod.common.network.RightGunFired;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBow;
@@ -129,6 +132,8 @@ public abstract class ItemRangedWeapon extends ItemBow{
 //        });	
 	}
 	
+	
+	
 	@SideOnly(Side.CLIENT)
     public void initModel() 
 	{
@@ -199,6 +204,35 @@ public abstract class ItemRangedWeapon extends ItemBow{
 //	"fabricated_pistol_flashlight_reload", "fabricated_pistol_laser", "fabricated_pistol_laser_reload",
 //	"fabricated_pistol_silencer", "fabricated_pistol_silencer_reload", "fabricated_pistol_holo_scope",
 //	"fabricated_pistol_holo_scope_reload");
+	
+	public boolean isValidOffHandSlot(ItemStack stack, EntityEquipmentSlot armorType, Entity entity)
+	{
+	        return net.minecraft.entity.EntityLiving.getSlotForItemStack(stack) == armorType.OFFHAND;
+	}
+
+	
+	@Override
+	public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected)
+	{
+		if(entityIn instanceof EntityPlayer)
+		{
+			EntityPlayer p = (EntityPlayer)entityIn;
+			if(p.getHeldItemOffhand() != null &&  p.getHeldItemOffhand().getItem() instanceof ItemRangedWeapon)
+			{
+				ItemRangedWeapon w = (ItemRangedWeapon)p.getHeldItemOffhand().getItem();
+				if(w.IsTwoHanded())
+				{
+					if(!worldIn.isRemote)
+					{ 
+						System.out.println("side");
+						ItemStack i = p.getHeldItemOffhand().copy();
+						p.inventory.removeStackFromSlot(40);
+						p.inventory.addItemStackToInventory(i);
+					}
+				}
+			}
+		}
+	}
 
 	public Random getItemRand() {
 		return new Random();
@@ -264,6 +298,7 @@ public abstract class ItemRangedWeapon extends ItemBow{
 				if (this.nextShotMillis < System.currentTimeMillis()) {
 					postShootingEffects(stack, entity, world);
 					Main.modChannel.sendToServer(new RightGunFired());
+					afterFire(stack, world, entity);
 				}
 			} else {
 				if (!this.isReloading(stack)) {
@@ -280,6 +315,7 @@ public abstract class ItemRangedWeapon extends ItemBow{
 				if (this.nextShotMillis < System.currentTimeMillis()) {
 					postShootingEffects(stack, entity, world);
 					Main.modChannel.sendToServer(new LeftGunFired());
+					afterFire(stack, world, entity);
 				}
 			} else {
 				if (!this.isReloading(stack)) {
@@ -458,10 +494,13 @@ public abstract class ItemRangedWeapon extends ItemBow{
 
 	public boolean canReload(ItemStack stack, EntityPlayer player)
 	{
+		System.out.println(getAmmoQuantity(stack) + "  " + getMaxAmmo());
+		if(getAmmoQuantity(stack) == getMaxAmmo()) return false;
+
 		if(getMaxAmmo() == 1)
-		{
+			{
 			return !player.capabilities.isCreativeMode;
-		}
+			}
 		return getAmmoQuantity(stack) < getMaxAmmo() && !player.capabilities.isCreativeMode;
 	}
 
@@ -630,6 +669,7 @@ public abstract class ItemRangedWeapon extends ItemBow{
 
 	public void afterFire(ItemStack stack, World world, EntityPlayer player) 
 	{
+		System.out.println("side");
 		if (!player.capabilities.isCreativeMode)
 			this.setAmmoQuantity(stack, this.getAmmoQuantity(stack) - ammoConsumption);
 		int damage = 1;
@@ -692,12 +732,10 @@ public abstract class ItemRangedWeapon extends ItemBow{
 	public void effectReloadDone(ItemStack stack, World world, EntityPlayer player) {
 		// player.swingItem();
 	}
-
+	
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
-		tooltip.add("§9Reload time §r" + getReloadDuration() / 40 + "s"); // TODO
-																			// Reload
-																			// time
+		tooltip.add("§9Reload time §r" + getReloadDuration() / 40 + "s"); 
 		tooltip.add("§9Damage §r" + this.getDamage());
 		tooltip.add("§9Range §r" + this.getRange() + " blocks");
 		tooltip.add("§9Recoil §r" + this.getRecoil());
