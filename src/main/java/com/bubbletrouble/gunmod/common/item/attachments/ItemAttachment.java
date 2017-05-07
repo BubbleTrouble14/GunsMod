@@ -1,7 +1,5 @@
 package com.bubbletrouble.gunmod.common.item.attachments;
 
-import com.bubbletrouble.gunmod.Main;
-
 import net.minecraft.item.Item;
 
 /**

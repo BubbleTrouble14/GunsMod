@@ -4,7 +4,6 @@ import com.bubbletrouble.gunmod.Main;
 import com.bubbletrouble.gunmod.utils.SoundUtil;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;

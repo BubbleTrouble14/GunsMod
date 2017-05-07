@@ -51,7 +51,7 @@ public class CommonEventHandler
 	@SubscribeEvent
 	public void onPlayerTick(PlayerTickEvent evt)
 	{
-		Minecraft mc = Minecraft.getMinecraft();
+	//	Minecraft mc = Minecraft.getMinecraft();
 		EntityPlayer p = evt.player;
 	//	EntityPlayer thePlayer = mc.player;
 	//	InventoryAttachment att = InventoryAttachment.create(rightHandStack);		
@@ -181,9 +181,9 @@ public class CommonEventHandler
 	
 	public static RayTraceResult rayTrace(Entity player, double distance, float partialTick)
 	{
-		Vec3d vec3 = getPositionEyes(player, partialTick);
-		Vec3d vec31 = player.getLook(partialTick);
-		Vec3d vec32 = vec3.addVector(vec31.xCoord * distance, vec31.yCoord * distance, vec31.zCoord * distance);
+	//	Vec3d vec3 = getPositionEyes(player, partialTick);
+	//	Vec3d vec31 = player.getLook(partialTick);
+	//	Vec3d vec32 = vec3.addVector(vec31.xCoord * distance, vec31.yCoord * distance, vec31.zCoord * distance);
 		return player.rayTrace(10, partialTick);
 		//return player.worldObj.rayTraceBlocks(vec3, vec32, false, false, true);
 	}
@@ -216,11 +216,7 @@ public class CommonEventHandler
 	                double d0 = 10;
 	                raytraceresult = entity.rayTrace(d0, partialTicks);
 	                Vec3d vec3d = entity.getPositionEyes(partialTicks);
-	                boolean flag = false;
-	                int i = 3;
 	                double d1 = d0;
-
-                    flag = true;
 
 	                if (raytraceresult != null)
 	                {
@@ -231,7 +227,6 @@ public class CommonEventHandler
 	                Vec3d vec3d2 = vec3d.addVector(vec3d1.xCoord * d0, vec3d1.yCoord * d0, vec3d1.zCoord * d0);
 	                Entity pointedEntity = null;
 	                Vec3d vec3d3 = null;
-	                float f = 1.0F;
 	                List<Entity> list = mc.theWorld.getEntitiesInAABBexcluding(entity, entity.getEntityBoundingBox().addCoord(vec3d1.xCoord * d0, vec3d1.yCoord * d0, vec3d1.zCoord * d0).expand(1.0D, 1.0D, 1.0D), Predicates.and(EntitySelectors.NOT_SPECTATING, new Predicate<Entity>()
 	                {
 	                    public boolean apply(@Nullable Entity p_apply_1_)

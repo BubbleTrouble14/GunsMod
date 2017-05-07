@@ -16,7 +16,6 @@ import com.bubbletrouble.gunmod.init.RangedWeapons;
 import com.bubbletrouble.gunmod.init.Recipes;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;

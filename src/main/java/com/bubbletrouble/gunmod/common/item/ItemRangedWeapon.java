@@ -18,18 +18,15 @@ import com.bubbletrouble.gunmod.common.network.LeftGunFired;
 import com.bubbletrouble.gunmod.common.network.RightGunFired;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBow;
@@ -204,12 +201,6 @@ public abstract class ItemRangedWeapon extends ItemBow{
 //	"fabricated_pistol_flashlight_reload", "fabricated_pistol_laser", "fabricated_pistol_laser_reload",
 //	"fabricated_pistol_silencer", "fabricated_pistol_silencer_reload", "fabricated_pistol_holo_scope",
 //	"fabricated_pistol_holo_scope_reload");
-	
-	public boolean isValidOffHandSlot(ItemStack stack, EntityEquipmentSlot armorType, Entity entity)
-	{
-	        return net.minecraft.entity.EntityLiving.getSlotForItemStack(stack) == armorType.OFFHAND;
-	}
-
 	
 	@Override
 	public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected)

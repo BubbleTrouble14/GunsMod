@@ -2,13 +2,10 @@ package com.bubbletrouble.gunmod.common.item;
 
 import com.bubbletrouble.gunmod.Main;
 import com.bubbletrouble.gunmod.common.entity.EntityProjectile;
-import com.bubbletrouble.gunmod.common.inventory.InventoryAttachment;
 import com.bubbletrouble.gunmod.common.item.attachments.NonSupporting;
 
-import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;

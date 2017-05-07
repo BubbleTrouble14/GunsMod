@@ -5,8 +5,6 @@ import com.bubbletrouble.gunmod.common.item.attachments.Laserable;
 import com.bubbletrouble.gunmod.common.item.attachments.Scopeable;
 import com.bubbletrouble.gunmod.common.item.attachments.Silenceable;
 
-import net.minecraft.item.Item;
-
 public class ItemSimplePistol extends ItemRangedWeapon implements Scopeable, Laserable, Flashable, Silenceable
 {
 	public ItemSimplePistol()

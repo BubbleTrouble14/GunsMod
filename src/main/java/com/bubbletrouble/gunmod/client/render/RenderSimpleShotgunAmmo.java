@@ -5,7 +5,6 @@ import org.lwjgl.opengl.GL11;
 import com.bubbletrouble.gunmod.Main;
 import com.bubbletrouble.gunmod.common.entity.EntitySimpleShotgunAmmo;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.entity.Render;
