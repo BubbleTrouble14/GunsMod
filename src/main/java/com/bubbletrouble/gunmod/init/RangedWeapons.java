@@ -1,6 +1,8 @@
 package com.bubbletrouble.gunmod.init;
 
 import com.bubbletrouble.gunmod.Main;
+import com.bubbletrouble.gunmod.common.block.BlockCrafter;
+import com.bubbletrouble.gunmod.common.block.BlockGreenScreen;
 import com.bubbletrouble.gunmod.common.block.BlockLight;
 import com.bubbletrouble.gunmod.common.entity.EntityAdvancedBullet;
 import com.bubbletrouble.gunmod.common.entity.EntitySimpleBullet;
@@ -35,10 +37,14 @@ public class RangedWeapons
 	public static ItemRangedWeapon shotgun;
 	public static ItemRangedWeapon rangedWeapon;
 	public static BlockLight blockLight;
+	public static BlockCrafter block_crafter;
+	public static BlockGreenScreen green_screen;
 
 	public static void init()
 	{
 		blockLight = new BlockLight();
+		block_crafter = new BlockCrafter();
+		green_screen = new BlockGreenScreen();
 		
 		//Guns
 		fabricated_pistol = new ItemFabricatedPistol();
@@ -80,7 +86,9 @@ public class RangedWeapons
     	((ItemSimplePistol) simple_pistol).initModel();
     	((ItemLongneckRifle) longneck_rifle).initModel();
     	((ItemShotgun) shotgun).initModel();
-
+    	block_crafter.initModel();
+    	green_screen.initModel();
+    	
     	//Attachments 
         ModelLoader.setCustomModelResourceLocation(scope, 0, new ModelResourceLocation(Main.MODID + ":" + "scope" , "inventory"));
         ModelLoader.setCustomModelResourceLocation(flash_light, 0, new ModelResourceLocation(Main.MODID + ":" + "flash_light" , "inventory"));

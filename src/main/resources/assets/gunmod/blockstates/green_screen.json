@@ -1,0 +1,10 @@
+{
+	"variants": {
+		"normal": {
+			"model": "gunmod:green_screen"
+		},
+		"inventory": {
+			"model": "gunmod:green_screen"
+		}
+	}
+}

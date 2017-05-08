@@ -12,9 +12,12 @@ import com.bubbletrouble.gunmod.common.network.LeftGunReloadStarted;
 import com.bubbletrouble.gunmod.common.network.OpenAttachmentInventory;
 import com.bubbletrouble.gunmod.common.network.RightGunReloadStarted;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.model.ModelBiped.ArmPose;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -22,11 +25,16 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.FOVUpdateEvent;
@@ -201,13 +209,53 @@ public class ClientEventHandler
 	{
 		if(evt.getButton() == 1)
 		{
-			InventoryAttachment att = InventoryAttachment.create(stack);
-			evt.setCanceled(true);
-			//if(att != nu)
-			if (att != null && att.isScopePresent())
+			World w = Minecraft.getMinecraft().theWorld;			
+			EntityPlayer p = mc.thePlayer;
+			BlockPos pos = mc.objectMouseOver.getBlockPos();
+			Entity entity = mc.objectMouseOver.entityHit;
+			
+			if(mc.objectMouseOver.typeOfHit == Type.ENTITY)
 			{
-				showScopeOverlap = evt.isButtonstate();
+				if(entity instanceof EntityItemFrame)
+				{
+					evt.setCanceled(false);
+					showScopeOverlap = false;
+				}
 			}
+			else if (mc.objectMouseOver.typeOfHit == Type.BLOCK)
+			{
+				Block block = w.getBlockState(pos).getBlock();
+				if(block instanceof BlockContainer)
+				{
+					evt.setCanceled(false);
+					showScopeOverlap = false;
+					System.out.println("ff");
+				}
+				else
+				{
+					showScopeOverlap = evt.isButtonstate() && !(Minecraft.getMinecraft().currentScreen instanceof GuiInventory);
+					evt.setCanceled(true);
+				}
+			}
+			else 
+			{
+				evt.setCanceled(true);
+				InventoryAttachment att = InventoryAttachment.create(stack);
+				if (att != null && att.isScopePresent() && !(Minecraft.getMinecraft().currentScreen instanceof GuiInventory))
+				{
+					showScopeOverlap = evt.isButtonstate() && !(Minecraft.getMinecraft().currentScreen instanceof GuiInventory);
+				}
+			}
+			
+		//	InventoryAttachment att = InventoryAttachment.create(stack);
+	//		evt.setCanceled(true);
+			//if(att != nu)
+		//	if (att != null && att.isScopePresent() && !(Minecraft.getMinecraft().currentScreen instanceof GuiInventory))
+		//	{
+		//		System.out.println(showScopeOverlap);
+		//		if(Minecraft.getMinecraft().currentScreen instanceof GuiInventory)showScopeOverlap = false;
+		///	showScopeOverlap = evt.isButtonstate();
+		//	}
 		}
 		if(onItemleftClick(evt))
 		{
@@ -293,14 +341,14 @@ public class ClientEventHandler
 	@SubscribeEvent
 	public void onFOVUpdate(FOVUpdateEvent evt)
 	{
-		if (mc.gameSettings.thirdPersonView == 0 && (showScopeOverlap || showSpyglassOverlay))
+		if (mc.gameSettings.thirdPersonView == 0 && (showScopeOverlap && mc.currentScreen == null))
 			evt.setNewfov(evt.getNewfov() / 6.0F);
 	}
 
 	@SubscribeEvent
 	public void onRenderHand(RenderHandEvent evt)
 	{
-		if (showScopeOverlap || showSpyglassOverlay) {
+		if (showScopeOverlap) {
 			evt.setCanceled(true);
 		}
 	}
@@ -309,21 +357,17 @@ public class ClientEventHandler
 	public void onRender(RenderGameOverlayEvent evt)
 	{
 		Minecraft mc = Minecraft.getMinecraft();
-	//	if ((showScopeOverlap || showSpyglassOverlay) && (mc.player.getActiveItemStack() != selected || !Mouse.isButtonDown(0))) {
-	//		showScopeOverlap = false;
-	//		showSpyglassOverlay = false;
-	//	}
-		if (showScopeOverlap || showSpyglassOverlay) {
+		if (showScopeOverlap) {
 			// Render scope
 			if (evt.getType() == RenderGameOverlayEvent.ElementType.HELMET) {
 				if (mc.gameSettings.thirdPersonView == 0) {
 					evt.setCanceled(true);
-					if (showScopeOverlap)
+					if (showScopeOverlap && mc.currentScreen == null)
 						showScope();
 				}
 			}
 			// Remove crosshairs
-			else if (evt.getType() == RenderGameOverlayEvent.ElementType.CROSSHAIRS && (showScopeOverlap || showSpyglassOverlay))
+			else if (evt.getType() == RenderGameOverlayEvent.ElementType.CROSSHAIRS && (showScopeOverlap))
 				evt.setCanceled(true);
 		}
 		ItemStack stack = mc.thePlayer.getActiveItemStack();
@@ -414,17 +458,19 @@ public class ClientEventHandler
 				ItemRangedWeapon rightWeapon = (ItemRangedWeapon) rightHandStack.getItem();
 				ItemRangedWeapon leftWeapon = (ItemRangedWeapon) leftHandStack.getItem();
 
-				if (!rightWeapon.isReloading(rightHandStack) && rightWeapon.canReload(rightHandStack, player)) 
+				if (!rightWeapon.isReloading(rightHandStack) && rightWeapon.canReload(rightHandStack, player) && !leftWeapon.isReloading(leftHandStack))//leftWeapon.getAmmoQuantity(leftHandStack) != 0) 
 				{
 					rightWeapon.soundCharge(rightHandStack, player.worldObj, player);
 					Main.modChannel.sendToServer(new RightGunReloadStarted());
 					rightWeapon.setReloading(rightHandStack, player, true);
+					System.out.println("rightWeapon");
 				}
-				if (!leftWeapon.isReloading(leftHandStack) && leftWeapon.canReload(leftHandStack, player)) 
+				else if (!leftWeapon.isReloading(leftHandStack) && leftWeapon.canReload(leftHandStack, player) && !rightWeapon.isReloading(rightHandStack)) 
 				{
 					leftWeapon.soundCharge(leftHandStack, player.worldObj, player);
 					Main.modChannel.sendToServer(new LeftGunReloadStarted());
 					leftWeapon.setReloading(leftHandStack, player, true);
+					System.out.println("leftWeapon");
 				}
 			}
 			else if(rightHandStack.getItem() instanceof ItemRangedWeapon)
@@ -480,6 +526,25 @@ public class ClientEventHandler
 				weapon.setReloading(rightStack, player, true);
 			}
 		}	*/
+	}
+	
+	
+	@SideOnly(Side.CLIENT)
+	@SubscribeEvent
+	public void renderHand(RenderHandEvent  evt)
+	{
+//		EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+//		if(player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() instanceof ItemRangedWeapon)
+//		{
+//		//	player.renderArmPitch = -200.0F;
+//			evt.setCanceled(true);
+//			ItemRenderer x = Minecraft.getMinecraft().getItemRenderer();
+//			x.renderItemInFirstPerson(player, 1f, 1f, EnumHand.MAIN_HAND, 1f, player.getHeldItemMainhand(), 0f);
+//		//	x.updateEquippedItem();
+//			//x.resetEquippedProgress(EnumHand.OFF_HAND);
+//		//	player.renderArmYaw = -30F;
+//			//evt.setCanceled(true);
+//		}
 	}
 	
 	@SideOnly(Side.CLIENT)

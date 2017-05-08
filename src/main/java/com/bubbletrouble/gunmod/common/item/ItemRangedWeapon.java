@@ -222,6 +222,18 @@ public abstract class ItemRangedWeapon extends ItemBow{
 					}
 				}
 			}
+			if(p.getHeldItemOffhand() != null &&  p.getHeldItemOffhand().getItem() instanceof ItemRangedWeapon && p.getHeldItemMainhand() != null && p.getHeldItemMainhand().getItem() instanceof ItemRangedWeapon)
+			{
+				ItemRangedWeapon lw = (ItemRangedWeapon)p.getHeldItemOffhand().getItem();
+				ItemRangedWeapon rw = (ItemRangedWeapon)p.getHeldItemMainhand().getItem();
+
+				if(rw.IsTwoHanded())
+				{
+					ItemStack i = p.getHeldItemOffhand().copy();
+					p.inventory.removeStackFromSlot(40);
+					p.inventory.addItemStackToInventory(i);
+				}
+			}
 		}
 	}
 
@@ -648,6 +660,7 @@ public abstract class ItemRangedWeapon extends ItemBow{
 
 	public void fire(ItemStack stack, World world, EntityPlayer player, int timeLeft) {
 		if (!world.isRemote) {
+			System.out.println("count");
 			for (int i = 0; i < getAmmoConsumption(); i++) {
 				EntityProjectile p = createProjectile(stack, world, player);
 				applyProjectileEnchantments(p, stack);
@@ -660,7 +673,6 @@ public abstract class ItemRangedWeapon extends ItemBow{
 
 	public void afterFire(ItemStack stack, World world, EntityPlayer player) 
 	{
-		System.out.println("side");
 		if (!player.capabilities.isCreativeMode)
 			this.setAmmoQuantity(stack, this.getAmmoQuantity(stack) - ammoConsumption);
 		int damage = 1;
@@ -725,13 +737,16 @@ public abstract class ItemRangedWeapon extends ItemBow{
 	}
 	
 	@Override
-	public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
+	public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) 
+	{
+		int duarabilty = getMaxDamage(stack) - stack.getItemDamage();
 		tooltip.add("§9Reload time §r" + getReloadDuration() / 40 + "s"); 
 		tooltip.add("§9Damage §r" + this.getDamage());
 		tooltip.add("§9Range §r" + this.getRange() + " blocks");
 		tooltip.add("§9Recoil §r" + this.getRecoil());
 		tooltip.add("§9Has recoil : §r" + getShouldRecoil());
-		tooltip.add("§9Duarabilty §r" + stack.getItemDamage() + "/" + getMaxDamage(stack));
+		tooltip.add("§9Duarabilty §r" + duarabilty + "/" + getMaxDamage(stack));
+		tooltip.add("§9Two-Handed : §r" + IsTwoHanded());
 	}
 
 	@Override
