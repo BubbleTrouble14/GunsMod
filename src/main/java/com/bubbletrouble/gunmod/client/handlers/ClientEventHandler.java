@@ -1,6 +1,9 @@
 package com.bubbletrouble.gunmod.client.handlers;
 
+import java.util.List;
 import java.util.Random;
+
+import javax.annotation.Nullable;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -11,6 +14,9 @@ import com.bubbletrouble.gunmod.common.item.ItemRangedWeapon;
 import com.bubbletrouble.gunmod.common.network.LeftGunReloadStarted;
 import com.bubbletrouble.gunmod.common.network.OpenAttachmentInventory;
 import com.bubbletrouble.gunmod.common.network.RightGunReloadStarted;
+import com.bubbletrouble.gunmod.init.RangedWeapons;
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
@@ -29,9 +35,11 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EntitySelectors;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
@@ -44,20 +52,19 @@ import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-@EventBusSubscriber
 public class ClientEventHandler
 {
 	private static KeyBinding reload, attachment;
 
-	private Minecraft mc = Minecraft.getMinecraft();
+	private static Minecraft mc = Minecraft.getMinecraft();
 
 	private static Random random = new Random();
 
@@ -67,8 +74,8 @@ public class ClientEventHandler
 	public static int disabledEquippItemAnimationTime = 0;
 
 	private static final ResourceLocation SCOPE_OVERLAY = new ResourceLocation(Main.MODID, "textures/gui/scope.png");
-	public boolean showScopeOverlap = false;
-
+	public static boolean showScopeOverlap = false;
+	
 	public static void init()
 	{
 		reload = new KeyBinding("key.arkcraft.reload", Keyboard.KEY_R, Main.MODID);
@@ -103,12 +110,186 @@ public class ClientEventHandler
 		return player.worldObj.rayTraceBlocks(vec3, vec32, false, false, true);
 	}
 	
+	@SideOnly(Side.CLIENT)
+	@SubscribeEvent
+	public static void onPlayerTick(PlayerTickEvent evt)
+	{
+		if(evt.side == Side.CLIENT)
+			{
+			EntityPlayer p = evt.player;
+			ItemStack stackRight = p.getHeldItemMainhand();
+			ItemStack stackLeft = p.getHeldItemOffhand();
+			
+			InventoryAttachment inv = InventoryAttachment.create(stackRight);
+			if (inv != null && inv.isFlashPresent())
+			{
+				updateFlashlight(p);
+			}
+			else if (inv != null && inv.isLaserPresent())
+			{
+				updateLaser(p);
+			} 
+			InventoryAttachment invleft = InventoryAttachment.create(stackLeft);
+			if (invleft != null && invleft.isFlashPresent())
+			{
+				updateFlashlight(p);
+			}
+			else if (invleft != null && invleft.isLaserPresent())
+			{
+				updateLaser(p);
+			} 
+		}
+	}
+	
+	private static void updateFlashlight(Entity entityIn)
+	{
+		RayTraceResult mop = rayTrace(entityIn, 20, 1.0F);
+		if (mop != null && mop.typeOfHit != RayTraceResult.Type.MISS) {
+			World world = entityIn.worldObj;
+			BlockPos pos;
+
+			if (mop.typeOfHit == RayTraceResult.Type.ENTITY) {
+				pos = mop.entityHit.getPosition();
+			}
+			else {
+				pos = mop.getBlockPos();
+				pos = pos.offset(mop.sideHit);
+			}
+
+			if (world.isAirBlock(pos)) {
+				world.setBlockState(pos, RangedWeapons.blockLight.getDefaultState());
+				world.scheduleUpdate(pos, RangedWeapons.blockLight, 2);
+			}
+		}
+	}	
+			
+	private static void updateLaser(EntityPlayer p)
+	{
+		World w = Minecraft.getMinecraft().theWorld;
+		RayTraceResult mop = getMouseOver(0);// Minecraft.getMinecraft().objectMouseOver;//rayTrace(p, 35, 1.0F);
+		
+		if (mop == null) return;
+		if (mop.typeOfHit == RayTraceResult.Type.BLOCK || mop.typeOfHit == RayTraceResult.Type.ENTITY) {
+			double x = mop.hitVec.xCoord;
+			double y = mop.hitVec.yCoord;
+			double z = mop.hitVec.zCoord;
+			w.spawnParticle(EnumParticleTypes.REDSTONE, x, y, z, 0, 0, 0, 0);
+		}
+	}		
+	
+	public static RayTraceResult rayTrace(Entity player, double distance, float partialTick)
+	{
+		return player.rayTrace(10, partialTick);
+	}
+	
+	public static Vec3d getPositionEyes(Entity player, float partialTick)
+	{
+		if (partialTick == 1.0F) {
+			return new Vec3d(player.posX, player.posY + player.getEyeHeight(), player.posZ);
+		}
+		else {
+			double d0 = player.prevPosX + (player.posX - player.prevPosX) * partialTick;
+			double d1 = player.prevPosY + (player.posY - player.prevPosY) * partialTick + player.getEyeHeight();
+			double d2 = player.prevPosZ + (player.posZ - player.prevPosZ) * partialTick;
+			return new Vec3d(d0, d1, d2);
+		}
+	}
+		
+	 public static RayTraceResult getMouseOver(float partialTicks)
+	    {
+		 	Minecraft mc = Minecraft.getMinecraft();
+	        Entity entity = mc.getRenderViewEntity();
+	        RayTraceResult raytraceresult = null;
+
+	        if (entity != null)
+	        {
+	            if (mc.theWorld != null)
+	            {
+	                mc.mcProfiler.startSection("pick");
+	                mc.pointedEntity = null;
+	                double d0 = 10;
+	                raytraceresult = entity.rayTrace(d0, partialTicks);
+	                Vec3d vec3d = entity.getPositionEyes(partialTicks);
+	                double d1 = d0;
+
+	                if (raytraceresult != null)
+	                {
+	                    d1 = raytraceresult.hitVec.distanceTo(vec3d);
+	                }
+
+	                Vec3d vec3d1 = entity.getLook(partialTicks);
+	                Vec3d vec3d2 = vec3d.addVector(vec3d1.xCoord * d0, vec3d1.yCoord * d0, vec3d1.zCoord * d0);
+	                Entity pointedEntity = null;
+	                Vec3d vec3d3 = null;
+	                List<Entity> list = mc.theWorld.getEntitiesInAABBexcluding(entity, entity.getEntityBoundingBox().addCoord(vec3d1.xCoord * d0, vec3d1.yCoord * d0, vec3d1.zCoord * d0).expand(1.0D, 1.0D, 1.0D), Predicates.and(EntitySelectors.NOT_SPECTATING, new Predicate<Entity>()
+	                {
+	                    public boolean apply(@Nullable Entity p_apply_1_)
+	                    {
+	                        return p_apply_1_ != null && p_apply_1_.canBeCollidedWith();
+	                    }
+	                }));
+	                double d2 = d1;
+
+	                for (int j = 0; j < list.size(); ++j)
+	                {
+	                    Entity entity1 = (Entity)list.get(j);
+	                    AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().expandXyz((double)entity1.getCollisionBorderSize());
+	                    RayTraceResult raytraceresult2 = axisalignedbb.calculateIntercept(vec3d, vec3d2);
+
+	                    if (axisalignedbb.isVecInside(vec3d))
+	                    {
+	                        if (d2 >= 0.0D)
+	                        {
+	                            pointedEntity = entity1;
+	                            vec3d3 = raytraceresult2 == null ? vec3d : raytraceresult2.hitVec;
+	                            d2 = 0.0D;
+	                        }
+	                    }
+	                    else if (raytraceresult2 != null)
+	                    {
+	                        double d3 = vec3d.distanceTo(raytraceresult2.hitVec);
+
+	                        if (d3 < d2 || d2 == 0.0D)
+	                        {
+	                            if (entity1.getLowestRidingEntity() == entity.getLowestRidingEntity() && !entity.canRiderInteract())
+	                            {
+	                                if (d2 == 0.0D)
+	                                {
+	                                    pointedEntity = entity1;
+	                                    vec3d3 = raytraceresult2.hitVec;
+	                                }
+	                            }
+	                            else
+	                            {
+	                                pointedEntity = entity1;
+	                                vec3d3 = raytraceresult2.hitVec;
+	                                d2 = d3;
+	                            }
+	                        }
+	                    }
+	                }
+
+	                if (pointedEntity != null && (d2 < d1 || raytraceresult == null))
+	                {
+	                    raytraceresult = new RayTraceResult(pointedEntity, vec3d3);
+
+	                    if (pointedEntity instanceof EntityLivingBase || pointedEntity instanceof EntityItemFrame)
+	                    {
+	                        mc.pointedEntity = pointedEntity;
+	                    }
+	                }	             
+	            }
+	        }
+	        return raytraceresult;
+	    }
+
+	
 	boolean mouseclicked = false;
 	
 	static boolean leftClick = true;
 	static boolean rightClick = true;
 
-	public boolean onItemleftClick(MouseEvent evt) {
+	public static boolean onItemleftClick(MouseEvent evt) {
 		if (evt.isButtonstate()) {	
 			if (evt.getButton() == 0) 
 			{
@@ -128,7 +309,7 @@ public class ClientEventHandler
 		return false;
 	}	
 	
-	public boolean onItemRightClick(MouseEvent evt) {
+	public static boolean onItemRightClick(MouseEvent evt) {
 		if (evt.isButtonstate()) {
 			if (evt.getButton() == 1) 
 			{
@@ -148,7 +329,7 @@ public class ClientEventHandler
 		return false;
 	}
 	
-	public void handleClick(MouseEvent evt , EntityPlayer p)
+	public static void handleClick(MouseEvent evt , EntityPlayer p)
 	{
 		ItemStack rightHandStack = p.getHeldItemMainhand();
 		ItemStack leftHandStack = p.getHeldItemOffhand();
@@ -185,11 +366,10 @@ public class ClientEventHandler
 		}
 	}
 	
-	public void leftGun(MouseEvent evt, ItemStack stack, World world, EntityPlayer player)
+	public static void leftGun(MouseEvent evt, ItemStack stack, World world, EntityPlayer player)
 	{		
 		if(evt.getButton() == 0)
 		{
-			//if(att != nu)
 			InventoryAttachment att = InventoryAttachment.create(stack);
 			evt.setCanceled(true);
 			if (att != null && att.isScopePresent())
@@ -199,63 +379,53 @@ public class ClientEventHandler
 		}
 		if(onItemRightClick(evt))
 		{
-	//		evt.setCanceled(true);
 			ItemRangedWeapon leftGun = (ItemRangedWeapon)stack.getItem();
 			leftGun.shootLeftGun(stack, world, player);
 		}	
 	}
 	
-	public void rightGun(MouseEvent evt, ItemStack stack, World world, EntityPlayer player)
+	public static void rightGun(MouseEvent evt, ItemStack stack, World world, EntityPlayer player)
 	{
 		if(evt.getButton() == 1)
 		{
 			World w = Minecraft.getMinecraft().theWorld;			
-			EntityPlayer p = mc.thePlayer;
 			BlockPos pos = mc.objectMouseOver.getBlockPos();
 			Entity entity = mc.objectMouseOver.entityHit;
+			InventoryAttachment att = InventoryAttachment.create(stack);
 			
-			if(mc.objectMouseOver.typeOfHit == Type.ENTITY)
+			if (att != null && att.isScopePresent())
 			{
-				if(entity instanceof EntityItemFrame)
+				if(mc.objectMouseOver.typeOfHit == Type.ENTITY)
 				{
-					evt.setCanceled(false);
-					showScopeOverlap = false;
+					if(entity instanceof EntityItemFrame)
+					{
+						evt.setCanceled(false);
+						showScopeOverlap = false;
+					}
 				}
-			}
-			else if (mc.objectMouseOver.typeOfHit == Type.BLOCK)
-			{
-				Block block = w.getBlockState(pos).getBlock();
-				if(block instanceof BlockContainer)
+				else if (mc.objectMouseOver.typeOfHit == Type.BLOCK)
 				{
-					evt.setCanceled(false);
-					showScopeOverlap = false;
-					System.out.println("ff");
+					Block block = w.getBlockState(pos).getBlock();
+					if(block instanceof BlockContainer)
+					{
+						evt.setCanceled(false);
+						showScopeOverlap = false;
+					}
+					else
+					{
+						showScopeOverlap = evt.isButtonstate() && !(Minecraft.getMinecraft().currentScreen instanceof GuiInventory);
+						evt.setCanceled(true);
+					}
 				}
-				else
+				else 
 				{
-					showScopeOverlap = evt.isButtonstate() && !(Minecraft.getMinecraft().currentScreen instanceof GuiInventory);
 					evt.setCanceled(true);
+					if (!(Minecraft.getMinecraft().currentScreen instanceof GuiInventory))
+					{
+						showScopeOverlap = evt.isButtonstate() && !(Minecraft.getMinecraft().currentScreen instanceof GuiInventory);
+					}
 				}
 			}
-			else 
-			{
-				evt.setCanceled(true);
-				InventoryAttachment att = InventoryAttachment.create(stack);
-				if (att != null && att.isScopePresent() && !(Minecraft.getMinecraft().currentScreen instanceof GuiInventory))
-				{
-					showScopeOverlap = evt.isButtonstate() && !(Minecraft.getMinecraft().currentScreen instanceof GuiInventory);
-				}
-			}
-			
-		//	InventoryAttachment att = InventoryAttachment.create(stack);
-	//		evt.setCanceled(true);
-			//if(att != nu)
-		//	if (att != null && att.isScopePresent() && !(Minecraft.getMinecraft().currentScreen instanceof GuiInventory))
-		//	{
-		//		System.out.println(showScopeOverlap);
-		//		if(Minecraft.getMinecraft().currentScreen instanceof GuiInventory)showScopeOverlap = false;
-		///	showScopeOverlap = evt.isButtonstate();
-		//	}
 		}
 		if(onItemleftClick(evt))
 		{
@@ -265,7 +435,7 @@ public class ClientEventHandler
 		}
 	}
 	
-	public void dualGuns(MouseEvent evt, ItemStack rightStack, ItemStack leftStack, World world, EntityPlayer player)
+	public static void dualGuns(MouseEvent evt, ItemStack rightStack, ItemStack leftStack, World world, EntityPlayer player)
 	{
 		if(onItemleftClick(evt))
 		{
@@ -286,67 +456,21 @@ public class ClientEventHandler
 	
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent
-	public void onMouseEvent(MouseEvent evt)
+	public static void onMouseEvent(MouseEvent evt)
 	{		
 		EntityPlayer p = Minecraft.getMinecraft().thePlayer;
 		handleClick(evt, p);	
 	} 
-	
-//	@SideOnly(Side.CLIENT)
-//	@SubscribeEvent
-//	public void onRenderTick(RenderTickEvent evt)
-//	{
-//		Minecraft mc = Minecraft.getMinecraft();
-//		EntityPlayer p = mc.thePlayer;
-//		
-//		if(p != null)
-//		{
-//			ItemStack stackRight = p.getHeldItemMainhand();
-//			ItemStack stackLeft = p.getHeldItemOffhand();
-//		if (stackLeft != null && stackLeft.getItem() instanceof ItemRangedWeapon)
-//		{			
-//			ItemRangedWeapon leftgun = (ItemRangedWeapon) stackLeft.getItem();
-//			if(leftgun.fired(stackLeft))
-//			{
-//				System.out.println(leftticks);
-//				++leftticks;
-//				if(leftticks >= leftgun.recoilDelay() + 15)
-//				{
-//					leftgun.recoilDown(p, leftgun.getRecoil(), leftgun.getRecoilSneaking(), leftgun.getShouldRecoil());
-//					leftticks = 0;
-//					leftgun.setFired(stackLeft, p, false);	
-//				}	
-//			}
-//		}
-//		if (stackRight != null && stackRight.getItem() instanceof ItemRangedWeapon)
-//		{			
-//			ItemRangedWeapon w = (ItemRangedWeapon) stackRight.getItem();
-//			if(w.fired(stackRight))
-//			{
-//				System.out.println(ticks);
-//				if(++ticks == w.recoilDelay() + 15)
-//				{
-//					w.recoilDown(p, w.getRecoil(), w.getRecoilSneaking(), w.getShouldRecoil());
-//					ticks = 0;
-//					w.setFired(stackRight, p, false);
-//				}
-//			}	
-//		}
-//		}
-//	}
-	
-
-	private boolean showSpyglassOverlay;
 
 	@SubscribeEvent
-	public void onFOVUpdate(FOVUpdateEvent evt)
+	public static void onFOVUpdate(FOVUpdateEvent evt)
 	{
 		if (mc.gameSettings.thirdPersonView == 0 && (showScopeOverlap && mc.currentScreen == null))
 			evt.setNewfov(evt.getNewfov() / 6.0F);
 	}
 
 	@SubscribeEvent
-	public void onRenderHand(RenderHandEvent evt)
+	public static void onRenderHand(RenderHandEvent evt)
 	{
 		if (showScopeOverlap) {
 			evt.setCanceled(true);
@@ -357,6 +481,10 @@ public class ClientEventHandler
 	public void onRender(RenderGameOverlayEvent evt)
 	{
 		Minecraft mc = Minecraft.getMinecraft();
+//		if ((showScopeOverlap) && (mc.thePlayer.getActiveItemStack() != )) 
+//		{
+//			showScopeOverlap = false;
+//		}
 		if (showScopeOverlap) {
 			// Render scope
 			if (evt.getType() == RenderGameOverlayEvent.ElementType.HELMET) {
@@ -392,7 +520,7 @@ public class ClientEventHandler
 
 	private static final int maxTicks = 70;
 
-	public void showScope()
+	public static void showScope()
 	{
 		Minecraft mc = Minecraft.getMinecraft();
 		EntityPlayer thePlayer = mc.thePlayer;
@@ -418,7 +546,7 @@ public class ClientEventHandler
 		GL11.glPopMatrix();
 	}
 	
-	public void RenderScope()
+	public static void RenderScope()
 	{
 		ScaledResolution res = new ScaledResolution(mc);
 		double width = res.getScaledWidth_double();
@@ -429,7 +557,7 @@ public class ClientEventHandler
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.disableAlpha();
-        this.mc.getTextureManager().bindTexture(SCOPE_OVERLAY);
+        mc.getTextureManager().bindTexture(SCOPE_OVERLAY);
         Tessellator tessellator = Tessellator.getInstance();
         VertexBuffer vertexbuffer = tessellator.getBuffer();
         vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
@@ -517,51 +645,21 @@ public class ClientEventHandler
 			}
 		}
 		}
-		
-		/*
-		else if (rightStack != null && rightStack.getItem() instanceof ItemRangedWeapon) {
-			ItemRangedWeapon weapon = (ItemRangedWeapon) rightStack.getItem();
-			if (!weapon.isReloading(rightStack) && weapon.canReload(rightStack, player)) {
-				Main.modChannel.sendToServer(new ReloadStarted());
-				weapon.setReloading(rightStack, player, true);
-			}
-		}	*/
-	}
-	
-	
-	@SideOnly(Side.CLIENT)
-	@SubscribeEvent
-	public void renderHand(RenderHandEvent  evt)
-	{
-//		EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
-//		if(player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() instanceof ItemRangedWeapon)
-//		{
-//		//	player.renderArmPitch = -200.0F;
-//			evt.setCanceled(true);
-//			ItemRenderer x = Minecraft.getMinecraft().getItemRenderer();
-//			x.renderItemInFirstPerson(player, 1f, 1f, EnumHand.MAIN_HAND, 1f, player.getHeldItemMainhand(), 0f);
-//		//	x.updateEquippedItem();
-//			//x.resetEquippedProgress(EnumHand.OFF_HAND);
-//		//	player.renderArmYaw = -30F;
-//			//evt.setCanceled(true);
-//		}
 	}
 	
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent
-	public void onPlayerKeypressed(InputEvent.KeyInputEvent event)
+	public static void onPlayerKeypressed(InputEvent.KeyInputEvent event)
 	{
 		EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
 		if (reload.isPressed()) {
 			doReload();
 		}
 		else if (attachment.isPressed()) {
-			//if (player.getHeldItem(EnumHand.MAIN_HAND) != null && player.getHeldItem(EnumHand.MAIN_HAND).getItem() instanceof ItemRangedWeapon && !(player.getHeldItem(EnumHand.MAIN_HAND).getItem() instanceof NonSupporting)) {
 				if(player.getHeldItemMainhand().getItem() != null && player.getHeldItemMainhand().getItem() instanceof ItemRangedWeapon)
 				{
 					Main.modChannel.sendToServer(new OpenAttachmentInventory());
 				}
-			//}
 		}
 	}
 }
