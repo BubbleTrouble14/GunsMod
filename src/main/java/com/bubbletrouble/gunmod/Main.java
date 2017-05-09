@@ -29,26 +29,26 @@ public class Main
 	public static CommonProxy proxy;
 	
 	public static CreativeTabs tabGuns = new GunTab("gunTab");
-	public final static EventBus EVENT_BUS = new EventBus();
+	public static final EventBus EVENT_BUS = new EventBus();
 	public static SimpleNetworkWrapper modChannel;
 
     
-    @EventHandler
+	@EventHandler	
 	public void preInit(FMLPreInitializationEvent event)
     {
 		proxy.preInit(event);
     }
     
 
-	@EventHandler
+    @EventHandler
 	public void init(FMLInitializationEvent event)
 	{
 		GunSoundRegistry.init();
 		proxy.init(event);
 	}
 
-	@EventHandler
-	public void postInit(FMLPostInitializationEvent event)
+    @EventHandler
+    public void postInit(FMLPostInitializationEvent event)
 	{
 		proxy.postInit(event);
 	}

@@ -12,6 +12,7 @@ import com.bubbletrouble.gunmod.common.network.RightGunFired;
 import com.bubbletrouble.gunmod.common.network.RightGunFiredClient;
 import com.bubbletrouble.gunmod.common.network.RightGunReloadFinished;
 import com.bubbletrouble.gunmod.common.network.RightGunReloadStarted;
+import com.bubbletrouble.gunmod.events.PlayerUpdateEvent;
 import com.bubbletrouble.gunmod.init.RangedWeapons;
 import com.bubbletrouble.gunmod.init.Recipes;
 
@@ -52,7 +53,6 @@ public abstract class CommonProxy
 	public void preInit(FMLPreInitializationEvent event)
 	{
 		setupNetwork(event);
-		registerEventHandlers();
 		RangedWeapons.init();
 		NetworkRegistry.INSTANCE.registerGuiHandler(Main.instance(), new GuiHandler());
 	}
@@ -61,6 +61,7 @@ public abstract class CommonProxy
 		
 	public void init(FMLInitializationEvent event)
 	{
+		registerEventHandlers();
 		Recipes.init();
 //		ARKCraftEntities.init();
 	}
@@ -72,7 +73,8 @@ public abstract class CommonProxy
 	
 	protected void registerEventHandlers()
 	{
-		CommonEventHandler.init();
+	//	CommonEventHandler.init();
+		new PlayerUpdateEvent();
 	}
 	
 	private final void setupNetwork(FMLPreInitializationEvent event)

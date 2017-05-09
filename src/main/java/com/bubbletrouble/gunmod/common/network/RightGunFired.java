@@ -73,7 +73,7 @@ public class RightGunFired implements IMessage
 			//	if (att != null && att.isSilencerPresent())
 			//		soundPath = soundPath + "_silenced";
 				//weapon.setFired(stack, player, true);
-				SoundUtil.playSound(Minecraft.getMinecraft().theWorld, player.posX, player.posY, player.posZ, new ResourceLocation(soundPath), SoundCategory.PLAYERS, 1.5F, 1F / (weapon.getItemRand().nextFloat() * 0.4F + 0.7F), false);
+				SoundUtil.playSound(player.worldObj, player.posX, player.posY, player.posZ, new ResourceLocation(soundPath), SoundCategory.PLAYERS, 1.5F, 1F / (weapon.getItemRand().nextFloat() * 0.4F + 0.7F), false);
 			}
 		}
 	}

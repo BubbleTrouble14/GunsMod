@@ -1,7 +1,5 @@
 package com.bubbletrouble.gunmod.client.proxy;
 
-import com.bubbletrouble.gunmod.client.gui.GUIOverlayReloading;
-import com.bubbletrouble.gunmod.client.handlers.ClientEventHandler;
 import com.bubbletrouble.gunmod.client.render.RenderAdvancedBullet;
 import com.bubbletrouble.gunmod.client.render.RenderSimpleBullet;
 import com.bubbletrouble.gunmod.client.render.RenderSimpleRifleAmmo;
@@ -17,7 +15,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -34,13 +31,13 @@ public class ClientProxy extends CommonProxy
         registerEntityModels();
 	}
 	
-	@Override
-	protected final void registerEventHandlers()
-	{
-		super.registerEventHandlers();
-		ClientEventHandler.init();
-		MinecraftForge.EVENT_BUS.register(new GUIOverlayReloading());
-	}
+//	@Override
+//	protected final void registerEventHandlers()
+//	{
+	//	super.registerEventHandlers();
+	//	ClientEventHandler.init();
+	//	MinecraftForge.EVENT_BUS.register(new GUIOverlayReloading());
+//	}
 	
 	@Override
 	public EntityPlayer getPlayerFromContext(MessageContext ctx)

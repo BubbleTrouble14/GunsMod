@@ -50,7 +50,6 @@ public class OpenAttachmentInventory implements IMessage
 	{
 		if (player != null)
 		{
-			System.out.println("Open");
 			player.openGui(Main.instance(), CommonProxy.GUI.ATTACHMENTS.id, player.worldObj, 0, 0, 0);
 		}
 	}

@@ -32,6 +32,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
@@ -76,7 +79,8 @@ public abstract class ItemRangedWeapon extends ItemBow{
 		super();
 		this.speed = speed;
 		this.inaccuracy = inaccuracy;
-		this.shotInterval = (long) shotInterval * 1000;
+		//Milliseconds
+		this.shotInterval = (long) (shotInterval * 1000);
 		this.ammoConsumption = ammoConsumption;
 		this.defaultAmmoType = defaultAmmoType;
 		this.maxAmmo = maxAmmo;
@@ -164,6 +168,15 @@ public abstract class ItemRangedWeapon extends ItemBow{
 			return normal;
         });     
     }
+	
+	@Override
+	public void onPlayerStoppedUsing(ItemStack stack, World worldIn, EntityLivingBase entityLiving, int timeLeft){}
+	
+	@Override
+	public ActionResult<ItemStack> onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn, EnumHand hand)
+	{
+		return new ActionResult<ItemStack>(EnumActionResult.PASS, itemStackIn);
+	}
 
 	@Override
 	public String getUnlocalizedName() {
@@ -224,7 +237,7 @@ public abstract class ItemRangedWeapon extends ItemBow{
 			}
 			if(p.getHeldItemOffhand() != null &&  p.getHeldItemOffhand().getItem() instanceof ItemRangedWeapon && p.getHeldItemMainhand() != null && p.getHeldItemMainhand().getItem() instanceof ItemRangedWeapon)
 			{
-				ItemRangedWeapon lw = (ItemRangedWeapon)p.getHeldItemOffhand().getItem();
+			//	ItemRangedWeapon lw = (ItemRangedWeapon)p.getHeldItemOffhand().getItem();
 				ItemRangedWeapon rw = (ItemRangedWeapon)p.getHeldItemMainhand().getItem();
 
 				if(rw.IsTwoHanded())
@@ -329,62 +342,6 @@ public abstract class ItemRangedWeapon extends ItemBow{
 		}
 	}
 
-	public void setRightGunShot(boolean bool) {
-
-	}
-
-	public void updateClient(ItemStack stack, World world, EntityPlayer entity, int itemSlot, boolean isSelected) {
-		// InventoryAttachment inv = InventoryAttachment.create(stack);
-		// if(onItemleftClick())
-		// {
-		// shoot(stack, world, entity);
-		// }
-		/*
-		 * if (inv != null && inv.isFlashPresent()) { updateFlashlight(entity);
-		 * } else if (inv != null && inv.isLaserPresent()) {
-		 * updateLaser(entity); }
-		 */
-		// if(fired(stack))
-		// {
-		// ++ticks;
-		// if(ticks >= recoilDelay() + 1)
-		// {
-		// recoilDown(entity, getRecoil(), getRecoilSneaking(), isSelected);
-		// ticks = 0;
-		// setFired(stack, entity, false);
-		// }
-		// }
-	}
-
-	/*
-	 * if (entityIn instanceof EntityPlayer) { if (isSelected) {
-	 * InventoryAttachment inv = InventoryAttachment.create(stack); if (inv !=
-	 * null && inv.isFlashPresent()) { updateFlashlight(entityIn); } else if
-	 * (inv != null && inv.isLaserPresent()) { updateLaser(entityIn); } }
-	 * if(fired(stack) && entityIn instanceof EntityPlayer) {
-	 * System.out.println(ticks); afterFire(stack, worldIn, (EntityPlayer)
-	 * entityIn); ticks++; if(ticks >= recoilDelay()) { float f =
-	 * entityIn.isSneaking() ? -0.01F : -0.02F; double d =
-	 * -MathHelper.sin((entityIn.rotationYaw / 180F) * 3.141593F) *
-	 * MathHelper.cos((0 / 180F) 3.141593F) * f; double d1 =
-	 * MathHelper.cos((entityIn.rotationYaw / 180F) * 3.141593F) *
-	 * MathHelper.cos((0 / 180F) 3.141593F) * f;
-	 * recoilDown((EntityPlayer)entityIn, recoil, recoilSneaking, shouldRecoil);
-	 * entityIn.addVelocity(d, 0, d1); ticks = 0; setFired(stack, (EntityPlayer)
-	 * entityIn, false); } } } else if (isReloading(stack)) { resetReload(stack,
-	 * (EntityPlayer) entityIn); } if(Mouse.getEventButton() == 0 &&
-	 * Mouse.getEventButtonState() && !Minecraft.getMinecraft().isGamePaused())
-	 * { if(!worldIn.isRemote){ if(stack.getItem() instanceof ItemRangedWeapon)
-	 * { if (canFire(stack, (EntityPlayer) entityIn)) { if (this.nextShotMillis
-	 * < System.currentTimeMillis()) System.out.println("Fire");
-	 * ARKCraft.modChannel.sendToServer(new GunFired()); // fire(stack, worldIn,
-	 * (EntityPlayer) entityIn, 0); new ActionResult<>(EnumActionResult.SUCCESS,
-	 * stack); // ((EntityPlayer) entityIn).setItemInUse(stack,
-	 * getMaxItemUseDuration(stack)); } else { // Can't reload; no ammo if
-	 * (!this.isReloading(stack)) { soundEmpty(stack, worldIn, (EntityPlayer)
-	 * entityIn); } } } } } }
-	 */
-
 	public void recoilDown(EntityPlayer entityIn, float recoil, float recoilSneaking, boolean shouldRecoil) {
 		float i = recoil == 0F ? 0F : recoil - 0.5F;
 		float j = recoilSneaking == 0F ? 0F : recoilSneaking - 0.5F;
@@ -412,39 +369,6 @@ public abstract class ItemRangedWeapon extends ItemBow{
 	public int recoilDelay() {
 		return 4;
 	}
-
-	/*
-	private void updateLaser(Entity entityIn) {
-		World w = entityIn.worldObj;
-		RayTraceResult mop = rayTrace(entityIn, 35, 1.0F);
-		if (mop.typeOfHit == RayTraceResult.Type.BLOCK) {
-			double x = mop.hitVec.xCoord;
-			double y = mop.hitVec.yCoord;
-			double z = mop.hitVec.zCoord;
-
-			w.spawnParticle(EnumParticleTypes.REDSTONE, x, y, z, 0, 0, 0, 0);
-		}
-	}
-
-	private void resetReload(ItemStack stack, EntityPlayer player) 
-	{
-		setReloading(stack, player, false);
-		setReloadTicks(stack, 0);
-	}	*/
-	/*
-	 * private void updateFlashlight(Entity entityIn) { RayTraceResult mop =
-	 * rayTrace(entityIn, 20, 1.0F); if (mop != null && mop.typeOfHit !=
-	 * RayTraceResult.Type.MISS) { World world = entityIn.worldObj; BlockPos
-	 * pos;
-	 * 
-	 * if (mop.typeOfHit == RayTraceResult.Type.ENTITY) { pos =
-	 * mop.entityHit.getPosition(); } else { pos = mop.getBlockPos(); pos =
-	 * pos.offset(mop.sideHit); }
-	 * 
-	 * if (world.isAirBlock(pos)) { world.setBlockState(pos,
-	 * ARKCraftBlocks.blockLight.getDefaultState()); world.scheduleUpdate(pos,
-	 * ARKCraftBlocks.blockLight, 2); } } }
-	 */
 
 	public static Vec3d getPositionEyes(Entity player, float partialTick) {
 		if (partialTick == 1.0F) {
@@ -497,7 +421,6 @@ public abstract class ItemRangedWeapon extends ItemBow{
 
 	public boolean canReload(ItemStack stack, EntityPlayer player)
 	{
-		System.out.println(getAmmoQuantity(stack) + "  " + getMaxAmmo());
 		if(getAmmoQuantity(stack) == getMaxAmmo()) return false;
 
 		if(getMaxAmmo() == 1)
@@ -660,7 +583,6 @@ public abstract class ItemRangedWeapon extends ItemBow{
 
 	public void fire(ItemStack stack, World world, EntityPlayer player, int timeLeft) {
 		if (!world.isRemote) {
-			System.out.println("count");
 			for (int i = 0; i < getAmmoConsumption(); i++) {
 				EntityProjectile p = createProjectile(stack, world, player);
 				applyProjectileEnchantments(p, stack);
@@ -692,7 +614,7 @@ public abstract class ItemRangedWeapon extends ItemBow{
 				this.setAmmoType(stack, "");
 			}
 		}
-		this.nextShotMillis = System.currentTimeMillis() + this.shotInterval;
+		this.nextShotMillis = System.currentTimeMillis() + getShotInterval();
 		stack.damageItem(damage, player);
 	}
 
