@@ -30,15 +30,7 @@ public class ClientProxy extends CommonProxy
         RangedWeapons.initModels();
         registerEntityModels();
 	}
-	
-//	@Override
-//	protected final void registerEventHandlers()
-//	{
-	//	super.registerEventHandlers();
-	//	ClientEventHandler.init();
-	//	MinecraftForge.EVENT_BUS.register(new GUIOverlayReloading());
-//	}
-	
+
 	@Override
 	public EntityPlayer getPlayerFromContext(MessageContext ctx)
 	{

@@ -3,7 +3,6 @@ package com.bubbletrouble.gunmod.events;
 import org.lwjgl.input.Keyboard;
 
 import com.bubbletrouble.gunmod.Main;
-import com.bubbletrouble.gunmod.client.handlers.ClientEventHandler;
 import com.bubbletrouble.gunmod.common.item.ItemRangedWeapon;
 import com.bubbletrouble.gunmod.common.network.LeftGunReloadStarted;
 import com.bubbletrouble.gunmod.common.network.OpenAttachmentInventory;
@@ -13,7 +12,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -28,21 +26,18 @@ public class KeyBindingEvent
 	private static KeyBinding reload, attachment;
 
 	public static void init()
-	{
+	{	
 		reload = new KeyBinding("key.arkcraft.reload", Keyboard.KEY_R, Main.MODID);
 		ClientRegistry.registerKeyBinding(reload);
 		
 		attachment = new KeyBinding("key.attachment", Keyboard.KEY_M, Main.MODID);
 		ClientRegistry.registerKeyBinding(attachment);
-
-		ClientEventHandler h = new ClientEventHandler();
-		MinecraftForge.EVENT_BUS.register(h);
 	}
 
 	@SubscribeEvent
 	public static void onPlayerKeypressed(InputEvent.KeyInputEvent event)
 	{
-		EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+		EntityPlayerSP player = (EntityPlayerSP)Minecraft.getMinecraft().thePlayer;
 		if (reload.isPressed()) {
 			doReload();
 		}
@@ -56,7 +51,7 @@ public class KeyBindingEvent
 	
 	public static void doReload()
 	{
-		EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+		EntityPlayerSP player = (EntityPlayerSP)Minecraft.getMinecraft().thePlayer;
 		
 		ItemStack rightHandStack = player.getHeldItemMainhand();
 		ItemStack leftHandStack = player.getHeldItemOffhand();

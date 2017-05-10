@@ -12,12 +12,16 @@ import com.bubbletrouble.gunmod.common.network.RightGunFiredClient;
 import com.bubbletrouble.gunmod.common.network.RightGunReloadFinished;
 import com.bubbletrouble.gunmod.common.network.RightGunReloadStarted;
 import com.bubbletrouble.gunmod.events.ClickEvent;
+import com.bubbletrouble.gunmod.events.GunRenderer;
 import com.bubbletrouble.gunmod.events.KeyBindingEvent;
 import com.bubbletrouble.gunmod.events.PlayerUpdateEvent;
+import com.bubbletrouble.gunmod.events.RenderGunHandEvent;
 import com.bubbletrouble.gunmod.events.ScopeEvent;
 import com.bubbletrouble.gunmod.init.RangedWeapons;
 import com.bubbletrouble.gunmod.init.Recipes;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -29,6 +33,7 @@ import net.minecraftforge.fml.relauncher.Side;
 
 public abstract class CommonProxy 
 {
+    public GunRenderer itemRenderer;
 
 	public CommonProxy()	{}
 	
@@ -36,7 +41,6 @@ public abstract class CommonProxy
 	{
 
 		ATTACHMENTS;
-
 		public final int id;
 
 		GUI()
@@ -55,17 +59,15 @@ public abstract class CommonProxy
 	public void preInit(FMLPreInitializationEvent event)
 	{
 		setupNetwork(event);
+		itemRenderer = new GunRenderer(Minecraft.getMinecraft());
 		RangedWeapons.init();
 		NetworkRegistry.INSTANCE.registerGuiHandler(Main.instance(), new GuiHandler());
 	}
-
-//	public void registerItemRenderer(Item item, int meta, String id) {}
 		
 	public void init(FMLInitializationEvent event)
 	{
 		registerEventHandlers();
 		Recipes.init();
-//		ARKCraftEntities.init();
 	}
 
 	public void postInit(FMLPostInitializationEvent event)
@@ -75,11 +77,11 @@ public abstract class CommonProxy
 	
 	protected void registerEventHandlers()
 	{
-	//	CommonEventHandler.init();
 		KeyBindingEvent.init();
 		new ClickEvent();
 		new PlayerUpdateEvent();
 		new ScopeEvent();
+		new RenderGunHandEvent();
 	}
 	
 	private final void setupNetwork(FMLPreInitializationEvent event)
@@ -110,6 +112,4 @@ public abstract class CommonProxy
 	public abstract long getTime();
 
 	public abstract long getWorldTime();
-	
-	//public abstract void registerEntityModels();
-}
+	}

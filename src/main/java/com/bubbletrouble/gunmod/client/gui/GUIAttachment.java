@@ -7,7 +7,9 @@ import org.lwjgl.opengl.GL11;
 import com.bubbletrouble.gunmod.Main;
 import com.bubbletrouble.gunmod.common.container.ContainerInventoryAttachment;
 import com.bubbletrouble.gunmod.common.inventory.InventoryAttachment;
+import com.bubbletrouble.gunmod.common.item.ItemRangedWeapon;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -50,6 +52,19 @@ public class GUIAttachment extends GuiContainer
 	//	drawEntityOnScreen(k + 51, l + 75, 30, (float) (k + 51) - this.xSize, (float) (l + 75 - 50) - this.ySize,
 	//			this.mc.thePlayer);
 	}
+	
+	@Override
+    public void onGuiClosed()
+    {
+		EntityPlayer p = Minecraft.getMinecraft().thePlayer;
+		super.onGuiClosed();
+		if(p.getHeldItemMainhand() != null && p.getHeldItemMainhand().getItem() instanceof ItemRangedWeapon)
+		{
+			ItemRangedWeapon w = (ItemRangedWeapon)p.getHeldItemMainhand().getItem();
+			w.setUpdateModel(p.getHeldItemMainhand(), p, true);		
+		}
+    }
+
 
 	/*
 	public static void drawEntityOnScreen(int p_147046_0_, int p_147046_1_, int p_147046_2_, float p_147046_3_,

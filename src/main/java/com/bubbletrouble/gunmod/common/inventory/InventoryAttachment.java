@@ -47,6 +47,11 @@ public class InventoryAttachment extends AbstractInventory
 		}
 		readFromNBT(invStack.getTagCompound());
 	}
+	
+	@Override
+	public void closeInventory(EntityPlayer player)
+	{
+	}
 
 	@Override
 	public String getName()

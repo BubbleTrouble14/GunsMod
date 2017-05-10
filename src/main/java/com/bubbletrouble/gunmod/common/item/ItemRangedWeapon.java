@@ -97,44 +97,7 @@ public abstract class ItemRangedWeapon extends ItemBow{
 		this.recoil = recoil;
 		this.shouldRecoil = shouldRecoil;
 		this.twoHanded = twoHanded;	
-
-	//	Main.proxy.registerModelMeshDef(this);
-
-//		this.addPropertyOverride(new ResourceLocation("attachments"), new IItemPropertyGetter() {
-//			@SideOnly(Side.CLIENT)
-//			public float apply(ItemStack stack, @Nullable World worldIn, @Nullable EntityLivingBase entityIn) {
-//				InventoryAttachment att = InventoryAttachment.create(stack);
-//				if (att != null) {
-//					if (att.isScopePresent()) {
-//						return 1F;
-//					} else if (att.isFlashPresent()) {
-//						return 0.99F;
-//					} else if (att.isLaserPresent()) {
-//						return 0.98F;
-//					} else if (att.isSilencerPresent()) {
-//						return 0.97F;
-//					} else if (att.isHoloScopePresent()) {
-//						return 0.96F;
-//					}
-//				}
-//				return 0F;	
-//			}
-//	    });	
-//        this.addPropertyOverride(new ResourceLocation("reloading"), new IItemPropertyGetter()
-//        {
-//            @SideOnly(Side.CLIENT)
-//            public float apply(ItemStack stack, @Nullable World worldIn, @Nullable EntityLivingBase entityIn)
-//            {
-//                if (isReloading(stack))
-//                {
-//                    return 0.5F;
-//                }
-//                return 0F;
-//            }
-//        });	
 	}
-	
-	
 	
 	@SideOnly(Side.CLIENT)
     public void initModel() 
@@ -142,7 +105,6 @@ public abstract class ItemRangedWeapon extends ItemBow{
         ModelResourceLocation scope = new ModelResourceLocation(Main.MODID + ":weapons/" + this.getUnlocalizedName() + "_scope", "inventory");
         ModelResourceLocation laser = new ModelResourceLocation(Main.MODID + ":weapons/" + this.getUnlocalizedName() + "_laser", "inventory");
         ModelResourceLocation silencer = new ModelResourceLocation(Main.MODID + ":weapons/" + this.getUnlocalizedName() + "_silencer", "inventory");
-    //    ModelResourceLocation holo_scope = new ModelResourceLocation(Main.MODID + ":weapons/" + this.getUnlocalizedName() + "_holo_scope", "inventory");
         ModelResourceLocation flashlight = new ModelResourceLocation(Main.MODID + ":weapons/" + this.getUnlocalizedName() + "_flashlight", "inventory");
         ModelResourceLocation reload = new ModelResourceLocation(Main.MODID + ":weapons/" + this.getUnlocalizedName() + "_flashlight", "inventory");
         ModelResourceLocation normal = new ModelResourceLocation(Main.MODID + ":weapons/" + this.getUnlocalizedName(), "inventory");
@@ -209,13 +171,6 @@ public abstract class ItemRangedWeapon extends ItemBow{
 		return this.projectiles.contains(item);
 	}
 	
-//	fabricated_pistol = init.registerItem("fabricated_pistol", "weapons/", new ItemFabricatedPistol(),
-//	"fabricated_pistol", "fabricated_pistol_scope", "fabricated_pistol_reload",
-//	"fabricated_pistol_scope_reload", "fabricated_pistol_flashlight",
-//	"fabricated_pistol_flashlight_reload", "fabricated_pistol_laser", "fabricated_pistol_laser_reload",
-//	"fabricated_pistol_silencer", "fabricated_pistol_silencer_reload", "fabricated_pistol_holo_scope",
-//	"fabricated_pistol_holo_scope_reload");
-	
 	@Override
 	public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected)
 	{
@@ -238,7 +193,6 @@ public abstract class ItemRangedWeapon extends ItemBow{
 			}
 			if(p.getHeldItemOffhand() != null &&  p.getHeldItemOffhand().getItem() instanceof ItemRangedWeapon && p.getHeldItemMainhand() != null && p.getHeldItemMainhand().getItem() instanceof ItemRangedWeapon)
 			{
-			//	ItemRangedWeapon lw = (ItemRangedWeapon)p.getHeldItemOffhand().getItem();
 				ItemRangedWeapon rw = (ItemRangedWeapon)p.getHeldItemMainhand().getItem();
 
 				if(rw.IsTwoHanded())
@@ -274,8 +228,17 @@ public abstract class ItemRangedWeapon extends ItemBow{
 		return stack.getTagCompound().getBoolean("fired");
 	}
 
-	public void setFired(ItemStack stack, EntityPlayer player, boolean fired) {
-		stack.getTagCompound().setBoolean("fired", fired);
+	public void setFired(ItemStack stack, EntityPlayer player, boolean model) {
+		stack.getTagCompound().setBoolean("fired", model);
+	}
+	
+	public boolean getUpdateModel(ItemStack stack) {
+		checkNBT(stack);
+		return stack.getTagCompound().getBoolean("model");
+	}
+
+	public void setUpdateModel(ItemStack stack, EntityPlayer player, boolean model) {
+		stack.getTagCompound().setBoolean("model", model);
 	}
 
 	private void checkNBT(ItemStack stack) {
@@ -439,14 +402,6 @@ public abstract class ItemRangedWeapon extends ItemBow{
 		return findAvailableAmmo(player) != null;
 	}
 
-	/*
-	 * public ItemProjectile findAvailableAmmo(EntityPlayer player) { for
-	 * (ItemProjectile projectile : projectiles) { if
-	 * (player.inventory.hasItem(projectile)) return projectile; } return null;
-	 * }
-	 */
-
-	// On top is the old Method
 	public ItemProjectile findAvailableAmmo(EntityPlayer player) {
 		for (ItemProjectile projectile : projectiles) {
 			for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
@@ -603,9 +558,7 @@ public abstract class ItemRangedWeapon extends ItemBow{
 
 		if (stack.getItemDamage() + damage > stack.getMaxDamage()) {
 			String type = this.getAmmoType(stack);
-			//Item i = Item.REGISTRY.getValue();
 			Item i = Item.REGISTRY.getObject(new ResourceLocation(Main.MODID + ":" + type));
-	//		Item i = GameRegistry.findItem(Main.MODID, type);
 			ItemStack s = new ItemStack(i, ammo);
 			player.inventory.addItemStackToInventory(s);
 		} else if (ammo < 1) {
@@ -655,9 +608,7 @@ public abstract class ItemRangedWeapon extends ItemBow{
 		return damage;
 	}
 
-	public void effectReloadDone(ItemStack stack, World world, EntityPlayer player) {
-		// player.swingItem();
-	}
+	public void effectReloadDone(ItemStack stack, World world, EntityPlayer player) {}
 	
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) 
@@ -684,7 +635,36 @@ public abstract class ItemRangedWeapon extends ItemBow{
 	}
 
 	@Override
-	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-		return oldStack != null && newStack != null && oldStack.getItem() != newStack.getItem() && slotChanged;
+	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) 
+	{
+		return false;
 	}
+	//{
+	//	return oldStack != null && newStack != null && oldStack.getItem() != newStack.getItem() && slotChanged;
+	//	if(oldStack != null && !fired(oldStack) && !(isReloading(oldStack)))return true;
+	//	if(oldStack != null && newStack != null)
+	//	{			
+	//		if(oldStack != newStack ||  oldStack == newStack && fired(oldStack) && fired(newStack))
+	//		{
+	//			if(isReloading(newStack) || isReloading(oldStack))
+	//			{
+	//				return true;
+	//			}
+		//		else if(attOld != null && attNew != null && attOld != attNew)
+		//		{
+//					if(fired(newStack))
+//					{
+//						return false;
+//					}
+//					else
+//					{
+//						return true;
+//					}
+//				}
+//				return false;
+//			}
+//		}
+//		return false;		
+		//oldStack != null && newStack != null && oldStack != newStack && !(isReloading(newStack) && !(isReloading(oldStack)));
+//	}
 }

@@ -17,8 +17,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 @Mod.EventBusSubscriber
 //@SideOnly(Side.CLIENT)
@@ -36,7 +34,6 @@ public class ClickEvent
 	@SubscribeEvent
 	public static void onMouseEvent(MouseEvent evt)
 	{		
-		System.out.println("tick");
 		EntityPlayer p = Minecraft.getMinecraft().thePlayer;
 		handleClick(evt, p);	
 	} 
