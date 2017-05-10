@@ -16,6 +16,7 @@ import com.bubbletrouble.gunmod.common.entity.ProjectileType;
 import com.bubbletrouble.gunmod.common.inventory.InventoryAttachment;
 import com.bubbletrouble.gunmod.common.network.LeftGunFired;
 import com.bubbletrouble.gunmod.common.network.RightGunFired;
+import com.bubbletrouble.gunmod.events.KeyBindingEvent;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelBakery;
@@ -609,7 +610,7 @@ public abstract class ItemRangedWeapon extends ItemBow{
 			player.inventory.addItemStackToInventory(s);
 		} else if (ammo < 1) {
 			if (hasAmmoInInventory(player) && FMLCommonHandler.instance().getSide().isClient()) {
-				ClientEventHandler.doReload();
+				KeyBindingEvent.doReload();
 			} else {
 				this.setAmmoType(stack, "");
 			}

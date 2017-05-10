@@ -1,7 +1,6 @@
 package com.bubbletrouble.gunmod.common.proxy;
 
 import com.bubbletrouble.gunmod.Main;
-import com.bubbletrouble.gunmod.common.handlers.CommonEventHandler;
 import com.bubbletrouble.gunmod.common.handlers.GuiHandler;
 import com.bubbletrouble.gunmod.common.network.LeftGunFired;
 import com.bubbletrouble.gunmod.common.network.LeftGunFiredClient;
@@ -12,7 +11,10 @@ import com.bubbletrouble.gunmod.common.network.RightGunFired;
 import com.bubbletrouble.gunmod.common.network.RightGunFiredClient;
 import com.bubbletrouble.gunmod.common.network.RightGunReloadFinished;
 import com.bubbletrouble.gunmod.common.network.RightGunReloadStarted;
+import com.bubbletrouble.gunmod.events.ClickEvent;
+import com.bubbletrouble.gunmod.events.KeyBindingEvent;
 import com.bubbletrouble.gunmod.events.PlayerUpdateEvent;
+import com.bubbletrouble.gunmod.events.ScopeEvent;
 import com.bubbletrouble.gunmod.init.RangedWeapons;
 import com.bubbletrouble.gunmod.init.Recipes;
 
@@ -74,7 +76,10 @@ public abstract class CommonProxy
 	protected void registerEventHandlers()
 	{
 	//	CommonEventHandler.init();
+		KeyBindingEvent.init();
+		new ClickEvent();
 		new PlayerUpdateEvent();
+		new ScopeEvent();
 	}
 	
 	private final void setupNetwork(FMLPreInitializationEvent event)
