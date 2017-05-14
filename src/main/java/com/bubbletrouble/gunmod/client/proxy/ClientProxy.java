@@ -9,12 +9,18 @@ import com.bubbletrouble.gunmod.common.entity.EntitySimpleBullet;
 import com.bubbletrouble.gunmod.common.entity.EntitySimpleRifleAmmo;
 import com.bubbletrouble.gunmod.common.entity.EntitySimpleShotgunAmmo;
 import com.bubbletrouble.gunmod.common.proxy.CommonProxy;
+import com.bubbletrouble.gunmod.events.ClickEvent;
+import com.bubbletrouble.gunmod.events.GUIOverlayReloading;
+import com.bubbletrouble.gunmod.events.KeyBindingEvent;
+import com.bubbletrouble.gunmod.events.RenderGunHandEvent;
+import com.bubbletrouble.gunmod.events.ScopeEvent;
 import com.bubbletrouble.gunmod.init.RangedWeapons;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -29,6 +35,17 @@ public class ClientProxy extends CommonProxy
 		
         RangedWeapons.initModels();
         registerEntityModels();
+	}
+	
+	@Override
+	protected void registerEventHandlers() 
+	{
+		super.registerEventHandlers();
+		KeyBindingEvent.init();
+		MinecraftForge.EVENT_BUS.register(GUIOverlayReloading.class);
+		MinecraftForge.EVENT_BUS.register(ClickEvent.class);
+		MinecraftForge.EVENT_BUS.register(ScopeEvent.class);
+		MinecraftForge.EVENT_BUS.register(RenderGunHandEvent.class);
 	}
 
 	@Override

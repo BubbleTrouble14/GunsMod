@@ -21,16 +21,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-@Mod.EventBusSubscriber
-@SideOnly(Side.CLIENT)
 public class ScopeEvent 
 {
 	private static int swayTicks;
@@ -49,14 +43,6 @@ public class ScopeEvent
 	{
 		if (mc.gameSettings.thirdPersonView == 0 && (ClickEvent.getShowScope() && mc.currentScreen == null))
 			evt.setNewfov(evt.getNewfov() / 6.0F);
-	}
-
-	@SubscribeEvent
-	public static void onRenderHand(RenderHandEvent evt)
-	{
-		if (ClickEvent.getShowScope()) {
-			evt.setCanceled(true);
-		}
 	}
 
 	@SubscribeEvent(priority = EventPriority.NORMAL)

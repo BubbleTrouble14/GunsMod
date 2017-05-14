@@ -1,7 +1,8 @@
-package com.bubbletrouble.gunmod.events;
+package com.bubbletrouble.gunmod.client.render;
 
 import javax.annotation.Nullable;
 
+import com.bubbletrouble.gunmod.common.item.ItemRangedWeapon;
 import com.google.common.base.Objects;
 
 import net.minecraft.block.Block;
@@ -143,7 +144,6 @@ public class GunRenderer
 
     private void renderArms()
     {
-    	System.out.println("f");
         if (!this.mc.thePlayer.isInvisible())
         {
             GlStateManager.disableCull();
@@ -346,18 +346,22 @@ public class GunRenderer
                 flag1 = !flag;
             }
         }
+        
+        itemStackMainHand = abstractclientplayer.getHeldItemMainhand();
+        itemStackOffHand = abstractclientplayer.getHeldItemOffhand();
 
         this.rotateArroundXAndY(f1, f2);
         this.setLightmap();
         this.rotateArm(partialTicks);
         GlStateManager.enableRescaleNormal();
-
+        
         if (flag)
         {
             float f3 = enumhand == EnumHand.MAIN_HAND ? f : 0.0F;
             float f5 = 1.0F - (this.prevEquippedProgressMainHand + (this.equippedProgressMainHand - this.prevEquippedProgressMainHand) * partialTicks);
             if(!net.minecraftforge.client.ForgeHooksClient.renderSpecificFirstPersonHand(EnumHand.MAIN_HAND, partialTicks, f1, f3, f5, this.itemStackMainHand))
             this.renderItemInFirstPerson(abstractclientplayer, partialTicks, f1, EnumHand.MAIN_HAND, f3, this.itemStackMainHand, f5);
+            System.out.println(itemStackMainHand);
         }
 
         if (flag1)
@@ -385,7 +389,7 @@ public class GunRenderer
                 this.renderArmFirstPerson(p_187457_7_, p_187457_5_, enumhandside);
             }
         }
-        else if (p_187457_6_.getItem() instanceof net.minecraft.item.ItemMap)
+        else if (p_187457_6_.getItem() instanceof net.minecraft.item.ItemMap || p_187457_6_.getItem() instanceof ItemRangedWeapon)
         {
             if (flag && this.itemStackOffHand == null)
             {
@@ -638,10 +642,15 @@ public class GunRenderer
         }
      //   else
      //   {
-     //       float f = entityplayersp.getCooledAttackStrength(1.0F);
-      //      this.equippedProgressMainHand += MathHelper.clamp_float((!net.minecraftforge.client.ForgeHooksClient.shouldCauseReequipAnimation(this.itemStackMainHand, itemstack, entityplayersp.inventory.currentItem) ? f * f * f : 0.0F) - this.equippedProgressMainHand, -0.4F, 0.4F);
-     //       this.equippedProgressOffHand += MathHelper.clamp_float((float)(!net.minecraftforge.client.ForgeHooksClient.shouldCauseReequipAnimation(this.itemStackOffHand, itemstack1, -1) ? 1 : 0) - this.equippedProgressOffHand, -0.4F, 0.4F);
+     ////   	   this.itemStackMainHand = itemstack;
       //  }
+
+        else
+        {
+            float f = entityplayersp.getCooledAttackStrength(1.0F);
+            this.equippedProgressMainHand += MathHelper.clamp_float((!net.minecraftforge.client.ForgeHooksClient.shouldCauseReequipAnimation(this.itemStackMainHand, itemstack, entityplayersp.inventory.currentItem) ? f * f * f : 0.0F) - this.equippedProgressMainHand, -0.4F, 0.4F);
+            this.equippedProgressOffHand += MathHelper.clamp_float((float)(!net.minecraftforge.client.ForgeHooksClient.shouldCauseReequipAnimation(this.itemStackOffHand, itemstack1, -1) ? 1 : 0) - this.equippedProgressOffHand, -0.4F, 0.4F);
+        }
 
         if (this.equippedProgressMainHand < 0.1F)
         {

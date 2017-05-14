@@ -11,18 +11,12 @@ import com.bubbletrouble.gunmod.common.network.RightGunFired;
 import com.bubbletrouble.gunmod.common.network.RightGunFiredClient;
 import com.bubbletrouble.gunmod.common.network.RightGunReloadFinished;
 import com.bubbletrouble.gunmod.common.network.RightGunReloadStarted;
-import com.bubbletrouble.gunmod.events.ClickEvent;
-import com.bubbletrouble.gunmod.events.GunRenderer;
-import com.bubbletrouble.gunmod.events.KeyBindingEvent;
 import com.bubbletrouble.gunmod.events.PlayerUpdateEvent;
-import com.bubbletrouble.gunmod.events.RenderGunHandEvent;
-import com.bubbletrouble.gunmod.events.ScopeEvent;
 import com.bubbletrouble.gunmod.init.RangedWeapons;
 import com.bubbletrouble.gunmod.init.Recipes;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -33,8 +27,6 @@ import net.minecraftforge.fml.relauncher.Side;
 
 public abstract class CommonProxy 
 {
-    public GunRenderer itemRenderer;
-
 	public CommonProxy()	{}
 	
 	public enum GUI
@@ -59,7 +51,6 @@ public abstract class CommonProxy
 	public void preInit(FMLPreInitializationEvent event)
 	{
 		setupNetwork(event);
-		itemRenderer = new GunRenderer(Minecraft.getMinecraft());
 		RangedWeapons.init();
 		NetworkRegistry.INSTANCE.registerGuiHandler(Main.instance(), new GuiHandler());
 	}
@@ -77,11 +68,7 @@ public abstract class CommonProxy
 	
 	protected void registerEventHandlers()
 	{
-		KeyBindingEvent.init();
-		new ClickEvent();
-		new PlayerUpdateEvent();
-		new ScopeEvent();
-		new RenderGunHandEvent();
+		MinecraftForge.EVENT_BUS.register(PlayerUpdateEvent.class);
 	}
 	
 	private final void setupNetwork(FMLPreInitializationEvent event)

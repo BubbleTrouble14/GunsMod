@@ -22,3 +22,6 @@ item.flash_light.name=Flashlight
 
 #Keybindings
 key.attachment=Open attachment inventory
+
+reload_time.title=Reload Time
+seconds.title=s

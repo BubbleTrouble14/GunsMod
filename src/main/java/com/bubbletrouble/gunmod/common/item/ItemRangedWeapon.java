@@ -10,13 +10,14 @@ import java.util.Set;
 import org.lwjgl.input.Mouse;
 
 import com.bubbletrouble.gunmod.Main;
-import com.bubbletrouble.gunmod.client.handlers.ClientEventHandler;
 import com.bubbletrouble.gunmod.common.entity.EntityProjectile;
 import com.bubbletrouble.gunmod.common.entity.ProjectileType;
 import com.bubbletrouble.gunmod.common.inventory.InventoryAttachment;
 import com.bubbletrouble.gunmod.common.network.LeftGunFired;
 import com.bubbletrouble.gunmod.common.network.RightGunFired;
 import com.bubbletrouble.gunmod.events.KeyBindingEvent;
+import com.bubbletrouble.gunmod.utils.I18n;
+import com.mojang.realmsclient.gui.ChatFormatting;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelBakery;
@@ -54,7 +55,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * @author Lewis_McReu
  * @author BubbleTrouble
  */
-public abstract class ItemRangedWeapon extends ItemBow{
+public abstract class ItemRangedWeapon extends ItemBow implements IUpdate
+{
 	protected static final int MAX_DELAY = 72000;
 
 	static boolean notClickedYet = true;
@@ -171,9 +173,35 @@ public abstract class ItemRangedWeapon extends ItemBow{
 		return this.projectiles.contains(item);
 	}
 	
+	static int ReloadTicks = 0;
+	static int RecoilTicks = 0;
+	
+	public void Update(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected)
+	{
+		ItemStack leftStack  = null;
+		ItemStack rightStack = null;
+		 
+		if(entityIn instanceof EntityPlayer)
+		{
+			EntityPlayer p = (EntityPlayer)entityIn;
+			if(p.getHeldItemOffhand() != null &&  p.getHeldItemOffhand().getItem() instanceof ItemRangedWeapon)
+			{
+				leftStack = p.getHeldItemOffhand();
+				IUpdate.super.leftStackUpdate(worldIn, p, leftStack, ReloadTicks, RecoilTicks);
+			}
+			if(isSelected && stack.getItem() instanceof ItemRangedWeapon)
+			{
+				rightStack = stack;
+				IUpdate.super.rightStackUpdate(worldIn, p, rightStack, ReloadTicks, RecoilTicks);
+			}
+		}
+	}
+	
 	@Override
 	public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected)
 	{
+		Update(stack, worldIn, entityIn, itemSlot, isSelected);
+	//	IUpdate.super.Update(stack, worldIn, entityIn, itemSlot, isSelected, leftHandSlec);
 		if(entityIn instanceof EntityPlayer)
 		{
 			EntityPlayer p = (EntityPlayer)entityIn;
@@ -213,7 +241,25 @@ public abstract class ItemRangedWeapon extends ItemBow{
 	public int getMaxItemUseDuration(ItemStack stack) {
 		return MAX_DELAY;
 	}
-
+	
+	public void setReloadTicks(ItemStack stack, EntityPlayer player, int reloadTicks) {
+		stack.getTagCompound().setInteger("reloadTicks", reloadTicks);
+	}
+	
+	public int getReloadTicks(ItemStack stack) {
+		checkNBT(stack);
+		return stack.getTagCompound().getInteger("reloadTicks");
+	}
+	
+	public void setRecoilTicks(ItemStack stack, EntityPlayer player, int recoilTicks) {
+		stack.getTagCompound().setInteger("recoilTicks", recoilTicks);
+	}
+	
+	public int getRecoilTicks(ItemStack stack) {
+		checkNBT(stack);
+		return stack.getTagCompound().getInteger("recoilTicks");
+	}
+	
 	public void setReloading(ItemStack stack, EntityPlayer player, boolean reloading) {
 		stack.getTagCompound().setBoolean("reloading", reloading);
 	}
@@ -614,6 +660,7 @@ public abstract class ItemRangedWeapon extends ItemBow{
 	public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) 
 	{
 		int duarabilty = getMaxDamage(stack) - stack.getItemDamage();
+		tooltip.add(ChatFormatting.DARK_BLUE + I18n.translate("reload_time.title") + getReloadDuration() / 40 + I18n.translate("seconds.title"));
 		tooltip.add("§9Reload time §r" + getReloadDuration() / 40 + "s"); 
 		tooltip.add("§9Damage §r" + this.getDamage());
 		tooltip.add("§9Range §r" + this.getRange() + " blocks");
@@ -637,34 +684,21 @@ public abstract class ItemRangedWeapon extends ItemBow{
 	@Override
 	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) 
 	{
-		return false;
-	}
-	//{
-	//	return oldStack != null && newStack != null && oldStack.getItem() != newStack.getItem() && slotChanged;
+		return true;
+		//return oldStack != null && newStack != null && oldStack.getItem() != newStack.getItem() && slotChanged;
 	//	if(oldStack != null && !fired(oldStack) && !(isReloading(oldStack)))return true;
-	//	if(oldStack != null && newStack != null)
-	//	{			
-	//		if(oldStack != newStack ||  oldStack == newStack && fired(oldStack) && fired(newStack))
-	//		{
-	//			if(isReloading(newStack) || isReloading(oldStack))
-	//			{
-	//				return true;
-	//			}
-		//		else if(attOld != null && attNew != null && attOld != attNew)
-		//		{
-//					if(fired(newStack))
-//					{
-//						return false;
-//					}
-//					else
-//					{
-//						return true;
-//					}
-//				}
+//		if(oldStack != null && newStack != null)
+//		{			
+//			if(oldStack != newStack ||  oldStack == newStack && fired(oldStack) && fired(newStack))
+//			{
+//				if(isReloading(newStack) || isReloading(oldStack))
+//				{
+//					return true;
+//				}				
 //				return false;
 //			}
 //		}
-//		return false;		
-		//oldStack != null && newStack != null && oldStack != newStack && !(isReloading(newStack) && !(isReloading(oldStack)));
-//	}
+//		return false;	
+	//	oldStack != null && newStack != null && oldStack != newStack && !(isReloading(newStack) && !(isReloading(oldStack)));
+	}
 }

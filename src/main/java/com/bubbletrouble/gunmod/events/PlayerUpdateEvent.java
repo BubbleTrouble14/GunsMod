@@ -5,7 +5,6 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import com.bubbletrouble.gunmod.Main;
-import com.bubbletrouble.gunmod.common.inventory.InventoryAttachment;
 import com.bubbletrouble.gunmod.common.item.ItemRangedWeapon;
 import com.bubbletrouble.gunmod.common.network.LeftGunFiredClient;
 import com.bubbletrouble.gunmod.common.network.LeftGunReloadFinished;
@@ -16,7 +15,6 @@ import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItemFrame;
@@ -30,12 +28,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 
-@Mod.EventBusSubscriber
 public class PlayerUpdateEvent 
 {
 	public static int reloadTicks = 0;
@@ -117,31 +113,31 @@ public class PlayerUpdateEvent
 				}
 			}	
 		}
-		else
-		{
-			EntityPlayerSP p = (EntityPlayerSP)evt.player;
-			ItemStack stackRight = p.getHeldItemMainhand();
-			ItemStack stackLeft = p.getHeldItemOffhand();
-						
-			InventoryAttachment inv = InventoryAttachment.create(stackRight);
-			if (inv != null && inv.isFlashPresent())
-			{
-				updateFlashlight(p);
-			}
-			else if (inv != null && inv.isLaserPresent())
-			{
-				updateLaser(p);
-			} 
-			InventoryAttachment invleft = InventoryAttachment.create(stackLeft);
-			if (invleft != null && invleft.isFlashPresent())
-			{
-				updateFlashlight(p);
-			}
-			else if (invleft != null && invleft.isLaserPresent())
-			{
-				updateLaser(p);
-			} 
-		}
+//		if(evt.side == Side.CLIENT)
+//		{
+//			EntityPlayerSP p = (EntityPlayerSP)evt.player;
+//			ItemStack stackRight = p.getHeldItemMainhand();
+//			ItemStack stackLeft = p.getHeldItemOffhand();
+//						
+//			InventoryAttachment inv = InventoryAttachment.create(stackRight);
+//			if (inv != null && inv.isFlashPresent())
+//			{
+//				updateFlashlight(p);
+//			}
+//			else if (inv != null && inv.isLaser	Present())
+//			{
+//				updateLaser(p);
+//			} 
+//			InventoryAttachment invleft = InventoryAttachment.create(stackLeft);
+//			if (invleft != null && invleft.isFlashPresent())
+//			{
+//				updateFlashlight(p);
+//			}
+//			else if (invleft != null && invleft.isLaserPresent())
+//			{
+//				updateLaser(p);
+//			} 
+//		}
 	}
 	
 	public static void updateFlashlight(Entity entityIn)
@@ -168,7 +164,7 @@ public class PlayerUpdateEvent
 			
 	public static void updateLaser(EntityPlayer p)
 	{
-		World w = Minecraft.getMinecraft().theWorld;
+		World w = p.worldObj;
 		RayTraceResult mop = getMouseOver(0);// Minecraft.getMinecraft().objectMouseOver;//rayTrace(p, 35, 1.0F);
 		
 		if (mop == null) return;

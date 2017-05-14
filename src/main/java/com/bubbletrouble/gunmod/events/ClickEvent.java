@@ -1,5 +1,7 @@
 package com.bubbletrouble.gunmod.events;
 
+import org.lwjgl.input.Mouse;
+
 import com.bubbletrouble.gunmod.common.inventory.InventoryAttachment;
 import com.bubbletrouble.gunmod.common.item.ItemRangedWeapon;
 
@@ -15,10 +17,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.MouseEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent.MouseInputEvent;
 
-@Mod.EventBusSubscriber
 //@SideOnly(Side.CLIENT)
 public class ClickEvent 
 {
