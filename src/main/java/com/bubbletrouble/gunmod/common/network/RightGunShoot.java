@@ -16,10 +16,10 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 
-public class RightGunFired implements IMessage
+public class RightGunShoot implements IMessage
 {
 	
-	public RightGunFired()
+	public RightGunShoot()
 	{
 
 	}
@@ -32,10 +32,10 @@ public class RightGunFired implements IMessage
 	public void toBytes(ByteBuf buf)
 	{}
 
-	public static class Handler implements IMessageHandler<RightGunFired, IMessage>
+	public static class Handler implements IMessageHandler<RightGunShoot, IMessage>
 	{
 		@Override
-		public IMessage onMessage(final RightGunFired message, MessageContext ctx)
+		public IMessage onMessage(final RightGunShoot message, MessageContext ctx)
 		{
 			if (ctx.side != Side.SERVER)
 			{
@@ -54,7 +54,7 @@ public class RightGunFired implements IMessage
 		}
 	}
 
-	static void processMessage(RightGunFired message, EntityPlayerMP player)
+	static void processMessage(RightGunShoot message, EntityPlayerMP player)
 	{
 		if (player != null)
 		{
@@ -63,16 +63,12 @@ public class RightGunFired implements IMessage
 			{
 				ItemRangedWeapon weapon = (ItemRangedWeapon) stack.getItem();
 				String soundPath = Main.MODID + ":" + weapon.getUnlocalizedName() + "_shoot";
-				//TODO after Fire
-				weapon.fire(stack, player.worldObj, player, 0);
+				
+				weapon.fire(stack, player.worldObj, player);
 				player.setActiveHand(EnumHand.MAIN_HAND);
-				//Main.modChannel.sendTo(new RightGunFiredClient(), (EntityPlayerMP) player);
 				weapon.setFired(stack, player, true);
-				//TODO
-			//	InventoryAttachment att = InventoryAttachment.create(stack);
-			//	if (att != null && att.isSilencerPresent())
-			//		soundPath = soundPath + "_silenced";
-				//weapon.setFired(stack, player, true);
+			//	weapon.afterFire(stack, player.worldObj, player);
+
 				SoundUtil.playSound(player.worldObj, player.posX, player.posY, player.posZ, new ResourceLocation(soundPath), SoundCategory.PLAYERS, 1.5F, 1F / (weapon.getItemRand().nextFloat() * 0.4F + 0.7F), false);
 			}
 		}

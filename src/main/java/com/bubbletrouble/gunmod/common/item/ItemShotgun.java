@@ -45,7 +45,7 @@ public class ItemShotgun extends ItemRangedWeapon implements NonSupporting
     }
 	
 	@Override
-	public void fire(ItemStack stack, World world, EntityPlayer player, int timeLeft)
+	public void fire(ItemStack stack, World world, EntityPlayer player)
 	{
 		if (!world.isRemote)
 		{

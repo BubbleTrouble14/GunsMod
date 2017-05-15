@@ -51,7 +51,6 @@ public class RightGunReloadStarted implements IMessage
 	{
 		if (player != null)
 		{
-		//	World w = Minecraft.getMinecraft().theWorld;
 			ItemStack stack = player.getHeldItemMainhand();
 			if (stack != null && stack.getItem() instanceof ItemRangedWeapon)
 			{

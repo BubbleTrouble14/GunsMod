@@ -2,21 +2,17 @@ package com.bubbletrouble.gunmod.common.proxy;
 
 import com.bubbletrouble.gunmod.Main;
 import com.bubbletrouble.gunmod.common.handlers.GuiHandler;
-import com.bubbletrouble.gunmod.common.network.LeftGunFired;
-import com.bubbletrouble.gunmod.common.network.LeftGunFiredClient;
-import com.bubbletrouble.gunmod.common.network.LeftGunReloadFinished;
 import com.bubbletrouble.gunmod.common.network.LeftGunReloadStarted;
+import com.bubbletrouble.gunmod.common.network.LeftGunShoot;
 import com.bubbletrouble.gunmod.common.network.OpenAttachmentInventory;
-import com.bubbletrouble.gunmod.common.network.RightGunFired;
-import com.bubbletrouble.gunmod.common.network.RightGunFiredClient;
-import com.bubbletrouble.gunmod.common.network.RightGunReloadFinished;
+import com.bubbletrouble.gunmod.common.network.RecoilClient;
+import com.bubbletrouble.gunmod.common.network.ReloadFinished;
 import com.bubbletrouble.gunmod.common.network.RightGunReloadStarted;
-import com.bubbletrouble.gunmod.events.PlayerUpdateEvent;
+import com.bubbletrouble.gunmod.common.network.RightGunShoot;
 import com.bubbletrouble.gunmod.init.RangedWeapons;
 import com.bubbletrouble.gunmod.init.Recipes;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -68,7 +64,7 @@ public abstract class CommonProxy
 	
 	protected void registerEventHandlers()
 	{
-		MinecraftForge.EVENT_BUS.register(PlayerUpdateEvent.class);
+		//MinecraftForge.EVENT_BUS.register(PlayerUpdateEvent.class);
 	}
 	
 	private final void setupNetwork(FMLPreInitializationEvent event)
@@ -79,14 +75,14 @@ public abstract class CommonProxy
 		int id = 0;
 		
 		modChannel.registerMessage(RightGunReloadStarted.Handler.class, RightGunReloadStarted.class, id++, Side.SERVER);
-		modChannel.registerMessage(RightGunReloadFinished.Handler.class, RightGunReloadFinished.class, id++, Side.CLIENT);
-		modChannel.registerMessage(RightGunFired.Handler.class, RightGunFired.class, id++, Side.SERVER);
-		modChannel.registerMessage(LeftGunFired.Handler.class, LeftGunFired.class, id++, Side.SERVER);
+		modChannel.registerMessage(ReloadFinished.Handler.class, ReloadFinished.class, id++, Side.CLIENT);
+		modChannel.registerMessage(RightGunShoot.Handler.class, RightGunShoot.class, id++, Side.SERVER);
+		modChannel.registerMessage(LeftGunShoot.Handler.class, LeftGunShoot.class, id++, Side.SERVER);
 		modChannel.registerMessage(LeftGunReloadStarted.Handler.class, LeftGunReloadStarted.class, id++, Side.SERVER);
-		modChannel.registerMessage(LeftGunReloadFinished.Handler.class, LeftGunReloadFinished.class, id++, Side.CLIENT);
+	//	modChannel.registerMessage(LeftGunReloadFinished.Handler.class, LeftGunReloadFinished.class, id++, Side.CLIENT);
 		modChannel.registerMessage(OpenAttachmentInventory.Handler.class, OpenAttachmentInventory.class, id++, Side.SERVER);
-		modChannel.registerMessage(LeftGunFiredClient.Handler.class, LeftGunFiredClient.class, id++, Side.CLIENT);
-		modChannel.registerMessage(RightGunFiredClient.Handler.class, RightGunFiredClient.class, id++, Side.CLIENT);
+	//	modChannel.registerMessage(LeftGunFiredClient.Handler.class, LeftGunFiredClient.class, id++, Side.CLIENT);
+		modChannel.registerMessage(RecoilClient.Handler.class, RecoilClient.class, id++, Side.CLIENT);
 	}
 	
 	public EntityPlayer getPlayer()

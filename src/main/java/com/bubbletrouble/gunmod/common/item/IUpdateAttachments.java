@@ -1,15 +1,10 @@
-package com.bubbletrouble.gunmod.events;
+package com.bubbletrouble.gunmod.common.item;
 
 import java.util.List;
 
 import javax.annotation.Nullable;
 
-import com.bubbletrouble.gunmod.Main;
-import com.bubbletrouble.gunmod.common.item.ItemRangedWeapon;
-import com.bubbletrouble.gunmod.common.network.LeftGunFiredClient;
-import com.bubbletrouble.gunmod.common.network.LeftGunReloadFinished;
-import com.bubbletrouble.gunmod.common.network.RightGunFiredClient;
-import com.bubbletrouble.gunmod.common.network.RightGunReloadFinished;
+import com.bubbletrouble.gunmod.common.inventory.InventoryAttachment;
 import com.bubbletrouble.gunmod.init.RangedWeapons;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
@@ -19,7 +14,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.EnumParticleTypes;
@@ -28,119 +22,32 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
-import net.minecraftforge.fml.relauncher.Side;
 
-public class PlayerUpdateEvent 
+public interface IUpdateAttachments 
 {
-	public static int reloadTicks = 0;
-	public static int ticksExsisted = 0;
-	public static int ticksSwing = 0;
-	public static int ticks = 0;
-	public static int leftticks = 0;
-	public static int leftReloadTicks = 0;
-	
-	@SubscribeEvent
-	public static void onPlayerTick(PlayerTickEvent evt)
-	{
-		if(evt.side == Side.SERVER)
+	public default void updateAttachments(ItemStack stackRight,ItemStack stackLeft, EntityPlayer p)
+	{				
+		InventoryAttachment inv = InventoryAttachment.create(stackRight);
+		if (inv != null && inv.isFlashPresent())
 		{
-			EntityPlayerMP p = (EntityPlayerMP) evt.player;
-			ItemStack stackRight = p.getHeldItemMainhand();
-			ItemStack stackLeft = p.getHeldItemOffhand();
-				
-			if (stackRight != null && stackRight.getItem() instanceof ItemRangedWeapon)
-			{			
-				ItemRangedWeapon w = (ItemRangedWeapon) stackRight.getItem();
-				if (w.isReloading(stackRight))
-				{
-					if (++reloadTicks >= w.getReloadDuration())
-					{
-						if (!p.worldObj.isRemote)
-						{
-							w.setReloading(stackRight, p, false);
-							reloadTicks = 0;
-							w.hasAmmoAndConsume(stackRight, p);
-							w.effectReloadDone(stackRight, p.worldObj, p);
-							Main.modChannel.sendTo(new RightGunReloadFinished(), p);
-						}
-					}
-				}
-				if(w.fired(stackRight))
-				{
-					++ticks;
-					if(ticks >= w.recoilDelay() + 5)
-					{
-						if (!p.worldObj.isRemote)
-						{
-							Main.modChannel.sendTo(new RightGunFiredClient(), p);
-							ticks = 0;
-							w.setFired(stackRight, p, false);
-						}
-					}
-				}		
-			}			
-			if (stackLeft != null && stackLeft.getItem() instanceof ItemRangedWeapon)
-			{			
-				ItemRangedWeapon leftgun = (ItemRangedWeapon) stackLeft.getItem();
-				if (leftgun.isReloading(stackLeft))
-				{
-					if (++leftReloadTicks >= leftgun.getReloadDuration())
-					{
-						if (!p.worldObj.isRemote)
-						{
-							leftgun.setReloading(stackLeft, p, false);
-							leftReloadTicks = 0;
-							leftgun.hasAmmoAndConsume(stackLeft, p);
-							leftgun.effectReloadDone(stackLeft, p.worldObj, p);
-							Main.modChannel.sendTo(new LeftGunReloadFinished(), p);
-						}
-					}
-				}
-				if(leftgun.fired(stackLeft))
-				{
-					++leftticks;
-					if(leftticks >= leftgun.recoilDelay() + 5)
-					{
-						if (!p.worldObj.isRemote)
-						{
-							Main.modChannel.sendTo(new LeftGunFiredClient(), p);
-							leftticks = 0;		
-							leftgun.setFired(stackLeft, p, false);	
-						}
-					}			
-				}
-			}	
+			updateFlashlight(p);
 		}
-//		if(evt.side == Side.CLIENT)
-//		{
-//			EntityPlayerSP p = (EntityPlayerSP)evt.player;
-//			ItemStack stackRight = p.getHeldItemMainhand();
-//			ItemStack stackLeft = p.getHeldItemOffhand();
-//						
-//			InventoryAttachment inv = InventoryAttachment.create(stackRight);
-//			if (inv != null && inv.isFlashPresent())
-//			{
-//				updateFlashlight(p);
-//			}
-//			else if (inv != null && inv.isLaser	Present())
-//			{
-//				updateLaser(p);
-//			} 
-//			InventoryAttachment invleft = InventoryAttachment.create(stackLeft);
-//			if (invleft != null && invleft.isFlashPresent())
-//			{
-//				updateFlashlight(p);
-//			}
-//			else if (invleft != null && invleft.isLaserPresent())
-//			{
-//				updateLaser(p);
-//			} 
-//		}
+		else if (inv != null && inv.isLaserPresent())
+		{
+			updateLaser(p);
+		} 
+		InventoryAttachment invleft = InventoryAttachment.create(stackLeft);
+		if (invleft != null && invleft.isFlashPresent())
+		{
+			updateFlashlight(p);
+		}
+		else if (invleft != null && invleft.isLaserPresent())
+		{
+			updateLaser(p);
+		} 
 	}
 	
-	public static void updateFlashlight(Entity entityIn)
+	public default void updateFlashlight(Entity entityIn)
 	{
 		RayTraceResult mop = rayTrace(entityIn, 20, 1.0F);
 		if (mop != null && mop.typeOfHit != RayTraceResult.Type.MISS) {
@@ -162,7 +69,7 @@ public class PlayerUpdateEvent
 		}
 	}	
 			
-	public static void updateLaser(EntityPlayer p)
+	public default void updateLaser(EntityPlayer p)
 	{
 		World w = p.worldObj;
 		RayTraceResult mop = getMouseOver(0);// Minecraft.getMinecraft().objectMouseOver;//rayTrace(p, 35, 1.0F);
@@ -176,12 +83,12 @@ public class PlayerUpdateEvent
 		}
 	}		
 	
-	public static RayTraceResult rayTrace(Entity player, double distance, float partialTick)
+	public default RayTraceResult rayTrace(Entity player, double distance, float partialTick)
 	{
 		return player.rayTrace(10, partialTick);
 	}
 	
-	public static Vec3d getPositionEyes(Entity player, float partialTick)
+	public default Vec3d getPositionEyes(Entity player, float partialTick)
 	{
 		if (partialTick == 1.0F) {
 			return new Vec3d(player.posX, player.posY + player.getEyeHeight(), player.posZ);
@@ -194,7 +101,7 @@ public class PlayerUpdateEvent
 		}
 	}
 		
-	public static RayTraceResult getMouseOver(float partialTicks) {
+	public default RayTraceResult getMouseOver(float partialTicks) {
 		Minecraft mc = Minecraft.getMinecraft();
 		Entity entity = mc.getRenderViewEntity();
 		RayTraceResult raytraceresult = null;
@@ -267,4 +174,5 @@ public class PlayerUpdateEvent
 		}
 		return raytraceresult;
 	}
+	
 }

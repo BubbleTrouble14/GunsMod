@@ -5,7 +5,6 @@ import com.bubbletrouble.gunmod.common.item.ItemRangedWeapon;
 import com.bubbletrouble.gunmod.utils.SoundUtil;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
@@ -16,9 +15,9 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 
-public class LeftGunFired implements IMessage
+public class LeftGunShoot implements IMessage
 {
-	public LeftGunFired()
+	public LeftGunShoot()
 	{
 
 	}
@@ -31,10 +30,10 @@ public class LeftGunFired implements IMessage
 	public void toBytes(ByteBuf buf)
 	{}
 
-	public static class Handler implements IMessageHandler<LeftGunFired, IMessage>
+	public static class Handler implements IMessageHandler<LeftGunShoot, IMessage>
 	{
 		@Override
-		public IMessage onMessage(final LeftGunFired message, MessageContext ctx)
+		public IMessage onMessage(final LeftGunShoot message, MessageContext ctx)
 		{
 			if (ctx.side != Side.SERVER)
 			{
@@ -53,7 +52,7 @@ public class LeftGunFired implements IMessage
 		}
 	}
 
-	static void processMessage(LeftGunFired message, EntityPlayerMP player)
+	static void processMessage(LeftGunShoot message, EntityPlayerMP player)
 	{
 		if (player != null)
 		{
@@ -61,17 +60,13 @@ public class LeftGunFired implements IMessage
 			if (stack != null && stack.getItem() instanceof ItemRangedWeapon)
 			{
 				ItemRangedWeapon weapon = (ItemRangedWeapon) stack.getItem();
-			//	weapon.setFired(stack, player, true);
 				String soundPath = Main.MODID + ":" + weapon.getUnlocalizedName() + "_shoot";
-				weapon.fire(stack, player.worldObj, player, 0);
+	
+				weapon.fire(stack, player.worldObj, player);
 				player.setActiveHand(EnumHand.OFF_HAND);
-			//	Main.modChannel.sendTo(new LeftGunFiredClient(), (EntityPlayerMP) player);
 				weapon.setFired(stack, player, true);
-				//TODO
-			//	InventoryAttachment att = InventoryAttachment.create(stack);
-			//	if (att != null && att.isSilencerPresent())
-			//		soundPath = soundPath + "_silenced";
-				//weapon.setFired(stack, player, true);
+				//weapon.afterFire(stack, player.worldObj, player);
+
 				SoundUtil.playSound(player.worldObj, player.posX, player.posY, player.posZ, new ResourceLocation(soundPath), SoundCategory.PLAYERS, 1.5F, 1F / (weapon.getItemRand().nextFloat() * 0.4F + 0.7F), false);
 			}
 		}

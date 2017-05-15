@@ -6,28 +6,37 @@ import com.bubbletrouble.gunmod.common.item.ItemRangedWeapon;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 
-public class LeftGunFiredClient implements IMessage
+public class ReloadFinished implements IMessage
 {
-	public LeftGunFiredClient()
-	{}
+	ItemStack stack;
+	
+	public ReloadFinished(ItemStack stack)
+	{
+		this.stack = stack;
+	}
 
 	@Override
 	public void fromBytes(ByteBuf buf)
-	{}
+	{
+		stack = ByteBufUtils.readItemStack(buf);
+	}
 
 	@Override
 	public void toBytes(ByteBuf buf)
-	{}
+	{
+		ByteBufUtils.writeItemStack(buf, stack);
+	}
 
-	public static class Handler implements IMessageHandler<LeftGunFiredClient, IMessage>
+	public static class Handler implements IMessageHandler<ReloadFinished, IMessage>
 	{
 		@Override
-		public IMessage onMessage(final LeftGunFiredClient message, MessageContext ctx)
+		public IMessage onMessage(final ReloadFinished message, MessageContext ctx)
 		{
 			if (ctx.side != Side.CLIENT)
 			{
@@ -38,17 +47,15 @@ public class LeftGunFiredClient implements IMessage
 			return null;
 		}
 
-		static void processMessage(LeftGunFiredClient message, EntityPlayer player)
+		static void processMessage(ReloadFinished message, EntityPlayer player)
 		{
 			if (player != null)
 			{
-				ItemStack stack = player.getHeldItemOffhand();
-				if (stack != null && stack.getItem() instanceof ItemRangedWeapon) 
-				{
-					ItemRangedWeapon w = (ItemRangedWeapon) stack.getItem();
-					w.recoilDown(player, w.getRecoil(), w.getRecoilSneaking(), w.getShouldRecoil());
-				}
+				ItemStack stack = message.stack;
+				if (stack != null && stack.getItem() instanceof ItemRangedWeapon) ((ItemRangedWeapon) stack.getItem())
+						.setReloading(stack, player, false);
 			}
 		}
 	}
+
 }
