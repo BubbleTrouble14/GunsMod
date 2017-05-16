@@ -12,7 +12,6 @@ import com.bubbletrouble.gunmod.common.proxy.CommonProxy;
 import com.bubbletrouble.gunmod.events.ClickEvent;
 import com.bubbletrouble.gunmod.events.GUIOverlayReloading;
 import com.bubbletrouble.gunmod.events.KeyBindingEvent;
-import com.bubbletrouble.gunmod.events.RenderGunHandEvent;
 import com.bubbletrouble.gunmod.events.ScopeEvent;
 import com.bubbletrouble.gunmod.init.RangedWeapons;
 import com.bubbletrouble.gunmod.utils.KeyBindings;
@@ -42,6 +41,7 @@ public class ClientProxy extends CommonProxy
 	protected void registerEventHandlers() 
 	{
 		super.registerEventHandlers();
+		MinecraftForge.EVENT_BUS.register(new GUIOverlayReloading());
 		MinecraftForge.EVENT_BUS.register(KeyBindingEvent.class);
 		KeyBindings.init();
 		MinecraftForge.EVENT_BUS.register(ClickEvent.class);
