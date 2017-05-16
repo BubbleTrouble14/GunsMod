@@ -80,6 +80,7 @@ public class KeyBindingEvent
 			}
 			else if(rightHandStack.getItem() instanceof ItemRangedWeapon)
 			{
+				System.out.println("works");
 				ItemRangedWeapon rightWeapon = (ItemRangedWeapon) rightHandStack.getItem();
 				if (!rightWeapon.isReloading(rightHandStack) && rightWeapon.canReload(rightHandStack, player)) {
 					rightWeapon.soundCharge(rightHandStack, player.worldObj, player);

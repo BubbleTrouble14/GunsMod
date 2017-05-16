@@ -45,7 +45,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -199,7 +198,6 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
 			else
 			{
 				updateClient(rightStack, leftStack, world, p);
-				IUpdateAttachments.super.updateAttachments(rightStack, leftStack, p);
 			}
 		}			
 	}
@@ -211,38 +209,68 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
 			ItemRangedWeapon rightW = (ItemRangedWeapon) rightStack.getItem();
 			if(p != null)
 			{
-				if (rightW!= null && rightW.isReloading(rightStack))
+				if (rightW.isReloading(rightStack))
 				{
 					rightW.setReloadTicks(rightStack, p, reloadRightTicks++);
-		
+					System.out.println(rightW.getReloadTicks(rightStack));
+					
 					if (rightW.getReloadTicks(rightStack) >= rightW.getReloadDuration())
 					{
 						rightW.setReloading(rightStack, p, false);
 						rightW.setReloadTicks(rightStack, p, 0);
+						rightW.hasAmmoAndConsume(rightStack, p);
 						reloadRightTicks = 0;
 					}
 				}
-			}
-		if(leftStack != null)
-		{
-			ItemRangedWeapon leftW = (ItemRangedWeapon) leftStack.getItem();
-			if (rightW!= null && leftW.isReloading(leftStack))
-			{
-				leftW.setReloadTicks(leftStack, p, reloadLeftTicks++);
-	
-				if (leftW.getReloadTicks(leftStack) >= leftW.getReloadDuration())
+				if(rightW.fired(rightStack))
 				{
-					leftW.setReloading(leftStack, p, false);
-					leftW.setReloadTicks(leftStack, p, 0);
-					reloadLeftTicks = 0;
-				}				
-			}	
-		}
+					rightW.setRecoilTicks(rightStack, p, recoilRightTicks++);
+		
+					if(rightW.getRecoilTicks(rightStack) >= rightW.recoilDelay())
+					{
+						rightW.recoilDown(p, rightW.getRecoil(), rightW.getRecoilSneaking(), rightW.getShouldRecoil());
+						rightW.setFired(rightStack, p, false);
+						rightW.setRecoilTicks(rightStack, p, 0);
+						recoilRightTicks = 0;
+					}
+				}
+			}
+			if(leftStack != null)
+			{
+				ItemRangedWeapon leftW = (ItemRangedWeapon) leftStack.getItem();
+				if (leftW.isReloading(leftStack))
+				{
+					leftW.setReloadTicks(leftStack, p, reloadLeftTicks++);
+		
+					if (leftW.getReloadTicks(leftStack) >= leftW.getReloadDuration())
+					{
+						leftW.setReloading(leftStack, p, false);
+						leftW.setReloadTicks(leftStack, p, 0);
+						leftW.hasAmmoAndConsume(leftStack, p);
+					//	ARKCraft.modChannel.sendTo(new ReloadFinished(), (EntityPlayerMP) p);	
+						reloadLeftTicks = 0;
+					}				
+				}	
+				if(leftW.fired(leftStack))
+				{
+					leftW.setRecoilTicks(leftStack, p, recoilLeftTicks++);
+						
+					if(leftW.getRecoilTicks(leftStack) >= leftW.recoilDelay())
+					{
+						leftW.recoilDown(p, leftW.getRecoil(), leftW.getRecoilSneaking(), leftW.getShouldRecoil());
+						leftW.setFired(leftStack, p, false);
+						leftW.setRecoilTicks(leftStack, p, 0);	
+						recoilLeftTicks = 0;					
+					}	
+				}
+			}
 		}
 	}
 
 	private void updateClient(ItemStack rightStack, ItemStack leftStack, World world, EntityPlayer p) 
 	{
+		IUpdateAttachments.super.updateAttachments(rightStack, leftStack, p);
+		/*
 		if(rightStack != null)
 		{
 			ItemRangedWeapon rightW = (ItemRangedWeapon) rightStack.getItem();
@@ -260,7 +288,7 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
 				}
 			}
 		}
-		if(rightStack != null)
+		if(leftStack != null)
 		{
 			ItemRangedWeapon leftW = (ItemRangedWeapon) leftStack.getItem();
 			
@@ -276,7 +304,7 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
 					recoilLeftTicks = 0;					
 				}	
 			}
-		}
+		} */
 	}
 
 	private void disableOffHandSlot(EntityPlayer p) 
@@ -428,8 +456,8 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
 	public void recoilDown(EntityPlayer entityIn, float recoil, float recoilSneaking, boolean shouldRecoil) {
 		float i = recoil == 0F ? 0F : recoil - 0.5F;
 		float j = recoilSneaking == 0F ? 0F : recoilSneaking - 0.5F;
-		if (shouldRecoil)
-			entityIn.rotationPitch += entityIn.isSneaking() ? i : j;
+		System.out.println("ff");
+		if (shouldRecoil)entityIn.rotationPitch += entityIn.isSneaking() ? i : j;
 	}
 
 	public float getRecoil() {
@@ -458,7 +486,8 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
 		return EnumAction.NONE;
 	}
 
-	public void hasAmmoAndConsume(ItemStack stack, EntityPlayer player) {
+	public void hasAmmoAndConsume(ItemStack stack, EntityPlayer player) 
+	{
 		int ammoFinal = getAmmoQuantity(stack);
 		String type = "";
 		ItemStack[] inventory = player.inventory.mainInventory;
@@ -663,7 +692,7 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
 			ItemStack s = new ItemStack(i, ammo);
 			player.inventory.addItemStackToInventory(s);
 		} else if (ammo < 1) {
-			if (hasAmmoInInventory(player) && FMLCommonHandler.instance().getSide().isClient()) {
+			if (hasAmmoInInventory(player) && player.worldObj.isRemote){ //FMLCommonHandler.instance().getSide().isClient()) {
 				KeyBindingEvent.doReload();
 			} else {
 				this.setAmmoType(stack, "");
@@ -740,21 +769,20 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
 	@Override
 	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) 
 	{
-		return true;
 		//return oldStack != null && newStack != null && oldStack.getItem() != newStack.getItem() && slotChanged;
-	//	if(oldStack != null && !fired(oldStack) && !(isReloading(oldStack)))return true;
-//		if(oldStack != null && newStack != null)
-//		{			
-//			if(oldStack != newStack ||  oldStack == newStack && fired(oldStack) && fired(newStack))
-//			{
-//				if(isReloading(newStack) || isReloading(oldStack))
-//				{
-//					return true;
-//				}				
-//				return false;
-//			}
-//		}
-//		return false;	
+		if(oldStack != null && !fired(oldStack) && !(isReloading(oldStack)))return true;
+		if(oldStack != null && newStack != null)
+		{			
+			if(oldStack != newStack ||  oldStack == newStack && fired(oldStack) && fired(newStack))
+			{
+				if(isReloading(newStack) || isReloading(oldStack))
+				{
+					return true;
+				}				
+				return false;
+			}
+		}
+		return false;	
 	//	oldStack != null && newStack != null && oldStack != newStack && !(isReloading(newStack) && !(isReloading(oldStack)));
 	}
 }

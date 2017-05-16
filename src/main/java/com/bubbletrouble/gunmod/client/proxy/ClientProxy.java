@@ -45,7 +45,7 @@ public class ClientProxy extends CommonProxy
 		MinecraftForge.EVENT_BUS.register(GUIOverlayReloading.class);
 		MinecraftForge.EVENT_BUS.register(ClickEvent.class);
 		MinecraftForge.EVENT_BUS.register(ScopeEvent.class);
-		MinecraftForge.EVENT_BUS.register(RenderGunHandEvent.class);
+	//	MinecraftForge.EVENT_BUS.register(RenderGunHandEvent.class);
 	}
 
 	@Override
