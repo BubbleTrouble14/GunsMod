@@ -5,8 +5,8 @@ import com.bubbletrouble.gunmod.common.handlers.GuiHandler;
 import com.bubbletrouble.gunmod.common.network.LeftGunReloadStarted;
 import com.bubbletrouble.gunmod.common.network.LeftGunShoot;
 import com.bubbletrouble.gunmod.common.network.OpenAttachmentInventory;
-import com.bubbletrouble.gunmod.common.network.RecoilClient;
-import com.bubbletrouble.gunmod.common.network.ReloadFinished;
+import com.bubbletrouble.gunmod.common.network.RecoilLeftGun;
+import com.bubbletrouble.gunmod.common.network.RecoilRightGun;
 import com.bubbletrouble.gunmod.common.network.RightGunReloadStarted;
 import com.bubbletrouble.gunmod.common.network.RightGunShoot;
 import com.bubbletrouble.gunmod.init.RangedWeapons;
@@ -74,15 +74,15 @@ public abstract class CommonProxy
 		
 		int id = 0;
 		
-		modChannel.registerMessage(RightGunReloadStarted.Handler.class, RightGunReloadStarted.class, id++, Side.SERVER);
-		modChannel.registerMessage(ReloadFinished.Handler.class, ReloadFinished.class, id++, Side.CLIENT);
+	//	modChannel.registerMessage(ReloadFinished.Handler.class, ReloadFinished.class, id++, Side.CLIENT);
 		modChannel.registerMessage(RightGunShoot.Handler.class, RightGunShoot.class, id++, Side.SERVER);
 		modChannel.registerMessage(LeftGunShoot.Handler.class, LeftGunShoot.class, id++, Side.SERVER);
+		modChannel.registerMessage(RightGunReloadStarted.Handler.class, RightGunReloadStarted.class, id++, Side.SERVER);
 		modChannel.registerMessage(LeftGunReloadStarted.Handler.class, LeftGunReloadStarted.class, id++, Side.SERVER);
-	//	modChannel.registerMessage(LeftGunReloadFinished.Handler.class, LeftGunReloadFinished.class, id++, Side.CLIENT);
 		modChannel.registerMessage(OpenAttachmentInventory.Handler.class, OpenAttachmentInventory.class, id++, Side.SERVER);
-	//	modChannel.registerMessage(LeftGunFiredClient.Handler.class, LeftGunFiredClient.class, id++, Side.CLIENT);
-		modChannel.registerMessage(RecoilClient.Handler.class, RecoilClient.class, id++, Side.CLIENT);
+		modChannel.registerMessage(RecoilLeftGun.Handler.class, RecoilLeftGun.class, id++, Side.CLIENT);
+		modChannel.registerMessage(RecoilRightGun.Handler.class, RecoilRightGun.class, id++, Side.CLIENT);
+
 	}
 	
 	public EntityPlayer getPlayer()

@@ -14,6 +14,8 @@ import com.bubbletrouble.gunmod.common.entity.EntityProjectile;
 import com.bubbletrouble.gunmod.common.entity.ProjectileType;
 import com.bubbletrouble.gunmod.common.inventory.InventoryAttachment;
 import com.bubbletrouble.gunmod.common.network.LeftGunShoot;
+import com.bubbletrouble.gunmod.common.network.RecoilLeftGun;
+import com.bubbletrouble.gunmod.common.network.RecoilRightGun;
 import com.bubbletrouble.gunmod.common.network.RightGunShoot;
 import com.bubbletrouble.gunmod.events.KeyBindingEvent;
 import com.bubbletrouble.gunmod.utils.I18n;
@@ -27,6 +29,7 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.EnumAction;
@@ -213,7 +216,7 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
 				{
 					rightW.setReloadTicks(rightStack, p, reloadRightTicks++);
 					System.out.println(rightW.getReloadTicks(rightStack));
-					
+					System.out.println(reloadRightTicks);
 					if (rightW.getReloadTicks(rightStack) >= rightW.getReloadDuration())
 					{
 						rightW.setReloading(rightStack, p, false);
@@ -229,6 +232,7 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
 					if(rightW.getRecoilTicks(rightStack) >= rightW.recoilDelay())
 					{
 						rightW.recoilDown(p, rightW.getRecoil(), rightW.getRecoilSneaking(), rightW.getShouldRecoil());
+						Main.modChannel.sendTo(new RecoilRightGun(), (EntityPlayerMP) p);	
 						rightW.setFired(rightStack, p, false);
 						rightW.setRecoilTicks(rightStack, p, 0);
 						recoilRightTicks = 0;
@@ -247,7 +251,6 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
 						leftW.setReloading(leftStack, p, false);
 						leftW.setReloadTicks(leftStack, p, 0);
 						leftW.hasAmmoAndConsume(leftStack, p);
-					//	ARKCraft.modChannel.sendTo(new ReloadFinished(), (EntityPlayerMP) p);	
 						reloadLeftTicks = 0;
 					}				
 				}	
@@ -256,8 +259,9 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
 					leftW.setRecoilTicks(leftStack, p, recoilLeftTicks++);
 						
 					if(leftW.getRecoilTicks(leftStack) >= leftW.recoilDelay())
-					{
+					{				
 						leftW.recoilDown(p, leftW.getRecoil(), leftW.getRecoilSneaking(), leftW.getShouldRecoil());
+						Main.modChannel.sendTo(new RecoilLeftGun(), (EntityPlayerMP) p);	
 						leftW.setFired(leftStack, p, false);
 						leftW.setRecoilTicks(leftStack, p, 0);	
 						recoilLeftTicks = 0;					
@@ -270,41 +274,6 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
 	private void updateClient(ItemStack rightStack, ItemStack leftStack, World world, EntityPlayer p) 
 	{
 		IUpdateAttachments.super.updateAttachments(rightStack, leftStack, p);
-		/*
-		if(rightStack != null)
-		{
-			ItemRangedWeapon rightW = (ItemRangedWeapon) rightStack.getItem();
-
-			if(rightW.fired(rightStack))
-			{
-				rightW.setRecoilTicks(rightStack, p, recoilRightTicks++);
-	
-				if(rightW.getRecoilTicks(rightStack) >= rightW.recoilDelay())
-				{
-					rightW.recoilDown(p, rightW.getRecoil(), rightW.getRecoilSneaking(), rightW.getShouldRecoil());
-					rightW.setFired(rightStack, p, false);
-					rightW.setRecoilTicks(rightStack, p, 0);
-					recoilRightTicks = 0;
-				}
-			}
-		}
-		if(leftStack != null)
-		{
-			ItemRangedWeapon leftW = (ItemRangedWeapon) leftStack.getItem();
-			
-			if(leftW.fired(leftStack))
-			{
-				leftW.setRecoilTicks(leftStack, p, recoilLeftTicks++);
-					
-				if(leftW.getRecoilTicks(leftStack) >= leftW.recoilDelay())
-				{
-					leftW.recoilDown(p, leftW.getRecoil(), leftW.getRecoilSneaking(), leftW.getShouldRecoil());
-					leftW.setFired(leftStack, p, false);
-					leftW.setRecoilTicks(leftStack, p, 0);	
-					recoilLeftTicks = 0;					
-				}	
-			}
-		} */
 	}
 
 	private void disableOffHandSlot(EntityPlayer p) 

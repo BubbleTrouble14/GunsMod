@@ -12,31 +12,28 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 
-public class ReloadFinished implements IMessage
+public class RecoilLeftGun implements IMessage
 {
-	ItemStack stack;
 	
-	public ReloadFinished(ItemStack stack)
+	public RecoilLeftGun()
 	{
-		this.stack = stack;
 	}
 
 	@Override
 	public void fromBytes(ByteBuf buf)
 	{
-		stack = ByteBufUtils.readItemStack(buf);
 	}
 
 	@Override
 	public void toBytes(ByteBuf buf)
 	{
-		ByteBufUtils.writeItemStack(buf, stack);
 	}
 
-	public static class Handler implements IMessageHandler<ReloadFinished, IMessage>
+
+	public static class Handler implements IMessageHandler<RecoilLeftGun, IMessage>
 	{
 		@Override
-		public IMessage onMessage(final ReloadFinished message, MessageContext ctx)
+		public IMessage onMessage(final RecoilLeftGun message, MessageContext ctx)
 		{
 			if (ctx.side != Side.CLIENT)
 			{
@@ -47,15 +44,17 @@ public class ReloadFinished implements IMessage
 			return null;
 		}
 
-		static void processMessage(ReloadFinished message, EntityPlayer player)
+		static void processMessage(RecoilLeftGun message, EntityPlayer player)
 		{
 			if (player != null)
 			{
-				ItemStack stack = message.stack;
-				if (stack != null && stack.getItem() instanceof ItemRangedWeapon) ((ItemRangedWeapon) stack.getItem())
-						.setReloading(stack, player, false);
+				ItemStack stack = player.getHeldItemOffhand();
+				if (stack != null && stack.getItem() instanceof ItemRangedWeapon) 
+				{
+					ItemRangedWeapon w = (ItemRangedWeapon) stack.getItem();
+					w.recoilDown(player, w.getRecoil(), w.getRecoilSneaking(), w.getShouldRecoil());
+				}
 			}
 		}
 	}
-
 }
