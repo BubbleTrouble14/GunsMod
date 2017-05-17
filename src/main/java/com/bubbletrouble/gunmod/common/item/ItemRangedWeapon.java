@@ -738,18 +738,23 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
 	@Override
 	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) 
 	{
+	//	return false;
 		//return oldStack != null && newStack != null && oldStack.getItem() != newStack.getItem() && slotChanged;
-		if(oldStack != null && !fired(oldStack) && !(isReloading(oldStack)))return true;
+	//	if(oldStack != null && !fired(oldStack) && !(isReloading(oldStack)))return true;
+	//	ItemRangedWeapon oldGun = (ItemRangedWeapon) oldStack.getItem();
+	//	ItemRangedWeapon newGun = (ItemRangedWeapon) newStack.getItem();
+
 		if(oldStack != null && newStack != null)
 		{			
-			if(oldStack != newStack ||  oldStack == newStack && fired(oldStack) && fired(newStack))
+			if(oldStack.getItem() != newStack.getItem())
 			{
-				if(isReloading(newStack) || isReloading(oldStack))
-				{
-					return true;
-				}				
-				return false;
+				return true;	
 			}
+		//	if(oldGun.)
+			if(slotChanged)
+			{
+				return true;	
+			}			
 		}
 		return false;	
 	//	oldStack != null && newStack != null && oldStack != newStack && !(isReloading(newStack) && !(isReloading(oldStack)));
