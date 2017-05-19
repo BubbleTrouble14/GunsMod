@@ -15,6 +15,6 @@ public class ItemLongneckRifle extends ItemRangedWeapon implements Scopeable, Si
 	@Override
 	public int getReloadDuration()
 	{
-		return (int) (4.0 * 20.0 * 2);
+		return (int) (4.0 * 20.0);
 	}
 }

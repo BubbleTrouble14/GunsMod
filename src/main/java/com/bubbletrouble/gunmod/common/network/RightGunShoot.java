@@ -5,7 +5,6 @@ import com.bubbletrouble.gunmod.common.item.ItemRangedWeapon;
 import com.bubbletrouble.gunmod.utils.SoundUtil;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;

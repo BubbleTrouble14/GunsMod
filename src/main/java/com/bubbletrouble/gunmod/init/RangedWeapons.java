@@ -5,11 +5,13 @@ import com.bubbletrouble.gunmod.common.block.BlockCrafter;
 import com.bubbletrouble.gunmod.common.block.BlockGreenScreen;
 import com.bubbletrouble.gunmod.common.block.BlockLight;
 import com.bubbletrouble.gunmod.common.entity.EntityAdvancedBullet;
+import com.bubbletrouble.gunmod.common.entity.EntityGrenade;
 import com.bubbletrouble.gunmod.common.entity.EntitySimpleBullet;
 import com.bubbletrouble.gunmod.common.entity.EntitySimpleRifleAmmo;
 import com.bubbletrouble.gunmod.common.entity.EntitySimpleShotgunAmmo;
 import com.bubbletrouble.gunmod.common.handlers.EntityHandler;
 import com.bubbletrouble.gunmod.common.item.ItemFabricatedPistol;
+import com.bubbletrouble.gunmod.common.item.ItemGrenade;
 import com.bubbletrouble.gunmod.common.item.ItemLongneckRifle;
 import com.bubbletrouble.gunmod.common.item.ItemProjectile;
 import com.bubbletrouble.gunmod.common.item.ItemRangedWeapon;
@@ -39,12 +41,14 @@ public class RangedWeapons
 	public static BlockLight blockLight;
 	public static BlockCrafter block_crafter;
 	public static BlockGreenScreen green_screen;
+	public static ItemGrenade grenade;
 
 	public static void init()
 	{
 		blockLight = new BlockLight();
 		block_crafter = new BlockCrafter();
 		green_screen = new BlockGreenScreen();
+		grenade = new ItemGrenade();
 		
 		//Guns
 		fabricated_pistol = new ItemFabricatedPistol();
@@ -112,6 +116,8 @@ public class RangedWeapons
 			EntityHandler.registerModEntity(EntitySimpleRifleAmmo.class, "simple_rifle_ammo", Main.instance(), 64,
 					10, true);
 			EntityHandler.registerModEntity(EntityAdvancedBullet.class, "advanced_bullet", Main.instance(), 64, 10,
+					true);
+			EntityHandler.registerModEntity(EntityGrenade.class, "grenade_entity", Main.instance(), 64, 10,
 					true);
 		//	EntityHandler.registerModEntity(EntityRocketPropelledGrenade.class, "rocket_propelled_grenade", Main
 		//			.instance(), 64, 10, true);	

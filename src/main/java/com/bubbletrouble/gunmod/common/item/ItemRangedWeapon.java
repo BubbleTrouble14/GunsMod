@@ -191,7 +191,10 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
 		{
 			EntityPlayer p = (EntityPlayer) entity;
 			if(p.getHeldItemOffhand() != null &&  p.getHeldItemOffhand().getItem() instanceof ItemRangedWeapon)leftStack = p.getHeldItemOffhand();
-			if(stack!= null && isSelected && stack.getItem() instanceof ItemRangedWeapon)rightStack = stack;
+			if(p.getHeldItemMainhand() != null &&  p.getHeldItemMainhand().getItem() instanceof ItemRangedWeapon)rightStack = p.getHeldItemMainhand();
+			
+			//TODO Fixme with weird double ticks
+		//	if(stack!= null && isSelected && stack.getItem() instanceof ItemRangedWeapon)rightStack = stack;
 
 			if(!world.isRemote && p != null)
 			{	
@@ -206,17 +209,16 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
 	}
 
 	private void updateServer(ItemStack rightStack, ItemStack leftStack, World world, EntityPlayer p) 
-	{		
-		if(rightStack != null)
+	{	
+		if(p != null && !p.worldObj.isRemote)
 		{
-			ItemRangedWeapon rightW = (ItemRangedWeapon) rightStack.getItem();
-			if(p != null)
+			if(rightStack != null)
 			{
+				System.out.println(reloadRightTicks);
+				ItemRangedWeapon rightW = (ItemRangedWeapon) rightStack.getItem();
 				if (rightW.isReloading(rightStack))
 				{
 					rightW.setReloadTicks(rightStack, p, reloadRightTicks++);
-					System.out.println(rightW.getReloadTicks(rightStack));
-					System.out.println(reloadRightTicks);
 					if (rightW.getReloadTicks(rightStack) >= rightW.getReloadDuration())
 					{
 						rightW.setReloading(rightStack, p, false);
@@ -225,7 +227,7 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
 						reloadRightTicks = 0;
 					}
 				}
-				if(rightW.fired(rightStack))
+				else if(rightW.fired(rightStack))
 				{
 					rightW.setRecoilTicks(rightStack, p, recoilRightTicks++);
 		
@@ -254,7 +256,7 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
 						reloadLeftTicks = 0;
 					}				
 				}	
-				if(leftW.fired(leftStack))
+				else if(leftW.fired(leftStack))
 				{
 					leftW.setRecoilTicks(leftStack, p, recoilLeftTicks++);
 						
@@ -425,7 +427,6 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
 	public void recoilDown(EntityPlayer entityIn, float recoil, float recoilSneaking, boolean shouldRecoil) {
 		float i = recoil == 0F ? 0F : recoil - 0.5F;
 		float j = recoilSneaking == 0F ? 0F : recoilSneaking - 0.5F;
-		System.out.println("ff");
 		if (shouldRecoil)entityIn.rotationPitch += entityIn.isSneaking() ? i : j;
 	}
 
