@@ -9,15 +9,14 @@ public class ItemSimplePistol extends ItemRangedWeapon implements Scopeable, Las
 {
 	public ItemSimplePistol()
 	{
-		super("simple_pistol", 150, 6, "simple_bullet", 1, 0.476, 5F, 2.5F, 6, 20, 2.5F, 5F, true, false);
+		super("simple_pistol", 150, 6, "simple_bullet", 1, 0.476, 5F, 2.5F, 3, 20, 2.5F, 5F, true, false);
 	}
 
-	/*
-	 * @Override public void soundCharge(ItemStack stack, World world,
-	 * EntityPlayer player) { world.playSoundAtEntity(player, ARKCraft.MODID +
-	 * ":" + "simple_pistol_reload", 0.7F, 0.9F / (getItemRand().nextFloat() *
-	 * 0.2F + 0.0F)); }
-	 */
+	@Override
+	public void initModel() 
+	{
+		super.initModel();
+	}
 
 	@Override
 	public int getReloadDuration()

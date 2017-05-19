@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import com.bubbletrouble.gunmod.Main;
@@ -76,6 +77,9 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
 	private final boolean shouldRecoil;
 	private final boolean twoHanded;
 
+	/**
+	 * name, durability, maxAmmo, defaultAmmoType, ammoConsumption, shotInterval, speed, inaccuracy, damage, range, recoil, recoilSneaking, shouldRecoil, twoHanded
+	 */
 	public ItemRangedWeapon(String name, int durability, int maxAmmo, String defaultAmmoType, int ammoConsumption,
 			double shotInterval, float speed, float inaccuracy, double damage, int range, float recoil,
 			float recoilSneaking, boolean shouldRecoil, boolean twoHanded) {
@@ -109,11 +113,12 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
         ModelResourceLocation silencer = new ModelResourceLocation(Main.MODID + ":weapons/" + this.getUnlocalizedName() + "_silencer", "inventory");
         ModelResourceLocation flashlight = new ModelResourceLocation(Main.MODID + ":weapons/" + this.getUnlocalizedName() + "_flashlight", "inventory");
         ModelResourceLocation reload = new ModelResourceLocation(Main.MODID + ":weapons/" + this.getUnlocalizedName() + "_flashlight", "inventory");
-        ModelResourceLocation normal = new ModelResourceLocation(Main.MODID + ":weapons/" + this.getUnlocalizedName(), "inventory");
+        ModelResourceLocation normal = new ModelResourceLocation(Main.MODID + ":weapons/" + this.getUnlocalizedName() , "inventory");
         
         ModelBakery.registerItemVariants(this, scope, laser, silencer, flashlight, reload, normal);
 
         ModelLoader.setCustomMeshDefinition(this, stack -> {
+     //   	System.out.println(normal);
             InventoryAttachment att = InventoryAttachment.create(stack);
     		if (att != null) {
     			if (att.isScopePresent()) {
@@ -125,12 +130,13 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
     			} else if (att.isSilencerPresent()) {
     				return silencer;
     			}
+    			else return normal;
     		}
     		if (isReloading(stack))
     		{
     			return reload;
     		}
-			return normal;
+    		else return normal;
         });     
     }
 	
@@ -192,9 +198,6 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
 			EntityPlayer p = (EntityPlayer) entity;
 			if(p.getHeldItemOffhand() != null &&  p.getHeldItemOffhand().getItem() instanceof ItemRangedWeapon)leftStack = p.getHeldItemOffhand();
 			if(p.getHeldItemMainhand() != null &&  p.getHeldItemMainhand().getItem() instanceof ItemRangedWeapon)rightStack = p.getHeldItemMainhand();
-			
-			//TODO Fixme with weird double ticks
-		//	if(stack!= null && isSelected && stack.getItem() instanceof ItemRangedWeapon)rightStack = stack;
 
 			if(!world.isRemote && p != null)
 			{	
@@ -214,7 +217,6 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
 		{
 			if(rightStack != null)
 			{
-				System.out.println(reloadRightTicks);
 				ItemRangedWeapon rightW = (ItemRangedWeapon) rightStack.getItem();
 				if (rightW.isReloading(rightStack))
 				{
@@ -285,9 +287,12 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
 				ItemRangedWeapon w = (ItemRangedWeapon)p.getHeldItemOffhand().getItem();
 				if(w.IsTwoHanded())
 				{
-					ItemStack i = p.getHeldItemOffhand().copy();
-					p.inventory.removeStackFromSlot(40);
-					p.inventory.addItemStackToInventory(i);				
+					if(p.inventory.inventoryChanged)
+					{
+						ItemStack i = p.getHeldItemOffhand().copy();
+						p.inventory.removeStackFromSlot(40);
+						p.inventory.addItemStackToInventory(i);		
+					}	
 				}
 			}
 			if(p.getHeldItemOffhand() != null &&  p.getHeldItemOffhand().getItem() instanceof ItemRangedWeapon && p.getHeldItemMainhand() != null && p.getHeldItemMainhand().getItem() instanceof ItemRangedWeapon)
@@ -299,6 +304,7 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
 					ItemStack i = p.getHeldItemOffhand().copy();
 					p.inventory.removeStackFromSlot(40);
 					p.inventory.addItemStackToInventory(i);
+					p.worldObj.updateEntity(p);
 				}
 			}	
 	}
@@ -713,16 +719,16 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) 
 	{
-	//	stack.getTagCompound().hasKey("brainType")
-		int duarabilty = stack.getMaxDamage() - stack.getItemDamage();
-		tooltip.add(ChatFormatting.DARK_BLUE + I18n.translate("reload_time.title") + getReloadDuration() / 40 + I18n.translate("seconds.title"));
-		tooltip.add("§9Reload time §r" + getReloadDuration() / 40 + "s"); 
-		tooltip.add("§9Damage §r" + this.getDamage());
-		tooltip.add("§9Range §r" + this.getRange() + " blocks");
-		tooltip.add("§9Recoil §r" + this.getRecoil());
-		tooltip.add("§9Has recoil : §r" + getShouldRecoil());
-		tooltip.add("§9Duarabilty §r" + duarabilty + "/" + stack.getMaxDamage());
-		tooltip.add("§9Two-Handed : §r" + IsTwoHanded());
+		tooltip.add(ChatFormatting.DARK_AQUA + "Damage " + ChatFormatting.WHITE + this.getDamage() + " Hearts");
+		if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+		{
+			int duarabilty = stack.getMaxDamage() - stack.getItemDamage();
+			tooltip.add(ChatFormatting.DARK_AQUA + I18n.translate("reload_time.title") + " " + ChatFormatting.WHITE  + getReloadDuration() / 20 + I18n.translate("seconds.title"));
+			tooltip.add(ChatFormatting.DARK_AQUA + "Range " + ChatFormatting.WHITE + this.getRange() + " blocks");
+			tooltip.add(ChatFormatting.DARK_AQUA + "Has recoil : " + ChatFormatting.WHITE + getShouldRecoil());
+			tooltip.add(ChatFormatting.DARK_AQUA + "Duarabilty " + ChatFormatting.WHITE + duarabilty + "/" + stack.getMaxDamage());
+			tooltip.add(ChatFormatting.DARK_AQUA + "Two-Handed : " + ChatFormatting.WHITE + IsTwoHanded());
+		}
 	}
 
 	@Override
@@ -739,25 +745,17 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
 	@Override
 	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) 
 	{
-	//	return false;
-		//return oldStack != null && newStack != null && oldStack.getItem() != newStack.getItem() && slotChanged;
-	//	if(oldStack != null && !fired(oldStack) && !(isReloading(oldStack)))return true;
-	//	ItemRangedWeapon oldGun = (ItemRangedWeapon) oldStack.getItem();
-	//	ItemRangedWeapon newGun = (ItemRangedWeapon) newStack.getItem();
-
 		if(oldStack != null && newStack != null)
 		{			
 			if(oldStack.getItem() != newStack.getItem())
 			{
 				return true;	
 			}
-		//	if(oldGun.)
 			if(slotChanged)
 			{
 				return true;	
 			}			
 		}
 		return false;	
-	//	oldStack != null && newStack != null && oldStack != newStack && !(isReloading(newStack) && !(isReloading(oldStack)));
 	}
 }

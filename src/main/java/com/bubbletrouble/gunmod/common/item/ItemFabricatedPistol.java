@@ -12,13 +12,19 @@ Flashable
 
 	public ItemFabricatedPistol()
 	{
-		super("fabricated_pistol", 350, 13, "advanced_bullet", 1, 0.2, 6F, 1.4F, 12, 80, 2.5F, 5F, true, false);
+		super("fabricated_pistol", 350, 13, "advanced_bullet", 1, 0.2, 6F, 1.4F, 6, 80, 2.5F, 5F, true, false);
 	}
 
 	@Override
 	public int getReloadDuration()
 	{
 		return (int) (3.0 * 20.0);
+	}
+	
+	@Override
+	public void initModel() 
+	{
+		super.initModel();
 	}
 
 	/*

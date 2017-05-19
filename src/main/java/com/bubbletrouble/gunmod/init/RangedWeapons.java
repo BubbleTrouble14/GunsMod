@@ -86,10 +86,10 @@ public class RangedWeapons
     public static void initModels() 
     {
     	//Guns
-    	((ItemFabricatedPistol) fabricated_pistol).initModel();
-    	((ItemSimplePistol) simple_pistol).initModel();
-    	((ItemLongneckRifle) longneck_rifle).initModel();
-    	((ItemShotgun) shotgun).initModel();
+    	fabricated_pistol.initModel();
+    	simple_pistol.initModel();
+    	longneck_rifle.initModel();
+    	shotgun.initModel();
     	block_crafter.initModel();
     	green_screen.initModel();
     	
