@@ -15,10 +15,8 @@ version = "1.0"
 group= "com.bubbletrouble.gunmod" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "gunmod"
 
-}
-
 minecraft {
-    version = "1.10.2-12.18.3.2185"
+    version = "1.11.2-13.20.0.2228"
     runDir = "run"
     
     // the mappings can be changed at any time, and must be in the following format.
