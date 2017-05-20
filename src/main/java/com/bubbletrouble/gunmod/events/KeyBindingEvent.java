@@ -24,7 +24,7 @@ public class KeyBindingEvent
 			doReload();
 		}
 		else if (KeyBindings.attachment.isPressed()) {
-			if(player.getHeldItemMainhand().getItem() != null && player.getHeldItemMainhand().getItem() instanceof ItemRangedWeapon)
+			if(player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() instanceof ItemRangedWeapon)
 			{
 				Main.modChannel.sendToServer(new OpenAttachmentInventory());
 			}

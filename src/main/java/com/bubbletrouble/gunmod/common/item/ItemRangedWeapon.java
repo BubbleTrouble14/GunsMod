@@ -49,6 +49,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -196,10 +197,11 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
 		if(entity instanceof EntityPlayer)
 		{
 			EntityPlayer p = (EntityPlayer) entity;
+			
 			if(p.getHeldItemOffhand() != null &&  p.getHeldItemOffhand().getItem() instanceof ItemRangedWeapon)leftStack = p.getHeldItemOffhand();
 			if(p.getHeldItemMainhand() != null &&  p.getHeldItemMainhand().getItem() instanceof ItemRangedWeapon)rightStack = p.getHeldItemMainhand();
-
-			if(!world.isRemote && p != null)
+			
+			if(!p.worldObj.isRemote)
 			{	
 				updateServer(rightStack, leftStack, world, p);
 				disableOffHandSlot(p);		
@@ -210,11 +212,9 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
 			}
 		}			
 	}
-
+	
 	private void updateServer(ItemStack rightStack, ItemStack leftStack, World world, EntityPlayer p) 
 	{	
-		if(p != null && !p.worldObj.isRemote)
-		{
 			if(rightStack != null)
 			{
 				ItemRangedWeapon rightW = (ItemRangedWeapon) rightStack.getItem();
@@ -272,7 +272,7 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
 					}	
 				}
 			}
-		}
+		
 	}
 
 	private void updateClient(ItemStack rightStack, ItemStack leftStack, World world, EntityPlayer p) 
@@ -282,6 +282,8 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
 
 	private void disableOffHandSlot(EntityPlayer p) 
 	{
+		if(!p.capabilities.isCreativeMode)
+		{
 			if(p.getHeldItemOffhand() != null &&  p.getHeldItemOffhand().getItem() instanceof ItemRangedWeapon)
 			{
 				ItemRangedWeapon w = (ItemRangedWeapon)p.getHeldItemOffhand().getItem();
@@ -307,6 +309,7 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
 					p.worldObj.updateEntity(p);
 				}
 			}	
+		}
 	}
 
 	public Random getItemRand() {

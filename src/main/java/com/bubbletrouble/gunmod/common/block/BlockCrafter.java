@@ -1,7 +1,6 @@
 package com.bubbletrouble.gunmod.common.block;
 
 import com.bubbletrouble.gunmod.Main;
-import com.bubbletrouble.gunmod.common.tileentity.TECrafter;
 
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -32,7 +31,8 @@ public class BlockCrafter extends BlockContainer
 	@Override
 	public TileEntity createNewTileEntity(World worldIn, int meta) 
 	{
-		return new TECrafter();
+		return null;
+	//	return new TECrafter();
 	}
 	
     @SideOnly(Side.CLIENT)
