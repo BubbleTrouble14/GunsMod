@@ -113,7 +113,7 @@ public class InventoryCrafter extends InventoryBasic
             return 0.0D;
         }
         double fraction = craftingTime / (double) CRAFT_TIME_FOR_ITEM;
-        return MathHelper.clamp_double(fraction, 0.0, 1.0);
+        return MathHelper.clamp(fraction, 0.0, 1.0);
     }
 
     /**
@@ -257,7 +257,7 @@ public class InventoryCrafter extends InventoryBasic
                     (!result.getHasSubtypes() || outputStack.getMetadata() == result.getMetadata())
                     && ItemStack.areItemStackTagsEqual(outputStack, result))
             {
-                int combinedSize = invCrafting.getStackInSlot(outputSlot).stackSize + result.stackSize;
+                int combinedSize = invCrafting.getStackInSlot(outputSlot).getCount() + result.getCount();
                 if (combinedSize <= invCrafting.getInventoryStackLimit()
                         && combinedSize <= invCrafting.getStackInSlot(outputSlot).getMaxStackSize())
                 {
@@ -314,7 +314,7 @@ public class InventoryCrafter extends InventoryBasic
         }
         else
         {
-            invCrafting.getStackInSlot(firstSuitableOutputSlot).stackSize += result.stackSize;
+            invCrafting.getStackInSlot(firstSuitableOutputSlot).grow(result.getCount()); // += result.getCount();
         }
         invCrafting.markDirty();
         return true;

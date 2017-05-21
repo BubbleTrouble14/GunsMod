@@ -14,8 +14,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 //@SideOnly(Side.CLIENT)
 public class RenderGunHandEvent
 {
-	public static World w = Minecraft.getMinecraft().theWorld;
-	public static EntityPlayer p = Minecraft.getMinecraft().thePlayer;
+	public static World w = Minecraft.getMinecraft().world;
+	public static EntityPlayer p = Minecraft.getMinecraft().player;
 
 	
 	@SubscribeEvent

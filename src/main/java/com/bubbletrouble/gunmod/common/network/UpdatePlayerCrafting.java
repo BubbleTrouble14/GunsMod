@@ -54,7 +54,7 @@ public class UpdatePlayerCrafting implements IMessage
 				System.err.println("UpdatePlayerCrafting received on wrong side:" + ctx.side);
 				return null;
 			}
-			final EntityPlayerMP player = ctx.getServerHandler().playerEntity;
+			final EntityPlayerMP player = ctx.getServerHandler().player;
 			player.getServer().addScheduledTask(new Runnable()
 			{
 				public void run()

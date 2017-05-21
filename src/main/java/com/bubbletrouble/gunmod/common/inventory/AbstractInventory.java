@@ -5,6 +5,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -21,18 +22,18 @@ import net.minecraft.util.text.TextComponentTranslation;
 public abstract class AbstractInventory implements IInventory
 {
 	/** The inventory slots need to be initialized during construction */
-	protected ItemStack[] inventory;
+	protected NonNullList<ItemStack> inventory;
 
 	@Override
 	public int getSizeInventory()
 	{
-		return inventory.length;
+		return inventory.size();
 	}
 
 	@Override
 	public ItemStack getStackInSlot(int slot)
 	{
-		return inventory[slot];
+		return inventory.get(slot);
 	}
 
 	@Override
@@ -40,24 +41,25 @@ public abstract class AbstractInventory implements IInventory
 	{
 		ItemStack stack = getStackInSlot(slot);
 		if (stack != null) {
-			if (stack.stackSize > amount) {
+			if (stack.getCount() > amount) {
 				stack = stack.splitStack(amount);
 				markDirty();
 			}
 			else {
-				setInventorySlotContents(slot, null);
+				setInventorySlotContents(slot, ItemStack.EMPTY);
 			}
 		}
-
 		return stack;
 	}
 
 	@Override
 	public void setInventorySlotContents(int slot, ItemStack itemstack)
 	{
-		inventory[slot] = itemstack;
-		if (itemstack != null && itemstack.stackSize > getInventoryStackLimit()) {
-			itemstack.stackSize = getInventoryStackLimit();
+		inventory.set(slot, itemstack); //= itemstack;
+		if (itemstack != null && itemstack.getCount() > getInventoryStackLimit()) 
+		{
+			//set stack size
+			itemstack.setCount(getInventoryStackLimit());
 		}
 		markDirty();
 	}
@@ -97,8 +99,8 @@ public abstract class AbstractInventory implements IInventory
 	@Override
 	public void clear()
 	{
-		for (int i = 0; i < inventory.length; ++i) {
-			inventory[i] = null;
+		for (int i = 0; i < inventory.size(); ++i) {
+			inventory.set(i, ItemStack.EMPTY); // = null;
 		}
 	}
 
@@ -167,8 +169,9 @@ public abstract class AbstractInventory implements IInventory
 			byte slot = item.getByte("Slot");
 			if (slot >= 0 && slot < getSizeInventory())
 			{
-				inventory[slot] = ItemStack.loadItemStackFromNBT(item);
+				inventory.set(slot,  new ItemStack(item));// = new ItemStack(item);
 			}
 		}
 	}
+	
 }

@@ -7,6 +7,7 @@ import com.bubbletrouble.gunmod.Main;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.init.Biomes;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 
@@ -27,7 +28,7 @@ public class EntityHandler
         int mainColor = rand.nextInt() * 16777215;
         int secondColor = rand.nextInt() * 16777215;
 
-        EntityRegistry.registerModEntity(eClass, name, idCount++, Main.instance(), 10, 1, false, mainColor, secondColor);
+       // EntityRegistry.registerModEntity(eClass, name, idCount++, Main.instance(), 10, 1, false, mainColor, secondColor);
         EntityRegistry.addSpawn(eClass, 25, 2, 4, EnumCreatureType.CREATURE, biomes);
     }
 
@@ -54,8 +55,8 @@ public class EntityHandler
     // EntityList.EntityEggInfo(entityID, mainColor, secondColor));
     // }
 
-    public static void registerModEntity(Class<? extends Entity> eClass, String name, Object mod, int trackRange, int updateFreq, boolean sVU)
+    public static void registerModEntity(ResourceLocation registryName, Class<? extends Entity> eClass, String name, Object mod, int trackRange, int updateFreq, boolean sVU)
     {
-        EntityRegistry.registerModEntity(eClass, name, ++entityID, mod, trackRange, updateFreq, sVU);
+        EntityRegistry.registerModEntity(registryName, eClass, name, ++entityID, mod, trackRange, updateFreq, sVU);
     }
 }

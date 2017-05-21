@@ -20,7 +20,7 @@ public class GUIOverlayReloading extends Gui
 	@SubscribeEvent
 	public void renderGUIOverlay(RenderGameOverlayEvent.Post e)
 	{
-		EntityPlayer p = mc.thePlayer;
+		EntityPlayer p = mc.player;
 		ItemStack stack = p.getHeldItemMainhand();
 		ItemStack leftStack = p.getHeldItemOffhand();
 		if (e.getType().equals(ElementType.HOTBAR))
@@ -179,9 +179,9 @@ public class GUIOverlayReloading extends Gui
 				{
 					text = '\u221e' + "";
 				}
-				int x = e.getResolution().getScaledWidth() - 4 - mc.fontRendererObj.getStringWidth(text);
+				int x = e.getResolution().getScaledWidth() - 4 - mc.fontRenderer.getStringWidth(text);
 				int y = 20;
-				drawString(mc.fontRendererObj, text, x, y - 16, 0xFFFFFFFF);
+				drawString(mc.fontRenderer, text, x, y - 16, 0xFFFFFFFF);
 			}
 			if (leftStack != null && leftStack.getItem() instanceof ItemRangedWeapon)
 			{
@@ -197,7 +197,7 @@ public class GUIOverlayReloading extends Gui
 				}
 				int x = 4;
 				int y = 20;
-				drawString(mc.fontRendererObj, text, x, y - 16, 0xFFFFFFFF);
+				drawString(mc.fontRenderer, text, x, y - 16, 0xFFFFFFFF);
 			}
 		}
 

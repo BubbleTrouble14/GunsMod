@@ -51,7 +51,7 @@ public interface IUpdateAttachments
 	{
 		RayTraceResult mop = rayTrace(entityIn, 20, 1.0F);
 		if (mop != null && mop.typeOfHit != RayTraceResult.Type.MISS) {
-			World world = entityIn.worldObj;
+			World world = entityIn.world;
 			BlockPos pos;
 
 			if (mop.typeOfHit == RayTraceResult.Type.ENTITY) {
@@ -71,7 +71,7 @@ public interface IUpdateAttachments
 			
 	public default void updateLaser(EntityPlayer p)
 	{
-		World w = p.worldObj;
+		World w = p.world;
 		RayTraceResult mop = getMouseOver(0);// Minecraft.getMinecraft().objectMouseOver;//rayTrace(p, 35, 1.0F);
 		
 		if (mop == null) return;
@@ -107,7 +107,7 @@ public interface IUpdateAttachments
 		RayTraceResult raytraceresult = null;
 
 		if (entity != null) {
-			if (mc.theWorld != null) {
+			if (mc.world != null) {
 				mc.mcProfiler.startSection("pick");
 				mc.pointedEntity = null;
 				double d0 = 10;
@@ -123,7 +123,7 @@ public interface IUpdateAttachments
 				Vec3d vec3d2 = vec3d.addVector(vec3d1.xCoord * d0, vec3d1.yCoord * d0, vec3d1.zCoord * d0);
 				Entity pointedEntity = null;
 				Vec3d vec3d3 = null;
-				List<Entity> list = mc.theWorld.getEntitiesInAABBexcluding(entity, entity.getEntityBoundingBox()
+				List<Entity> list = mc.world.getEntitiesInAABBexcluding(entity, entity.getEntityBoundingBox()
 						.addCoord(vec3d1.xCoord * d0, vec3d1.yCoord * d0, vec3d1.zCoord * d0).expand(1.0D, 1.0D, 1.0D),
 						Predicates.and(EntitySelectors.NOT_SPECTATING, new Predicate<Entity>() {
 							public boolean apply(@Nullable Entity p_apply_1_) {

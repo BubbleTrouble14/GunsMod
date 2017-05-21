@@ -21,7 +21,7 @@ public class ServerProxy extends CommonProxy
     @Override
     public EntityPlayer getPlayerFromContext(MessageContext ctx)
     {
-        return ctx.getServerHandler().playerEntity;
+        return ctx.getServerHandler().player;
     }
 
     @Override

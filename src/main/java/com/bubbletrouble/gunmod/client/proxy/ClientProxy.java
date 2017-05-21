@@ -51,7 +51,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public EntityPlayer getPlayerFromContext(MessageContext ctx)
 	{
-		return Minecraft.getMinecraft().thePlayer;
+		return Minecraft.getMinecraft().player;
 	}
 
 	@Override
@@ -63,8 +63,8 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public long getWorldTime()
 	{
-		if (Minecraft.getMinecraft().theWorld != null)
-			return Minecraft.getMinecraft().theWorld.getTotalWorldTime();
+		if (Minecraft.getMinecraft().world != null)
+			return Minecraft.getMinecraft().world.getTotalWorldTime();
 		return 0;
 	}
 	

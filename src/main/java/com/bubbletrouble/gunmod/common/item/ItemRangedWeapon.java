@@ -42,6 +42,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
@@ -147,9 +148,10 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
 	}
 	
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand hand)
 	{
-		return new ActionResult<ItemStack>(EnumActionResult.PASS, itemStackIn);
+		return null;
+	//	return new ActionResult<ItemStack>(EnumActionResult.PASS, itemStackIn);
 	}
 
 	@Override
@@ -201,7 +203,7 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
 			if(p.getHeldItemOffhand() != null &&  p.getHeldItemOffhand().getItem() instanceof ItemRangedWeapon)leftStack = p.getHeldItemOffhand();
 			if(p.getHeldItemMainhand() != null &&  p.getHeldItemMainhand().getItem() instanceof ItemRangedWeapon)rightStack = p.getHeldItemMainhand();
 			
-			if(!p.worldObj.isRemote)
+			if(!p.world.isRemote)
 			{	
 				updateServer(rightStack, leftStack, world, p);
 				disableOffHandSlot(p);		
@@ -306,7 +308,7 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
 					ItemStack i = p.getHeldItemOffhand().copy();
 					p.inventory.removeStackFromSlot(40);
 					p.inventory.addItemStackToInventory(i);
-					p.worldObj.updateEntity(p);
+					p.world.updateEntity(p);
 				}
 			}	
 		}
@@ -469,19 +471,20 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
 	{
 		int ammoFinal = getAmmoQuantity(stack);
 		String type = "";
-		ItemStack[] inventory = player.inventory.mainInventory;
-		for (int i = 0; i < inventory.length; i++) {
-			ItemStack invStack = inventory[i];
+		NonNullList<ItemStack> inventory = player.inventory.mainInventory;
+		for (int i = 0; i < inventory.size(); i++) {
+			ItemStack invStack = inventory.get(i);
 			if (invStack != null)
 				if (isValidProjectile(invStack.getItem())) {
-					int stackSize = invStack.stackSize;
+					int stackSize = invStack.getCount();
 					type = invStack.getItem().getUnlocalizedName().substring(5);
 					int ammo = stackSize < this.getMaxAmmo() - ammoFinal ? stackSize : this.getMaxAmmo() - ammoFinal;
 					ammoFinal += ammo;
 
-					invStack.stackSize = stackSize - ammo;
-					if (invStack.stackSize < 1)
-						inventory[i] = null;
+					//Set stack size
+					invStack.setCount(stackSize - ammo);
+					if (invStack.getCount() < 1)
+						inventory.remove(i);
 					if (ammoFinal == this.getMaxAmmo())
 						break;
 				}
@@ -535,7 +538,7 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
 		if (type != null) { // && inventory.hasItemStack(item)
 			for (ItemStack s : inventory.mainInventory) {
 				if (s != null && s.getItem().equals(item)) {
-					out += s.stackSize;
+					out += s.getCount();
 				}
 			}
 		}
@@ -652,7 +655,7 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
 				EntityProjectile p = createProjectile(stack, world, player);
 				applyProjectileEnchantments(p, stack);
 				if (p != null)
-					world.spawnEntityInWorld(p);
+					world.spawnEntity(p);
 			}
 		}
 		afterFire(stack, world, player);
@@ -671,7 +674,7 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
 			ItemStack s = new ItemStack(i, ammo);
 			player.inventory.addItemStackToInventory(s);
 		} else if (ammo < 1) {
-			if (hasAmmoInInventory(player) && player.worldObj.isRemote){ //FMLCommonHandler.instance().getSide().isClient()) {
+			if (hasAmmoInInventory(player) && player.world.isRemote){ //FMLCommonHandler.instance().getSide().isClient()) {
 				KeyBindingEvent.doReload();
 			} else {
 				this.setAmmoType(stack, "");

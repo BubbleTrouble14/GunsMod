@@ -52,7 +52,7 @@ public class EntityGrenade extends Entity implements IProjectile
 	public void onUpdate()
 	{
     	
-		if (!worldObj.isRemote)
+		if (!world.isRemote)
 		{
 	        if(fuse-- <= 0)
 	        {
@@ -72,7 +72,7 @@ public class EntityGrenade extends Entity implements IProjectile
         prevPosX = posX;
         prevPosY = posY;
         prevPosZ = posZ;
-        moveEntity(motionX, motionY, motionZ);
+        addVelocity(motionX, motionY, motionZ);
         
 
         boolean collided = false;
@@ -121,7 +121,7 @@ public class EntityGrenade extends Entity implements IProjectile
     
 	private void explode()
 	{
-		this.worldObj.createExplosion(this, posX, posY, posZ, 4F, true);
+		this.world.createExplosion(this, posX, posY, posZ, 4F, true);
 		this.setDead();
 	}
 	

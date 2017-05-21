@@ -40,7 +40,7 @@ public class LeftGunShoot implements IMessage
 				System.err.println("MPUpdateDoReloadStarted received on wrong side:" + ctx.side);
 				return null;
 			}
-			final EntityPlayerMP player = ctx.getServerHandler().playerEntity;
+			final EntityPlayerMP player = ctx.getServerHandler().player;
 			player.getServer().addScheduledTask(new Runnable()
 			{
 				public void run()
@@ -62,12 +62,12 @@ public class LeftGunShoot implements IMessage
 				ItemRangedWeapon weapon = (ItemRangedWeapon) stack.getItem();
 				String soundPath = Main.MODID + ":" + weapon.getUnlocalizedName() + "_shoot";
 	
-				weapon.fire(stack, player.worldObj, player);
+				weapon.fire(stack, player.world, player);
 				player.setActiveHand(EnumHand.OFF_HAND);
 				weapon.setFired(stack, player, true);
-				//weapon.afterFire(stack, player.worldObj, player);
+				//weapon.afterFire(stack, player.world, player);
 
-				SoundUtil.playSound(player.worldObj, player.posX, player.posY, player.posZ, new ResourceLocation(soundPath), SoundCategory.PLAYERS, 1.5F, 1F / (weapon.getItemRand().nextFloat() * 0.4F + 0.7F), false);
+				SoundUtil.playSound(player.world, player.posX, player.posY, player.posZ, new ResourceLocation(soundPath), SoundCategory.PLAYERS, 1.5F, 1F / (weapon.getItemRand().nextFloat() * 0.4F + 0.7F), false);
 			}
 		}
 	}

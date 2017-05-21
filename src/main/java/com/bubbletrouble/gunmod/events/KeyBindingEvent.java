@@ -18,12 +18,16 @@ public class KeyBindingEvent
 	@SubscribeEvent
 	public static void onPlayerKeypressed(InputEvent.KeyInputEvent event)
 	{
-		EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+		EntityPlayer player = Minecraft.getMinecraft().player;
 		if (KeyBindings.reload.isPressed()) 
 		{
 			doReload();
 		}
-		else if (KeyBindings.attachment.isPressed()) {
+		else if (KeyBindings.attachment.isPressed()) 
+		{
+			//if (player.getHeldItemMainhand() == null || event.getStack().isEmpty()) return;
+			ItemStack stack;
+		//	ItemStack.field_190927_a.;
 			if(player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() instanceof ItemRangedWeapon)
 			{
 				Main.modChannel.sendToServer(new OpenAttachmentInventory());
@@ -33,11 +37,11 @@ public class KeyBindingEvent
 	
 	public static void doReload()
 	{
-		EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+		EntityPlayer player = Minecraft.getMinecraft().player;
 		
 		ItemStack rightHandStack = player.getHeldItemMainhand();
 		ItemStack leftHandStack = player.getHeldItemOffhand();
-		
+	
 		if(rightHandStack != null && leftHandStack != null)
 		{
 			if(rightHandStack.getItem() instanceof ItemRangedWeapon && leftHandStack.getItem() instanceof ItemRangedWeapon)
@@ -47,13 +51,13 @@ public class KeyBindingEvent
 
 				if (!rightWeapon.isReloading(rightHandStack) && rightWeapon.canReload(rightHandStack, player) && !leftWeapon.isReloading(leftHandStack))//leftWeapon.getAmmoQuantity(leftHandStack) != 0) 
 				{
-					rightWeapon.soundCharge(rightHandStack, player.worldObj, player);
+					rightWeapon.soundCharge(rightHandStack, player.world, player);
 					Main.modChannel.sendToServer(new RightGunReloadStarted());
 					rightWeapon.setReloading(rightHandStack, player, true);
 				}
 				else if (!leftWeapon.isReloading(leftHandStack) && leftWeapon.canReload(leftHandStack, player) && !rightWeapon.isReloading(rightHandStack)) 
 				{
-					leftWeapon.soundCharge(leftHandStack, player.worldObj, player);
+					leftWeapon.soundCharge(leftHandStack, player.world, player);
 					Main.modChannel.sendToServer(new LeftGunReloadStarted());
 					leftWeapon.setReloading(leftHandStack, player, true);
 				}
@@ -62,7 +66,7 @@ public class KeyBindingEvent
 			{
 				ItemRangedWeapon rightWeapon = (ItemRangedWeapon) rightHandStack.getItem();
 				if (!rightWeapon.isReloading(rightHandStack) && rightWeapon.canReload(rightHandStack, player)) {
-					rightWeapon.soundCharge(rightHandStack, player.worldObj, player);
+					rightWeapon.soundCharge(rightHandStack, player.world, player);
 					Main.modChannel.sendToServer(new RightGunReloadStarted());
 					rightWeapon.setReloading(rightHandStack, player, true);
 				}
@@ -71,7 +75,7 @@ public class KeyBindingEvent
 			{
 				ItemRangedWeapon leftWeapon = (ItemRangedWeapon) leftHandStack.getItem();
 				if (!leftWeapon.isReloading(leftHandStack) && leftWeapon.canReload(leftHandStack, player)) {
-					leftWeapon.soundCharge(leftHandStack, player.worldObj, player);
+					leftWeapon.soundCharge(leftHandStack, player.world, player);
 					Main.modChannel.sendToServer(new LeftGunReloadStarted());
 					leftWeapon.setReloading(leftHandStack, player, true);
 				}
@@ -83,7 +87,7 @@ public class KeyBindingEvent
 			{
 				ItemRangedWeapon leftWeapon = (ItemRangedWeapon) leftHandStack.getItem();
 				if (!leftWeapon.isReloading(leftHandStack) && leftWeapon.canReload(leftHandStack, player)) {
-					leftWeapon.soundCharge(leftHandStack, player.worldObj, player);
+					leftWeapon.soundCharge(leftHandStack, player.world, player);
 					Main.modChannel.sendToServer(new LeftGunReloadStarted());
 					leftWeapon.setReloading(leftHandStack, player, true);
 				}
@@ -96,7 +100,7 @@ public class KeyBindingEvent
 				ItemRangedWeapon rightWeapon = (ItemRangedWeapon) rightHandStack.getItem();	
 				if (!rightWeapon.isReloading(rightHandStack) && rightWeapon.canReload(rightHandStack, player)) 
 				{
-					rightWeapon.soundCharge(rightHandStack, player.worldObj, player);
+					rightWeapon.soundCharge(rightHandStack, player.world, player);
 					Main.modChannel.sendToServer(new RightGunReloadStarted());
 					rightWeapon.setReloading(rightHandStack, player, true);
 			}

@@ -21,6 +21,7 @@ import com.bubbletrouble.gunmod.common.item.attachments.AttachmentType;
 import com.bubbletrouble.gunmod.common.item.attachments.ItemAttachment;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -109,15 +110,21 @@ public class RangedWeapons
     
 	private static void registerWeaponEntities()
 	{
-			EntityHandler.registerModEntity(EntitySimpleBullet.class, "simple_bullet", Main.instance(), 16, 20,
+			ResourceLocation simple_bullet = new ResourceLocation(Main.MODID + ":" + "simple_bullet_entity" , "inventory");
+			ResourceLocation simple_shotgun_ammo = new ResourceLocation(Main.MODID + ":" + "simple_shotgun_ammo_entity" , "inventory");
+			ResourceLocation simple_rifle_ammo = new ResourceLocation(Main.MODID + ":" + "simple_rifle_ammo_entity" , "inventory");
+			ResourceLocation advanced_bullet = new ResourceLocation(Main.MODID + ":" + "advanced_bullet_entity" , "inventory");
+			ResourceLocation grenade_entity = new ResourceLocation(Main.MODID + ":" + "grenade_entity" , "inventory");
+
+			EntityHandler.registerModEntity(simple_bullet, EntitySimpleBullet.class, "simple_bullet", Main.instance(), 16, 20,
 					true);
-			EntityHandler.registerModEntity(EntitySimpleShotgunAmmo.class, "simple_shotgun_ammo", Main.instance(),
+			EntityHandler.registerModEntity(simple_shotgun_ammo, EntitySimpleShotgunAmmo.class, "simple_shotgun_ammo", Main.instance(),
 					64, 10, true);
-			EntityHandler.registerModEntity(EntitySimpleRifleAmmo.class, "simple_rifle_ammo", Main.instance(), 64,
+			EntityHandler.registerModEntity(simple_rifle_ammo, EntitySimpleRifleAmmo.class, "simple_rifle_ammo", Main.instance(), 64,
 					10, true);
-			EntityHandler.registerModEntity(EntityAdvancedBullet.class, "advanced_bullet", Main.instance(), 64, 10,
+			EntityHandler.registerModEntity(advanced_bullet, EntityAdvancedBullet.class, "advanced_bullet", Main.instance(), 64, 10,
 					true);
-			EntityHandler.registerModEntity(EntityGrenade.class, "grenade_entity", Main.instance(), 64, 10,
+			EntityHandler.registerModEntity(grenade_entity, EntityGrenade.class, "grenade_entity", Main.instance(), 64, 10,
 					true);
 		//	EntityHandler.registerModEntity(EntityRocketPropelledGrenade.class, "rocket_propelled_grenade", Main
 		//			.instance(), 64, 10, true);	

@@ -32,7 +32,7 @@ public class ClickEvent
 	@SubscribeEvent
 	public static void onMouseEvent(MouseEvent evt)
 	{		
-		EntityPlayer p = Minecraft.getMinecraft().thePlayer;
+		EntityPlayer p = Minecraft.getMinecraft().player;
 		handleClick(evt, p);	
 	} 
 	
@@ -80,7 +80,7 @@ public class ClickEvent
 	{
 		ItemStack rightHandStack = p.getHeldItemMainhand();
 		ItemStack leftHandStack = p.getHeldItemOffhand();
-		World world = Minecraft.getMinecraft().theWorld;
+		World world = Minecraft.getMinecraft().world;
 		
 		if(rightHandStack != null && leftHandStack != null)
 		{
@@ -135,7 +135,7 @@ public class ClickEvent
 	{
 		if(evt.getButton() == 1)
 		{
-			World w = Minecraft.getMinecraft().theWorld;			
+			World w = Minecraft.getMinecraft().world;			
 			BlockPos pos = mc.objectMouseOver.getBlockPos();
 			Entity entity = mc.objectMouseOver.entityHit;
 			InventoryAttachment att = InventoryAttachment.create(stack);

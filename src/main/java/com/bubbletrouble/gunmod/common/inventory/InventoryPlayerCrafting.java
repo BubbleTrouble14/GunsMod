@@ -48,12 +48,12 @@ public class InventoryPlayerCrafting implements IInventory
 
             if (j >= 0 && j < this.getSizeInventory())
             {
-                this.setInventorySlotContents(j, ItemStack.loadItemStackFromNBT(nbttagcompound));
+                this.setInventorySlotContents(j, new ItemStack(nbttagcompound));
             }
         }
     }
 
-    public void saveInventoryToNBT(NBTTagCompound nbt)
+	public void saveInventoryToNBT(NBTTagCompound nbt)
     {
         NBTTagList nbttaglist = new NBTTagList();
         for (int i = 0; i < this.getSizeInventory(); ++i)
@@ -69,15 +69,6 @@ public class InventoryPlayerCrafting implements IInventory
             }
         }
         nbt.setTag("Items", nbttaglist);
-    }
-
-    /**
-     * Do not make give this method the name canInteractWith because it clashes with Container
-     */
-    @Override
-    public boolean isUseableByPlayer(EntityPlayer player)
-    {
-        return true;
     }
 
     @Override
@@ -121,7 +112,7 @@ public class InventoryPlayerCrafting implements IInventory
         if (this.inventoryContents[index] != null)
         {
             ItemStack itemstack;
-            if (this.inventoryContents[index].stackSize <= count)
+            if (this.inventoryContents[index].getCount() <= count)
             {
                 itemstack = this.inventoryContents[index];
                 this.inventoryContents[index] = null;
@@ -131,7 +122,7 @@ public class InventoryPlayerCrafting implements IInventory
             else
             {
                 itemstack = this.inventoryContents[index].splitStack(count);
-                if (this.inventoryContents[index].stackSize == 0)
+                if (this.inventoryContents[index].getCount() == 0)
                 {
                     this.inventoryContents[index] = null;
                 }
@@ -149,9 +140,9 @@ public class InventoryPlayerCrafting implements IInventory
     public void setInventorySlotContents(int index, ItemStack stack)
     {
         this.inventoryContents[index] = stack;
-        if (stack != null && stack.stackSize > this.getInventoryStackLimit())
+        if (stack != null && stack.getCount() > this.getInventoryStackLimit())
         {
-            stack.stackSize = this.getInventoryStackLimit();
+            stack.setCount(this.getInventoryStackLimit()); // = this.getInventoryStackLimit();
         }
         this.markDirty();
     }
@@ -216,5 +207,21 @@ public class InventoryPlayerCrafting implements IInventory
         {
             return null;
         }
+	}
+
+	@Override
+	public boolean isEmpty() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+    /**
+     * Do not make give this method the name canInteractWith because it clashes with Container
+     */
+	
+	@Override
+	public boolean isUsableByPlayer(EntityPlayer player) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

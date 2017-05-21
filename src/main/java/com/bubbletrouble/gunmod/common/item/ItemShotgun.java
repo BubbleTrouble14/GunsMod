@@ -43,7 +43,7 @@ public class ItemShotgun extends ItemRangedWeapon implements NonSupporting
 				if (projectile != null)
 				{
 					applyProjectileEnchantments(projectile, stack);
-					world.spawnEntityInWorld(projectile);
+					world.spawnEntity(projectile);
 				}
 			}
 		}

@@ -35,7 +35,7 @@ public class LeftGunReloadStarted implements IMessage
 				System.err.println("MPUpdateDoReloadStarted received on wrong side:" + ctx.side);
 				return null;
 			}
-			final EntityPlayerMP player = ctx.getServerHandler().playerEntity;
+			final EntityPlayerMP player = ctx.getServerHandler().player;
 			player.getServer().addScheduledTask(new Runnable()
 			{
 				public void run()
@@ -56,7 +56,7 @@ public class LeftGunReloadStarted implements IMessage
 			{
 				ItemRangedWeapon weapon = (ItemRangedWeapon) stack.getItem();
 				weapon.setReloading(stack, player, true);
-				weapon.soundCharge(stack, player.worldObj, player);
+				weapon.soundCharge(stack, player.world, player);
 			}
 		}
 	}

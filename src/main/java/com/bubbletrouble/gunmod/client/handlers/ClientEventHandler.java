@@ -137,7 +137,7 @@ public class ClientEventHandler
 	{
 		ItemStack rightHandStack = p.getHeldItemMainhand();
 		ItemStack leftHandStack = p.getHeldItemOffhand();
-		World world = Minecraft.getMinecraft().theWorld;
+		World world = Minecraft.getMinecraft().world;
 		
 		if(rightHandStack != null && leftHandStack != null)
 		{
@@ -192,7 +192,7 @@ public class ClientEventHandler
 	{
 		if(evt.getButton() == 1)
 		{
-			World w = Minecraft.getMinecraft().theWorld;			
+			World w = Minecraft.getMinecraft().world;			
 			BlockPos pos = mc.objectMouseOver.getBlockPos();
 			Entity entity = mc.objectMouseOver.entityHit;
 			InventoryAttachment att = InventoryAttachment.create(stack);
@@ -262,7 +262,7 @@ public class ClientEventHandler
 	@SubscribeEvent
 	public static void onMouseEvent(MouseEvent evt)
 	{		
-		EntityPlayer p = Minecraft.getMinecraft().thePlayer;
+		EntityPlayer p = Minecraft.getMinecraft().player;
 		handleClick(evt, p);	
 	} 
 
@@ -302,7 +302,7 @@ public class ClientEventHandler
 			else if (evt.getType() == RenderGameOverlayEvent.ElementType.CROSSHAIRS && (showScopeOverlap))
 				evt.setCanceled(true);
 		}
-		ItemStack stack = mc.thePlayer.getActiveItemStack();
+		ItemStack stack = mc.player.getActiveItemStack();
 		if (evt.getType() == RenderGameOverlayEvent.ElementType.CROSSHAIRS && (stack != null && stack.getItem() instanceof ItemRangedWeapon))
 			evt.setCanceled(true);		
 	}
@@ -311,7 +311,7 @@ public class ClientEventHandler
 	public void holding(RenderLivingEvent.Pre<EntityLivingBase> event)
 	{
 		Minecraft mc = Minecraft.getMinecraft();
-		EntityPlayer thePlayer = mc.thePlayer;
+		EntityPlayer thePlayer = mc.player;
 		ItemStack stack = thePlayer.getActiveItemStack();
 		if (!event.isCanceled() && event.getEntity().equals(thePlayer) && stack != null) {
 			if (stack.getItem() instanceof ItemRangedWeapon) {
@@ -327,7 +327,7 @@ public class ClientEventHandler
 	public static void showScope()
 	{
 		Minecraft mc = Minecraft.getMinecraft();
-		EntityPlayer thePlayer = mc.thePlayer;
+		EntityPlayer thePlayer = mc.player;
 
 		// add sway
 		swayTicks++;
@@ -339,7 +339,7 @@ public class ClientEventHandler
 			pitchSway = ((random.nextFloat() * 2 - 1) / divider) / maxTicks;
 		}
 
-		EntityPlayer p = mc.thePlayer;
+		EntityPlayer p = mc.player;
 		p.rotationPitch += pitchSway;
 		p.rotationYaw += yawSway;
 		

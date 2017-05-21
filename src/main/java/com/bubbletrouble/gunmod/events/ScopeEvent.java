@@ -66,7 +66,7 @@ public class ScopeEvent
 			else if (evt.getType() == RenderGameOverlayEvent.ElementType.CROSSHAIRS && (ClickEvent.getShowScope()))
 				evt.setCanceled(true);
 		}
-		ItemStack stack = mc.thePlayer.getActiveItemStack();
+		ItemStack stack = mc.player.getActiveItemStack();
 		if (evt.getType() == RenderGameOverlayEvent.ElementType.CROSSHAIRS && (stack != null && stack.getItem() instanceof ItemRangedWeapon))
 			evt.setCanceled(true);		
 	}
@@ -75,7 +75,7 @@ public class ScopeEvent
 	public static void holding(RenderLivingEvent.Pre<EntityLivingBase> event)
 	{
 		Minecraft mc = Minecraft.getMinecraft();
-		EntityPlayer thePlayer = mc.thePlayer;
+		EntityPlayer thePlayer = mc.player;
 		ItemStack stack = thePlayer.getActiveItemStack();
 		if (!event.isCanceled() && event.getEntity().equals(thePlayer) && stack != null) {
 			if (stack.getItem() instanceof ItemRangedWeapon) {
@@ -91,7 +91,7 @@ public class ScopeEvent
 	public static void showScope()
 	{
 		Minecraft mc = Minecraft.getMinecraft();
-		EntityPlayer thePlayer = mc.thePlayer;
+		EntityPlayer thePlayer = mc.player;
 
 		// add sway
 		swayTicks++;
@@ -103,7 +103,7 @@ public class ScopeEvent
 			pitchSway = ((random.nextFloat() * 2 - 1) / divider) / maxTicks;
 		}
 
-		EntityPlayer p = mc.thePlayer;
+		EntityPlayer p = mc.player;
 		p.rotationPitch += pitchSway;
 		p.rotationYaw += yawSway;
 		

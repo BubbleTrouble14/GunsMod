@@ -50,12 +50,12 @@ public class ShapelessRecipe implements IRecipes
                 while (recipeIterator.hasNext())
                 {
                     ItemStack itemstackInRecipe = (ItemStack) recipeIterator.next();
-                    if (itemstack.getItem() == itemstackInRecipe.getItem() && itemstack.stackSize >= itemstackInRecipe.stackSize
+                    if (itemstack.getItem() == itemstackInRecipe.getItem() && itemstack.getCount() >= itemstackInRecipe.getCount()
                             && (itemstackInRecipe.getMetadata() == ANY || itemstack.getMetadata() == itemstackInRecipe.getMetadata()))
                     {
                         recipelist.remove(itemstackInRecipe);
-                        itemStacksInventory[i].stackSize -= itemstackInRecipe.stackSize;
-                        if (itemStacksInventory[i].stackSize <= 0)
+                        itemStacksInventory[i].setCount(itemstackInRecipe.getCount());
+                        if (itemStacksInventory[i].getCount() <= 0)
                         {
                             itemStacksInventory[i] = null;
                         }
@@ -105,11 +105,11 @@ public class ShapelessRecipe implements IRecipes
                 if (itemstack.getItem() == itemstackInRecipe.getItem()
                         && (itemstackInRecipe.getMetadata() == ANY || itemstack.getMetadata() == itemstackInRecipe.getMetadata()))
                 {
-                    numInStack += itemstack.stackSize;
+                    numInStack += itemstack.getCount();
                 }
             }
         }
-        return numInStack / itemstackInRecipe.stackSize;
+        return numInStack / itemstackInRecipe.getCount();
     }
 
     /**
@@ -125,7 +125,7 @@ public class ShapelessRecipe implements IRecipes
         while (recipeIterator.hasNext())
         {
             ItemStack itemstackInRecipe = (ItemStack) recipeIterator.next();
-            if (itemstack.getItem() == itemstackInRecipe.getItem() && itemstack.stackSize >= itemstackInRecipe.stackSize
+            if (itemstack.getItem() == itemstackInRecipe.getItem() && itemstack.getCount() >= itemstackInRecipe.getCount()
                     && (itemstackInRecipe.getMetadata() == 32767 || itemstack.getMetadata() == itemstackInRecipe.getMetadata()))
             {
                 return true;

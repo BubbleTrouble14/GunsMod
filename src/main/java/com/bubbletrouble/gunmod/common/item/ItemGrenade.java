@@ -21,17 +21,16 @@ public class ItemGrenade extends Item
 		setRegistryName("grenade");
 		GameRegistry.register(this);
 	}
-	
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn,
-			EnumHand hand) 
+	public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer p, EnumHand hand)
 	{
 		if(!worldIn.isRemote)
 		{
-			EntityGrenade entitysnowball = new EntityGrenade(worldIn, playerIn);
+			EntityGrenade entitysnowball = new EntityGrenade(worldIn, p);
 	     //   entitysnowball.setHeadingFromThrower(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, 1.5F, 1.0F);
-	        worldIn.spawnEntityInWorld(entitysnowball);
+	        worldIn.spawnEntity(entitysnowball);
 		}
-		return new ActionResult<ItemStack>(EnumActionResult.FAIL, itemStackIn);
+		return new ActionResult<ItemStack>(EnumActionResult.FAIL, p.getHeldItemMainhand());
 	}
 }
+	

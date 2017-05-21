@@ -29,6 +29,8 @@ public class InventoryAttachment extends AbstractInventory
 
 	/** Provides NBT Tag Compound to reference */
 	private final ItemStack invStack;
+	
+//	NonNullList<ItemStack>
 
 	public static InventoryAttachment create(ItemStack stack)
 	{
@@ -39,7 +41,11 @@ public class InventoryAttachment extends AbstractInventory
 
 	private InventoryAttachment(ItemStack stack)
 	{
-		inventory = new ItemStack[INV_SIZE];
+	//	inventory.size();
+		ItemStack x = ItemStack.EMPTY;
+	//	inventory.add(1, x);
+
+	//	inventory = 1; //new NonNullList<ItemStack>() {INV_SIZE};// ItemStack[INV_SIZE];
 		this.invStack = stack;
 		if (invStack != null && !invStack.hasTagCompound())
 		{
@@ -77,14 +83,14 @@ public class InventoryAttachment extends AbstractInventory
 		super.markDirty();
 		for (int i = 0; i < getSizeInventory(); ++i)
 		{
-			if (getStackInSlot(i) != null && getStackInSlot(i).stackSize == 0) inventory[i] = null;
+			if (getStackInSlot(i) != null && getStackInSlot(i).getCount() == 0) inventory.set(0, ItemStack.EMPTY); // = null;
 		}
 		writeToNBT(invStack.getTagCompound());
 	}
 
 	private boolean isInvOfType(AttachmentType type)
 	{
-		return inventory[0] != null && ((ItemAttachment) inventory[0].getItem()).getType().equals(type);
+		return inventory.get(0) != ItemStack.EMPTY && ((ItemAttachment) inventory.get(0).getItem()).getType().equals(type);
 	}
 
 	public boolean isScopePresent()
@@ -145,17 +151,22 @@ public class InventoryAttachment extends AbstractInventory
 	@Override
 	public ItemStack getStackInSlot(int slot)
 	{
-		return inventory[slot];
+		return inventory.get(slot);
 	}
 
 	@Override
 	public ItemStack removeStackFromSlot(int index) {
-		return inventory[index];
+		return inventory.remove(index);
 	}
 
 	@Override
-	public boolean isUseableByPlayer(EntityPlayer player) 
-	{
+	public boolean isEmpty() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isUsableByPlayer(EntityPlayer player) {
 		return player.getHeldItemMainhand() == invStack;
 	}
 
