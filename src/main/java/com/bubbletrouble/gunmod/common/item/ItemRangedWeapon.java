@@ -122,7 +122,7 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
         ModelLoader.setCustomMeshDefinition(this, stack -> {
      //   	System.out.println(normal);
             InventoryAttachment att = InventoryAttachment.create(stack);
-    		if (att != null) {
+    		if (att.getStackInSlot(0) != ItemStack.EMPTY) {
     			if (att.isScopePresent()) {
     				return scope;
     			} else if (att.isFlashPresent()) {
@@ -193,15 +193,15 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected)
 	{
-		ItemStack leftStack  = null;
-		ItemStack rightStack = null;
+		ItemStack leftStack  = ItemStack.EMPTY;
+		ItemStack rightStack = ItemStack.EMPTY;
 				
 		if(entity instanceof EntityPlayer)
 		{
 			EntityPlayer p = (EntityPlayer) entity;
 			
-			if(p.getHeldItemOffhand() != null &&  p.getHeldItemOffhand().getItem() instanceof ItemRangedWeapon)leftStack = p.getHeldItemOffhand();
-			if(p.getHeldItemMainhand() != null &&  p.getHeldItemMainhand().getItem() instanceof ItemRangedWeapon)rightStack = p.getHeldItemMainhand();
+			if(!p.getHeldItemOffhand().isEmpty() &&  p.getHeldItemOffhand().getItem() instanceof ItemRangedWeapon)leftStack = p.getHeldItemOffhand();
+			if(!p.getHeldItemMainhand().isEmpty() &&  p.getHeldItemMainhand().getItem() instanceof ItemRangedWeapon)rightStack = p.getHeldItemMainhand();
 			
 			if(!p.world.isRemote)
 			{	
@@ -217,7 +217,7 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
 	
 	private void updateServer(ItemStack rightStack, ItemStack leftStack, World world, EntityPlayer p) 
 	{	
-			if(rightStack != null)
+			if(!rightStack.isEmpty())
 			{
 				ItemRangedWeapon rightW = (ItemRangedWeapon) rightStack.getItem();
 				if (rightW.isReloading(rightStack))
@@ -245,7 +245,7 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
 					}
 				}
 			}
-			if(leftStack != null)
+			if(!leftStack.isEmpty())
 			{
 				ItemRangedWeapon leftW = (ItemRangedWeapon) leftStack.getItem();
 				if (leftW.isReloading(leftStack))

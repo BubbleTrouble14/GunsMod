@@ -14,6 +14,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 
 /**
  * @author BubbleTrouble
@@ -34,20 +35,17 @@ public class InventoryAttachment extends AbstractInventory
 
 	public static InventoryAttachment create(ItemStack stack)
 	{
-		if (stack != null && stack.getItem() instanceof ItemRangedWeapon && !(stack.getItem() instanceof NonSupporting))
+		if (!stack.isEmpty() && stack.getItem() instanceof ItemRangedWeapon && !(stack.getItem() instanceof NonSupporting))
 			return new InventoryAttachment(stack);
-		return null;
+		return new InventoryAttachment(ItemStack.EMPTY);
 	}
 
 	private InventoryAttachment(ItemStack stack)
 	{
-	//	inventory.size();
-		ItemStack x = ItemStack.EMPTY;
-	//	inventory.add(1, x);
+		inventory = NonNullList.<ItemStack>withSize(INV_SIZE, ItemStack.EMPTY);
 
-	//	inventory = 1; //new NonNullList<ItemStack>() {INV_SIZE};// ItemStack[INV_SIZE];
 		this.invStack = stack;
-		if (invStack != null && !invStack.hasTagCompound())
+		if (!invStack.isEmpty() && !invStack.hasTagCompound())
 		{
 			invStack.setTagCompound(new NBTTagCompound());
 		}
@@ -83,13 +81,14 @@ public class InventoryAttachment extends AbstractInventory
 		super.markDirty();
 		for (int i = 0; i < getSizeInventory(); ++i)
 		{
-			if (getStackInSlot(i) != null && getStackInSlot(i).getCount() == 0) inventory.set(0, ItemStack.EMPTY); // = null;
+			if (getStackInSlot(i) != ItemStack.EMPTY && getStackInSlot(i).getCount() == 0) inventory.set(0, ItemStack.EMPTY);// = ItemStack.EMPTY; // = null;
 		}
 		writeToNBT(invStack.getTagCompound());
 	}
 
 	private boolean isInvOfType(AttachmentType type)
 	{
+	//	if(inventory[0] == ItemStack.EMPTY) return false;
 		return inventory.get(0) != ItemStack.EMPTY && ((ItemAttachment) inventory.get(0).getItem()).getType().equals(type);
 	}
 
@@ -127,7 +126,7 @@ public class InventoryAttachment extends AbstractInventory
 	@Override
 	public boolean isItemValidForSlot(int index, ItemStack stack)
 	{
-		if (stack != null && stack.getItem() instanceof ItemAttachment)
+		if (stack.getItem() instanceof ItemAttachment)
 		{
 			ItemAttachment item = (ItemAttachment) stack.getItem();
 			Item inv = invStack.getItem();
@@ -158,11 +157,11 @@ public class InventoryAttachment extends AbstractInventory
 	public ItemStack removeStackFromSlot(int index) {
 		return inventory.remove(index);
 	}
-
+	
 	@Override
-	public boolean isEmpty() {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean isEmpty() 
+	{
+		return !inventory.contains(ItemStack.EMPTY);
 	}
 
 	@Override

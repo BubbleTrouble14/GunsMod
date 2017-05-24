@@ -62,7 +62,7 @@ public class ContainerInventoryAttachment extends Container
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int index)
 	{
-		ItemStack itemstack = null;
+		ItemStack itemstack = ItemStack.EMPTY;
 		Slot slot = this.inventorySlots.get(index);
 
 		if (slot != null && slot.getHasStack())
@@ -74,7 +74,7 @@ public class ContainerInventoryAttachment extends Container
 			if (index < ATTACHMENT_SLOT_COUNT)
 			{
 				// try to place in player inventory / action bar
-				if (!this.mergeItemStack(itemstack1, ATTACHMENT_SLOT_COUNT, 37, true)) { return null; }
+				if (!this.mergeItemStack(itemstack1, ATTACHMENT_SLOT_COUNT, 37, true)) { return ItemStack.EMPTY; }
 
 				slot.onSlotChange(itemstack1, itemstack);
 			}
@@ -86,20 +86,20 @@ public class ContainerInventoryAttachment extends Container
 				if (index >= ATTACHMENT_SLOT_COUNT)
 				{
 					// place in custom inventory
-					if (!this.mergeItemStack(itemstack1, 0, ATTACHMENT_SLOT_COUNT, false)) { return null; }
+					if (!this.mergeItemStack(itemstack1, 0, ATTACHMENT_SLOT_COUNT, false)) { return ItemStack.EMPTY; }
 				}
 			}
 
 			if (itemstack1.getCount() == 0)
 			{
-				slot.putStack((ItemStack) null);
+				slot.putStack((ItemStack) ItemStack.EMPTY);
 			}
 			else
 			{
 				slot.onSlotChanged();
 			}
 
-			if (itemstack1.getCount() == itemstack.getCount()) { return null; }
+			if (itemstack1.getCount() == itemstack.getCount()) { return ItemStack.EMPTY; }
 
 			slot.onTake(player, itemstack1);
 		//	slot.onPickupFromSlot(player, itemstack1);
@@ -113,7 +113,9 @@ public class ContainerInventoryAttachment extends Container
 	{
 		// this will prevent the player from interacting with the item that
 		// opened the inventory:
-		if (slot >= 0 && getSlot(slot) != null && getSlot(slot).getStack() == player.getHeldItemMainhand()) { return null; }
+		if (slot >= 0 && getSlot(slot) != null && getSlot(slot).getStack() == player.getHeldItemMainhand()) { return ItemStack.EMPTY; }
+		//TODO Fix the slotClick
+	//	return null;
 		return super.slotClick(slot, button, flag, player);
 	}
 
@@ -146,7 +148,7 @@ public class ContainerInventoryAttachment extends Container
 					continue;
 				}
 
-				if (itemstack1 != null && itemstack1.getItem() == stack.getItem() && (!stack.getHasSubtypes() || stack
+				if (!itemstack1.isEmpty() && itemstack1.getItem() == stack.getItem() && (!stack.getHasSubtypes() || stack
 						.getItemDamage() == itemstack1.getItemDamage()) && ItemStack.areItemStackTagsEqual(stack,
 								itemstack1))
 				{
@@ -187,7 +189,7 @@ public class ContainerInventoryAttachment extends Container
 					continue;
 				}
 
-				if (itemstack1 == null)
+				if (itemstack1.isEmpty())
 				{
 					int l = stack.getCount();
 

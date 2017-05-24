@@ -26,25 +26,32 @@ import net.minecraft.world.World;
 public interface IUpdateAttachments 
 {
 	public default void updateAttachments(ItemStack stackRight,ItemStack stackLeft, EntityPlayer p)
-	{				
-		InventoryAttachment inv = InventoryAttachment.create(stackRight);
-		if (inv != null && inv.isFlashPresent())
+	{		
+		if(!stackRight.isEmpty())
 		{
-			updateFlashlight(p);
+			InventoryAttachment inv = InventoryAttachment.create(stackRight);
+			if (inv.isEmpty() && inv.isFlashPresent())
+			{
+				updateFlashlight(p);
+			}
+			else if (inv.isEmpty() && inv.isLaserPresent())
+			{
+				updateLaser(p);
+			} 
 		}
-		else if (inv != null && inv.isLaserPresent())
+		if(!stackLeft.isEmpty())
 		{
-			updateLaser(p);
-		} 
-		InventoryAttachment invleft = InventoryAttachment.create(stackLeft);
-		if (invleft != null && invleft.isFlashPresent())
-		{
-			updateFlashlight(p);
+			InventoryAttachment invleft = InventoryAttachment.create(stackLeft);
+			if (invleft.isEmpty() && invleft.isFlashPresent())
+			{
+				System.out.println(invleft.isEmpty());
+				updateFlashlight(p);
+			}
+			else if (invleft.isEmpty() && invleft.isLaserPresent())
+			{
+				updateLaser(p);
+			} 
 		}
-		else if (invleft != null && invleft.isLaserPresent())
-		{
-			updateLaser(p);
-		} 
 	}
 	
 	public default void updateFlashlight(Entity entityIn)

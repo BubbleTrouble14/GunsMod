@@ -40,7 +40,7 @@ public abstract class AbstractInventory implements IInventory
 	public ItemStack decrStackSize(int slot, int amount)
 	{
 		ItemStack stack = getStackInSlot(slot);
-		if (stack != null) {
+		if (!stack.isEmpty()) {
 			if (stack.getCount() > amount) {
 				stack = stack.splitStack(amount);
 				markDirty();
@@ -56,7 +56,7 @@ public abstract class AbstractInventory implements IInventory
 	public void setInventorySlotContents(int slot, ItemStack itemstack)
 	{
 		inventory.set(slot, itemstack); //= itemstack;
-		if (itemstack != null && itemstack.getCount() > getInventoryStackLimit()) 
+		if (itemstack != ItemStack.EMPTY && itemstack.getCount() > getInventoryStackLimit()) 
 		{
 			//set stack size
 			itemstack.setCount(getInventoryStackLimit());
@@ -144,7 +144,6 @@ public abstract class AbstractInventory implements IInventory
 		}
 		NBTTagList items = new NBTTagList();
 		for (int i = 0; i < getSizeInventory(); ++i) {
-			if (getStackInSlot(i) != null) {
 				NBTTagCompound item = new NBTTagCompound();
 				item.setByte("Slot", (byte) i);
 				getStackInSlot(i).writeToNBT(item);
@@ -173,5 +172,4 @@ public abstract class AbstractInventory implements IInventory
 			}
 		}
 	}
-	
 }
