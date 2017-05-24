@@ -144,6 +144,7 @@ public abstract class AbstractInventory implements IInventory
 		}
 		NBTTagList items = new NBTTagList();
 		for (int i = 0; i < getSizeInventory(); ++i) {
+			if (!getStackInSlot(i).isEmpty()) {
 				NBTTagCompound item = new NBTTagCompound();
 				item.setByte("Slot", (byte) i);
 				getStackInSlot(i).writeToNBT(item);
