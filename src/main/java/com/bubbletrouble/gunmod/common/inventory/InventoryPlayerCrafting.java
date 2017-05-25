@@ -39,7 +39,7 @@ public class InventoryPlayerCrafting implements IInventory
         int i;
         for (i = 0; i < this.getSizeInventory(); ++i)
         {
-            this.setInventorySlotContents(i, (ItemStack) null);
+            this.setInventorySlotContents(i, (ItemStack) ItemStack.EMPTY);
         }
         for (i = 0; i < nbt.tagCount(); ++i)
         {
@@ -59,7 +59,7 @@ public class InventoryPlayerCrafting implements IInventory
         for (int i = 0; i < this.getSizeInventory(); ++i)
         {
             ItemStack itemstack = this.getStackInSlot(i);
-            if (itemstack != null)
+            if (!itemstack.isEmpty())
             {
                 NBTTagCompound nbttagcompound = new NBTTagCompound();
                 nbttagcompound.setByte("Slot", (byte) i);
@@ -103,19 +103,19 @@ public class InventoryPlayerCrafting implements IInventory
     @Override
     public ItemStack getStackInSlot(int index)
     {
-        return index >= 0 && index < this.inventoryContents.length ? this.inventoryContents[index] : null;
+        return index >= 0 && index < this.inventoryContents.length ? this.inventoryContents[index] : ItemStack.EMPTY;
     }
 
     @Override
     public ItemStack decrStackSize(int index, int count)
     {
-        if (this.inventoryContents[index] != null)
+        if (!this.inventoryContents[index].isEmpty())
         {
             ItemStack itemstack;
             if (this.inventoryContents[index].getCount() <= count)
             {
                 itemstack = this.inventoryContents[index];
-                this.inventoryContents[index] = null;
+                this.inventoryContents[index] = ItemStack.EMPTY;
                 this.markDirty();
                 return itemstack;
             }
@@ -124,7 +124,7 @@ public class InventoryPlayerCrafting implements IInventory
                 itemstack = this.inventoryContents[index].splitStack(count);
                 if (this.inventoryContents[index].getCount() == 0)
                 {
-                    this.inventoryContents[index] = null;
+                    this.inventoryContents[index] = ItemStack.EMPTY;
                 }
                 this.markDirty();
                 return itemstack;
@@ -132,7 +132,7 @@ public class InventoryPlayerCrafting implements IInventory
         }
         else
         {
-            return null;
+            return ItemStack.EMPTY;
         }
     }
 
@@ -140,7 +140,7 @@ public class InventoryPlayerCrafting implements IInventory
     public void setInventorySlotContents(int index, ItemStack stack)
     {
         this.inventoryContents[index] = stack;
-        if (stack != null && stack.getCount() > this.getInventoryStackLimit())
+        if (!stack.isEmpty() && stack.getCount() > this.getInventoryStackLimit())
         {
             stack.setCount(this.getInventoryStackLimit()); // = this.getInventoryStackLimit();
         }
@@ -184,7 +184,7 @@ public class InventoryPlayerCrafting implements IInventory
     {
         for (int i = 0; i < this.inventoryContents.length; ++i)
         {
-            this.inventoryContents[i] = null;
+            this.inventoryContents[i] = ItemStack.EMPTY;
         }
     }
 
@@ -197,15 +197,15 @@ public class InventoryPlayerCrafting implements IInventory
 	@Override
 	public ItemStack removeStackFromSlot(int index) 
 	{
-        if (this.inventoryContents[index] != null)
+        if (!this.inventoryContents[index].isEmpty())
         {
             ItemStack itemstack = this.inventoryContents[index];
-            this.inventoryContents[index] = null;
+            this.inventoryContents[index] = ItemStack.EMPTY;
             return itemstack;
         }
         else
         {
-            return null;
+            return ItemStack.EMPTY;
         }
 	}
 

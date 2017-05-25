@@ -1,6 +1,7 @@
 package com.bubbletrouble.gunmod.common.proxy;
 
 import com.bubbletrouble.gunmod.Main;
+import com.bubbletrouble.gunmod.common.crafting.CrafterCraftingManager;
 import com.bubbletrouble.gunmod.common.handlers.GuiHandler;
 import com.bubbletrouble.gunmod.common.network.LeftGunReloadStarted;
 import com.bubbletrouble.gunmod.common.network.LeftGunShoot;
@@ -9,6 +10,7 @@ import com.bubbletrouble.gunmod.common.network.RecoilLeftGun;
 import com.bubbletrouble.gunmod.common.network.RecoilRightGun;
 import com.bubbletrouble.gunmod.common.network.RightGunReloadStarted;
 import com.bubbletrouble.gunmod.common.network.RightGunShoot;
+import com.bubbletrouble.gunmod.common.network.UpdateCrafterToCraftItem;
 import com.bubbletrouble.gunmod.init.RangedWeapons;
 import com.bubbletrouble.gunmod.init.Recipes;
 
@@ -28,7 +30,7 @@ public abstract class CommonProxy
 	public enum GUI
 	{
 
-		ATTACHMENTS;
+		ATTACHMENTS, CRAFTER;
 		public final int id;
 
 		GUI()
@@ -54,6 +56,7 @@ public abstract class CommonProxy
 	public void init(FMLInitializationEvent event)
 	{
 		registerEventHandlers();
+		CrafterCraftingManager.registerCraftingRecipes();
 		Recipes.init();
 	}
 
@@ -82,7 +85,7 @@ public abstract class CommonProxy
 		modChannel.registerMessage(OpenAttachmentInventory.Handler.class, OpenAttachmentInventory.class, id++, Side.SERVER);
 		modChannel.registerMessage(RecoilLeftGun.Handler.class, RecoilLeftGun.class, id++, Side.CLIENT);
 		modChannel.registerMessage(RecoilRightGun.Handler.class, RecoilRightGun.class, id++, Side.CLIENT);
-
+		modChannel.registerMessage(UpdateCrafterToCraftItem.Handler.class, UpdateCrafterToCraftItem.class, id++, Side.SERVER);
 	}
 	
 	public EntityPlayer getPlayer()

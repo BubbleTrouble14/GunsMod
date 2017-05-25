@@ -19,6 +19,7 @@ import com.bubbletrouble.gunmod.common.item.ItemShotgun;
 import com.bubbletrouble.gunmod.common.item.ItemSimplePistol;
 import com.bubbletrouble.gunmod.common.item.attachments.AttachmentType;
 import com.bubbletrouble.gunmod.common.item.attachments.ItemAttachment;
+import com.bubbletrouble.gunmod.common.tileentity.TECrafter;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.util.ResourceLocation;
@@ -50,6 +51,8 @@ public class RangedWeapons
 		block_crafter = new BlockCrafter();
 		green_screen = new BlockGreenScreen();
 		grenade = new ItemGrenade();
+		
+		GameRegistry.registerTileEntity(TECrafter.class, "TE_Crafter");
 		
 		//Guns
 		fabricated_pistol = new ItemFabricatedPistol();

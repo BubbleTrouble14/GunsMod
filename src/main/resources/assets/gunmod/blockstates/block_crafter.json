@@ -1,0 +1,10 @@
+{
+	"variants": {
+		"normal": {
+			"model": "gunmod:block_crafter"
+		},
+		"inventory": {
+			"model": "gunmod:block_crafter"
+		}
+	}
+}

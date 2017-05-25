@@ -44,7 +44,7 @@ public class ShapelessRecipe implements IRecipes
         for (int i = 0; i < itemStacksInventory.length; ++i)
         {
             ItemStack itemstack = itemStacksInventory[i];
-            if (itemstack != null)
+            if (!itemstack.isEmpty())
             {
                 Iterator recipeIterator = recipelist.iterator();
                 while (recipeIterator.hasNext())
@@ -57,7 +57,7 @@ public class ShapelessRecipe implements IRecipes
                         itemStacksInventory[i].setCount(itemstackInRecipe.getCount());
                         if (itemStacksInventory[i].getCount() <= 0)
                         {
-                            itemStacksInventory[i] = null;
+                            itemStacksInventory[i] = ItemStack.EMPTY;
                         }
                         break;
                     }
@@ -100,7 +100,7 @@ public class ShapelessRecipe implements IRecipes
         for (int i = 0; i < itemStacksInventory.length; ++i)
         {
             ItemStack itemstack = itemStacksInventory[i];
-            if (itemstack != null)
+            if (!itemstack.isEmpty())
             {
                 if (itemstack.getItem() == itemstackInRecipe.getItem()
                         && (itemstackInRecipe.getMetadata() == ANY || itemstack.getMetadata() == itemstackInRecipe.getMetadata()))
