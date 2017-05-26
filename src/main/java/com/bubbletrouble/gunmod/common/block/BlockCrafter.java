@@ -3,7 +3,7 @@ package com.bubbletrouble.gunmod.common.block;
 import com.bubbletrouble.gunmod.Main;
 import com.bubbletrouble.gunmod.common.tileentity.TECrafter;
 
-import net.minecraft.block.BlockContainer;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -22,11 +22,14 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockCrafter extends BlockContainer
+public class BlockCrafter extends Block 
 {
-	public BlockCrafter()
+    private int guiID;
+	
+	public BlockCrafter(int guiID)
 	{
 		super(Material.WOOD);
+		this.guiID = guiID;
 		this.setHardness(0.5F);
 		this.setCreativeTab(Main.tabGuns);
 		this.setUnlocalizedName("block_crafter");
@@ -36,10 +39,15 @@ public class BlockCrafter extends BlockContainer
 	}
 	
 	@Override
-	public TileEntity createNewTileEntity(World worldIn, int meta) 
+	 public TileEntity createTileEntity(World world, IBlockState state)
+	 {
+		 return new TECrafter();
+	 }
+	
+	@Override
+	public boolean hasTileEntity(IBlockState state) 
 	{
-	//	return null;
-		return new TECrafter();
+		return true; 
 	}
 	
     @SideOnly(Side.CLIENT)
@@ -62,13 +70,10 @@ public class BlockCrafter extends BlockContainer
     
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
-    		EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-    	if (!playerIn.isSneaking())
-		{
-			playerIn.openGui(Main.instance(), 1, worldIn, pos.getX(), pos.getY(),
+    		EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+    {
+			playerIn.openGui(Main.instance(), guiID, worldIn, pos.getX(), pos.getY(),
 					pos.getZ());
-			return true;
-		}
-		return false;
+			return true;		
     }
 }

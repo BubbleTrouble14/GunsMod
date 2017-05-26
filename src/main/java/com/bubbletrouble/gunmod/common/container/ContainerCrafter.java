@@ -32,7 +32,7 @@ public class ContainerCrafter extends Container
 		/* MP inventory */
 		// Recipe blueprint slot
 		this.addSlotToContainer(new SlotBlueprintInventory(inventoryBlueprints,
-				TECrafter.BLUEPRINT_SLOT, 33, 16));
+				tileInventory.BLUEPRINT_SLOT, 33, 16));
 
 		// Input & Output slots
 		for (int row = 0; row < 3; row++)
@@ -157,38 +157,28 @@ public class ContainerCrafter extends Container
 	// receiving side, your int value will be wrong until the second short
 	// arrives. Use a custom packet instead.
 	@Override
-	public void detectAndSendChanges()
-	{
+	public void detectAndSendChanges() {
 		super.detectAndSendChanges();
 
 		boolean allFieldsHaveChanged = false;
-		boolean fieldHasChanged[] = new boolean[tileInventory.getFieldCount()];
-		if (cachedFields == null)
-		{
+		boolean fieldHasChanged [] = new boolean[tileInventory.getFieldCount()];
+		if (cachedFields == null) {
 			cachedFields = new int[tileInventory.getFieldCount()];
 			allFieldsHaveChanged = true;
 		}
-		for (int i = 0; i < cachedFields.length; ++i)
-		{
-			if (allFieldsHaveChanged || cachedFields[i] != tileInventory.getField(i))
-			{
+		for (int i = 0; i < cachedFields.length; ++i) {
+			if (allFieldsHaveChanged || cachedFields[i] != tileInventory.getField(i)) {
 				cachedFields[i] = tileInventory.getField(i);
 				fieldHasChanged[i] = true;
 			}
 		}
 
-		// go through the list of crafters (players using this container) and
-		// update them if necessary
-		for (int i = 0; i < this.listeners.size(); ++i)
-		{
-			IContainerListener icrafting = (IContainerListener) this.listeners.get(i);
-			for (int fieldID = 0; fieldID < tileInventory.getFieldCount(); ++fieldID)
-			{
-				if (fieldHasChanged[fieldID])
-				{
-					// Note that although sendProgressBarUpdate takes 2 ints on
-					// a server these are truncated to shorts
-					icrafting.sendProgressBarUpdate(this, fieldID, cachedFields[fieldID]);
+		// go through the list of listeners (players using this container) and update them if necessary
+    for (IContainerListener listener : this.listeners) {
+			for (int fieldID = 0; fieldID < tileInventory.getFieldCount(); ++fieldID) {
+				if (fieldHasChanged[fieldID]) {
+					// Note that although sendProgressBarUpdate takes 2 ints on a server these are truncated to shorts
+          listener.sendProgressBarUpdate(this, fieldID, cachedFields[fieldID]);
 				}
 			}
 		}

@@ -19,6 +19,7 @@ import com.bubbletrouble.gunmod.common.item.ItemShotgun;
 import com.bubbletrouble.gunmod.common.item.ItemSimplePistol;
 import com.bubbletrouble.gunmod.common.item.attachments.AttachmentType;
 import com.bubbletrouble.gunmod.common.item.attachments.ItemAttachment;
+import com.bubbletrouble.gunmod.common.proxy.CommonProxy;
 import com.bubbletrouble.gunmod.common.tileentity.TECrafter;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -48,9 +49,9 @@ public class RangedWeapons
 	public static void init()
 	{
 		blockLight = new BlockLight();
-		block_crafter = new BlockCrafter();
+		block_crafter = new BlockCrafter(CommonProxy.GUI.CRAFTER.getID());
 		green_screen = new BlockGreenScreen();
-		grenade = new ItemGrenade();
+	//	grenade = new ItemGrenade();
 		
 		GameRegistry.registerTileEntity(TECrafter.class, "TE_Crafter");
 		
@@ -127,8 +128,8 @@ public class RangedWeapons
 					10, true);
 			EntityHandler.registerModEntity(advanced_bullet, EntityAdvancedBullet.class, "advanced_bullet", Main.instance(), 64, 10,
 					true);
-			EntityHandler.registerModEntity(grenade_entity, EntityGrenade.class, "grenade_entity", Main.instance(), 64, 10,
-					true);
+	//		EntityHandler.registerModEntity(grenade_entity, EntityGrenade.class, "grenade_entity", Main.instance(), 64, 10,
+		//			true);
 		//	EntityHandler.registerModEntity(EntityRocketPropelledGrenade.class, "rocket_propelled_grenade", Main
 		//			.instance(), 64, 10, true);	
 	}

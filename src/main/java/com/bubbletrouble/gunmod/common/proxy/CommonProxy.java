@@ -30,10 +30,11 @@ public abstract class CommonProxy
 	public enum GUI
 	{
 
-		ATTACHMENTS, CRAFTER;
+		ATTACHMENTS(0),
+		CRAFTER(1);
 		public final int id;
 
-		GUI()
+		GUI(int id)
 		{
 			this.id = getNextId();
 		}
@@ -43,6 +44,11 @@ public abstract class CommonProxy
 		private static int getNextId()
 		{
 			return idCounter++;
+		}
+		
+		public int getID()
+		{
+			return id;
 		}
 	}
 
