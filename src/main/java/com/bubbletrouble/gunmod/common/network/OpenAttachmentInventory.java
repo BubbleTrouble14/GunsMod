@@ -1,6 +1,8 @@
 package com.bubbletrouble.gunmod.common.network;
 
 import com.bubbletrouble.gunmod.Main;
+import com.bubbletrouble.gunmod.common.item.ItemRangedWeapon;
+import com.bubbletrouble.gunmod.common.item.attachments.NonSupporting;
 import com.bubbletrouble.gunmod.common.proxy.CommonProxy;
 
 import io.netty.buffer.ByteBuf;
@@ -50,7 +52,14 @@ public class OpenAttachmentInventory implements IMessage
 	{
 		if (player != null)
 		{
-			player.openGui(Main.instance(), CommonProxy.GUI.ATTACHMENTS.id, player.world, 0, 0, 0);
+			if(player.getHeldItemMainhand().getItem() instanceof ItemRangedWeapon)
+			{
+				ItemRangedWeapon w = (ItemRangedWeapon) player.getHeldItemMainhand().getItem();
+				if(!(w instanceof NonSupporting))
+				{
+					player.openGui(Main.instance(), CommonProxy.GUI.ATTACHMENTS.id, player.world, 0, 0, 0);
+				}
+			}
 		}
 	}
 }

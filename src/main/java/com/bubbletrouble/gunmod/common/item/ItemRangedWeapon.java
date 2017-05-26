@@ -14,6 +14,7 @@ import com.bubbletrouble.gunmod.Main;
 import com.bubbletrouble.gunmod.common.entity.EntityProjectile;
 import com.bubbletrouble.gunmod.common.entity.ProjectileType;
 import com.bubbletrouble.gunmod.common.inventory.InventoryAttachment;
+import com.bubbletrouble.gunmod.common.item.attachments.NonSupporting;
 import com.bubbletrouble.gunmod.common.network.LeftGunShoot;
 import com.bubbletrouble.gunmod.common.network.RecoilLeftGun;
 import com.bubbletrouble.gunmod.common.network.RecoilRightGun;
@@ -632,9 +633,13 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
 	public void effectShoot(EntityPlayer p, ItemStack stack, World world, double x, double y, double z, float yaw,
 			float pitch) {
 		String soundPath = Main.MODID + ":" + this.getUnlocalizedName() + "_shoot";
-		InventoryAttachment att = InventoryAttachment.create(stack);
-		if (att != null && att.isSilencerPresent())
-			soundPath = soundPath + "_silenced";
+		ItemRangedWeapon w = (ItemRangedWeapon) stack.getItem();
+		if(!(w instanceof NonSupporting))
+		{
+			InventoryAttachment att = InventoryAttachment.create(stack);
+			if (att != null && att.isSilencerPresent())
+				soundPath = soundPath + "_silenced";
+		}
 		world.playSound(p, p.getPosition(), SoundEvent.REGISTRY.getObject(new ResourceLocation(soundPath)),
 				SoundCategory.PLAYERS, 0.7F, 0.9F / (getItemRand().nextFloat() * 0.2F + 0.0F));
 

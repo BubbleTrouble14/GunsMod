@@ -187,11 +187,12 @@ public class TECrafter extends TileEntity implements IInventory, ITickable
 
 	// Create and initialize the itemStacks variable that will store the
 	// itemStacks
-	private ItemStack[] itemStacks = new ItemStack[TOTAL_SLOTS_COUNT];
+	private static ItemStack[] itemStacks = new ItemStack[TOTAL_SLOTS_COUNT];
 
 	@SuppressWarnings("rawtypes")
 	public TECrafter()
 	{
+	//	Arrays.fill(itemStacks, ItemStack.EMPTY);
 		// FIXME - Is there another way to do this? See note in RecipeHandler
 		numBlueprints = CrafterCraftingManager.getInstance().getNumRecipes();
 		// numBlueprints = RecipeHandler.numSmithyCraftingRecipes;
@@ -522,6 +523,11 @@ public class TECrafter extends TileEntity implements IInventory, ITickable
 	{
 		return CrafterCraftingManager.getInstance().isItemInRecipe(stack);
 	}
+	
+	public static void setStacksEmpty()
+	{
+		Arrays.fill(itemStacks, ItemStack.EMPTY);
+	}
 
 	// ------------------------------
 
@@ -545,10 +551,11 @@ public class TECrafter extends TileEntity implements IInventory, ITickable
 		// as slot=1, id=2353, count=1, etc
 		// Each of these NBTTagCompound are then inserted into NBTTagList, which
 		// is similar to an array.
+		System.out.println(itemStacks.length);
 		NBTTagList dataForAllSlots = new NBTTagList();
 		for (int i = 0; i < this.itemStacks.length; ++i)
 		{
-			if (!this.itemStacks[i].isEmpty())
+			if (!itemStacks[i].isEmpty())
 			{
 				NBTTagCompound dataForThisSlot = new NBTTagCompound();
 				dataForThisSlot.setByte("Slot", (byte) i);
@@ -577,7 +584,8 @@ public class TECrafter extends TileEntity implements IInventory, ITickable
 											// a listing
 		NBTTagList dataForAllSlots = nbtTagCompound.getTagList("Items", NBT_TYPE_COMPOUND);
 
-		Arrays.fill(itemStacks, ItemStack.EMPTY); // set all slots to empty
+		Arrays.fill(itemStacks, ItemStack.EMPTY);
+		System.out.println(itemStacks);// set all slots to empty
 		for (int i = 0; i < dataForAllSlots.tagCount(); ++i)
 		{
 			NBTTagCompound dataForOneSlot = dataForAllSlots.getCompoundTagAt(i);
@@ -601,7 +609,6 @@ public class TECrafter extends TileEntity implements IInventory, ITickable
 	}
 	  
 	@Override
-	@Nullable
 	public SPacketUpdateTileEntity getUpdatePacket()
 	{
 		NBTTagCompound nbtTagCompound = new NBTTagCompound();
@@ -710,8 +717,14 @@ public class TECrafter extends TileEntity implements IInventory, ITickable
 
 	@Override
 	public boolean isEmpty() {
-		// TODO Auto-generated method stub
-		return false;
+        for (ItemStack itemstack : this.itemStacks)
+        {
+            if (!itemstack.isEmpty())
+            {
+                return false;
+            }
+        }
+        return true;
 	}
 
 	@Override

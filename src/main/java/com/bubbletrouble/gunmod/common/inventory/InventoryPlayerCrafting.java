@@ -210,9 +210,16 @@ public class InventoryPlayerCrafting implements IInventory
 	}
 
 	@Override
-	public boolean isEmpty() {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean isEmpty() 
+	{
+        for (ItemStack itemstack : this.inventoryContents)
+        {
+            if (!itemstack.isEmpty())
+            {
+                return false;
+            }
+        }
+        return true;
 	}
 
     /**
@@ -220,8 +227,8 @@ public class InventoryPlayerCrafting implements IInventory
      */
 	
 	@Override
-	public boolean isUsableByPlayer(EntityPlayer player) {
-		// TODO Auto-generated method stub
+	public boolean isUsableByPlayer(EntityPlayer player) 
+	{
 		return false;
 	}
 }

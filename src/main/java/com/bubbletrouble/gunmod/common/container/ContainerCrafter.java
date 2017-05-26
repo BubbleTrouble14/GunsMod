@@ -15,7 +15,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class ContainerCrafter extends Container
 {
 
-	private TECrafter tileInventorySmithy;
+	private TECrafter tileInventory;
 	private IInventory inventoryBlueprints;
 	// These store cache values, used by the server to only update the client
 	// side tile entity when values have changed
@@ -26,7 +26,7 @@ public class ContainerCrafter extends Container
 	{
 	//	LogHelper.info("ContainerMP: constructor called.");
 
-		this.tileInventorySmithy = tileInventorySmithy;
+		this.tileInventory = tileInventorySmithy;
 	//	inventoryBlueprints = tileInventorySmithy.inventoryBlueprints;
 
 		/* MP inventory */
@@ -40,7 +40,7 @@ public class ContainerCrafter extends Container
 			for (int col = 0; col < 9; col++)
 			{
 				int slotIndex = col + row * 9;
-				addSlotToContainer(new SlotRecipeInventory(this.tileInventorySmithy, slotIndex,
+				addSlotToContainer(new SlotRecipeInventory(this.tileInventory, slotIndex,
 						8 + col * 18, RECIPE_ITEM_SLOT_YPOS + row * 18));
 			}
 		}
@@ -64,15 +64,15 @@ public class ContainerCrafter extends Container
 			}
 		}
 
-		this.tileInventorySmithy.setGuiOpen(true, false);
+		this.tileInventory.setGuiOpen(true, false);
 	}
+	
+	 public void addListener(IContainerListener listener)
+	 {
+		 super.addListener(listener);
+		 listener.sendAllWindowProperties(this, tileInventory);
+	 }
 
-//	@Override
-//	public void addCraftingToCrafters(IContainerListener listener)
-	//{
-	//	super.addCraftingToCrafters(listener);
-	//	listener.func_175173_a(this, tileInventorySmithy);
-	//}
 
 	/* Nothing to do, this is a furnace type container */
 	@Override
@@ -102,7 +102,7 @@ public class ContainerCrafter extends Container
 		// Check if the slot clicked is one of the vanilla container slots
 		else if (sourceSlotIndex >= nonPlayerSlotsCount && sourceSlotIndex < 36 + nonPlayerSlotsCount)
 		{
-			if (tileInventorySmithy.isItemValidForRecipeSlot(sourceStack))
+			if (tileInventory.isItemValidForRecipeSlot(sourceStack))
 			{
 				// This is a vanilla container slot so merge the stack into the
 				// Smithy inventory
@@ -138,7 +138,7 @@ public class ContainerCrafter extends Container
 	@Override
 	public boolean canInteractWith(EntityPlayer playerIn)
 	{
-		return tileInventorySmithy.isUsableByPlayer(playerIn);
+		return tileInventory.isUsableByPlayer(playerIn);
 	}
 
 	// This is where you check if any values have changed and if so send an
@@ -162,17 +162,17 @@ public class ContainerCrafter extends Container
 		super.detectAndSendChanges();
 
 		boolean allFieldsHaveChanged = false;
-		boolean fieldHasChanged[] = new boolean[tileInventorySmithy.getFieldCount()];
+		boolean fieldHasChanged[] = new boolean[tileInventory.getFieldCount()];
 		if (cachedFields == null)
 		{
-			cachedFields = new int[tileInventorySmithy.getFieldCount()];
+			cachedFields = new int[tileInventory.getFieldCount()];
 			allFieldsHaveChanged = true;
 		}
 		for (int i = 0; i < cachedFields.length; ++i)
 		{
-			if (allFieldsHaveChanged || cachedFields[i] != tileInventorySmithy.getField(i))
+			if (allFieldsHaveChanged || cachedFields[i] != tileInventory.getField(i))
 			{
-				cachedFields[i] = tileInventorySmithy.getField(i);
+				cachedFields[i] = tileInventory.getField(i);
 				fieldHasChanged[i] = true;
 			}
 		}
@@ -182,7 +182,7 @@ public class ContainerCrafter extends Container
 		for (int i = 0; i < this.listeners.size(); ++i)
 		{
 			IContainerListener icrafting = (IContainerListener) this.listeners.get(i);
-			for (int fieldID = 0; fieldID < tileInventorySmithy.getFieldCount(); ++fieldID)
+			for (int fieldID = 0; fieldID < tileInventory.getFieldCount(); ++fieldID)
 			{
 				if (fieldHasChanged[fieldID])
 				{
@@ -207,7 +207,7 @@ public class ContainerCrafter extends Container
 		// "client" : "server"));
 		// LogHelper.info("ContainerInventorySmithy-updateProgressBar: id = " +
 		// id + ", data = " + data);
-		tileInventorySmithy.setField(id, data);
+		tileInventory.setField(id, data);
 	}
 
 	// SlotRecipeInventory is a slot for recipe items
@@ -223,7 +223,7 @@ public class ContainerCrafter extends Container
 		@Override
 		public boolean isItemValid(ItemStack stack)
 		{
-			return tileInventorySmithy.isItemValidForRecipeSlot(stack);
+			return tileInventory.isItemValidForRecipeSlot(stack);
 		}
 	}
 

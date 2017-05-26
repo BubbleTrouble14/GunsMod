@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import com.bubbletrouble.gunmod.common.inventory.InventoryAttachment;
+import com.bubbletrouble.gunmod.common.item.attachments.NonSupporting;
 import com.bubbletrouble.gunmod.init.RangedWeapons;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
@@ -29,28 +30,36 @@ public interface IUpdateAttachments
 	{		
 		if(!stackRight.isEmpty())
 		{
-			InventoryAttachment inv = InventoryAttachment.create(stackRight);
-			if (inv.isEmpty() && inv.isFlashPresent())
+			ItemRangedWeapon w = (ItemRangedWeapon) stackRight.getItem();
+			if(!(w instanceof NonSupporting))
 			{
-				updateFlashlight(p);
+				InventoryAttachment inv = InventoryAttachment.create(stackRight);
+				if (inv.isEmpty() && inv.isFlashPresent())
+				{
+					updateFlashlight(p);
+				}
+				else if (inv.isEmpty() && inv.isLaserPresent())
+				{
+					updateLaser(p);
+				} 
 			}
-			else if (inv.isEmpty() && inv.isLaserPresent())
-			{
-				updateLaser(p);
-			} 
 		}
 		if(!stackLeft.isEmpty())
 		{
-			InventoryAttachment invleft = InventoryAttachment.create(stackLeft);
-			if (invleft.isEmpty() && invleft.isFlashPresent())
+			ItemRangedWeapon w = (ItemRangedWeapon) stackLeft.getItem();
+			if(!(w instanceof NonSupporting))
 			{
-				System.out.println(invleft.isEmpty());
-				updateFlashlight(p);
+				InventoryAttachment invleft = InventoryAttachment.create(stackLeft);
+				if (invleft.isEmpty() && invleft.isFlashPresent())
+				{
+					System.out.println(invleft.isEmpty());
+					updateFlashlight(p);
+				}
+				else if (invleft.isEmpty() && invleft.isLaserPresent())
+				{
+					updateLaser(p);
+				}
 			}
-			else if (invleft.isEmpty() && invleft.isLaserPresent())
-			{
-				updateLaser(p);
-			} 
 		}
 	}
 	
