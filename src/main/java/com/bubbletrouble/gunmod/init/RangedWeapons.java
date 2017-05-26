@@ -5,7 +5,6 @@ import com.bubbletrouble.gunmod.common.block.BlockCrafter;
 import com.bubbletrouble.gunmod.common.block.BlockGreenScreen;
 import com.bubbletrouble.gunmod.common.block.BlockLight;
 import com.bubbletrouble.gunmod.common.entity.EntityAdvancedBullet;
-import com.bubbletrouble.gunmod.common.entity.EntityGrenade;
 import com.bubbletrouble.gunmod.common.entity.EntitySimpleBullet;
 import com.bubbletrouble.gunmod.common.entity.EntitySimpleRifleAmmo;
 import com.bubbletrouble.gunmod.common.entity.EntitySimpleShotgunAmmo;
@@ -50,7 +49,7 @@ public class RangedWeapons
 	{
 		blockLight = new BlockLight();
 		block_crafter = new BlockCrafter(CommonProxy.GUI.CRAFTER.getID());
-		green_screen = new BlockGreenScreen();
+	//	green_screen = new BlockGreenScreen();
 	//	grenade = new ItemGrenade();
 		
 		GameRegistry.registerTileEntity(TECrafter.class, "TE_Crafter");
@@ -96,7 +95,7 @@ public class RangedWeapons
     	longneck_rifle.initModel();
     	shotgun.initModel();
     	block_crafter.initModel();
-    	green_screen.initModel();
+  //  	green_screen.initModel();
     	
     	//Attachments 
         ModelLoader.setCustomModelResourceLocation(scope, 0, new ModelResourceLocation(Main.MODID + ":" + "scope" , "inventory"));
