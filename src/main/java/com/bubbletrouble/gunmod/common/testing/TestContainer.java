@@ -1,4 +1,6 @@
-package com.bubbletrouble.gunmod.common.capaility;
+package com.bubbletrouble.gunmod.common.testing;
+
+import com.bubbletrouble.gunmod.common.capaility.ItemContainer;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -21,7 +23,7 @@ public class TestContainer extends CommonContainer
 	{
 		super(invPlayer, p);
 		
-		IItemHandler inv = p.getHeldItem(EnumHand.MAIN_HAND).getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		IItemHandler inv = p.getHeldItemMainhand().getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		
 		for (int col = 0; col < ATTACHMENT_SLOT_COUNT; col++)
 		{
@@ -100,7 +102,7 @@ public class TestContainer extends CommonContainer
 		@Override
 		public boolean isItemValid(ItemStack stack)
 		{
-			return !(stack.getItem() instanceof ItemTest);
+			return !(stack.getItem() instanceof ItemContainer);
 		}
 
 	}

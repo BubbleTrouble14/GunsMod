@@ -1,4 +1,4 @@
-package com.bubbletrouble.gunmod.common.capaility;
+package com.bubbletrouble.gunmod.common.testing;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;

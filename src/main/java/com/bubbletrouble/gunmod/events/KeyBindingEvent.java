@@ -4,6 +4,7 @@ import com.bubbletrouble.gunmod.Main;
 import com.bubbletrouble.gunmod.common.item.ItemRangedWeapon;
 import com.bubbletrouble.gunmod.common.network.LeftGunReloadStarted;
 import com.bubbletrouble.gunmod.common.network.OpenAttachmentInventory;
+import com.bubbletrouble.gunmod.common.network.OpenItemInventory;
 import com.bubbletrouble.gunmod.common.network.RightGunReloadStarted;
 import com.bubbletrouble.gunmod.utils.KeyBindings;
 
@@ -31,6 +32,16 @@ public class KeyBindingEvent
 			if(player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() instanceof ItemRangedWeapon)
 			{
 				Main.modChannel.sendToServer(new OpenAttachmentInventory());
+			}
+		}
+		else if (KeyBindings.inventory.isPressed()) 
+		{
+			//if (player.getHeldItemMainhand() == null || event.getStack().isEmpty()) return;
+			ItemStack stack;
+		//	ItemStack.field_190927_a.;
+			if(player.getHeldItemMainhand().isItemEnchanted())
+			{
+				Main.modChannel.sendToServer(new OpenItemInventory());
 			}
 		}
 	}

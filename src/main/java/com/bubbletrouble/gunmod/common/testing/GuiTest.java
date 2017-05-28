@@ -1,4 +1,4 @@
-package com.bubbletrouble.gunmod.common.capaility;
+package com.bubbletrouble.gunmod.common.testing;
 
 import com.bubbletrouble.gunmod.Main;
 
@@ -37,4 +37,18 @@ public class GuiTest extends GuiContainer {
 		this.drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
 		
 	}
+	
+	@Override
+    public void onGuiClosed()
+    {
+	//TODO	Main.modChannel.sendToServer(new setAttachment());	
+		System.out.println("closed");
+//		EntityPlayer p = Minecraft.getMinecraft().player;
+//		super.onGuiClosed();
+//		if(p.getHeldItemMainhand() != null && p.getHeldItemMainhand().getItem() instanceof ItemRangedWeapon)
+//		{
+//			ItemRangedWeapon w = (ItemRangedWeapon)p.getHeldItemMainhand().getItem();
+//			w.setUpdateModel(p.getHeldItemMainhand(), p, true);		
+//		}
+    }
 }

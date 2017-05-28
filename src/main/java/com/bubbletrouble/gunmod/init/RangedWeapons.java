@@ -4,7 +4,8 @@ import com.bubbletrouble.gunmod.Main;
 import com.bubbletrouble.gunmod.common.block.BlockCrafter;
 import com.bubbletrouble.gunmod.common.block.BlockGreenScreen;
 import com.bubbletrouble.gunmod.common.block.BlockLight;
-import com.bubbletrouble.gunmod.common.capaility.ItemTest;
+import com.bubbletrouble.gunmod.common.capaility.ItemContainer;
+import com.bubbletrouble.gunmod.common.capaility.ItemInventoryBase;
 import com.bubbletrouble.gunmod.common.entity.EntityAdvancedBullet;
 import com.bubbletrouble.gunmod.common.entity.EntitySimpleBullet;
 import com.bubbletrouble.gunmod.common.entity.EntitySimpleRifleAmmo;
@@ -45,13 +46,13 @@ public class RangedWeapons
 	public static BlockCrafter block_crafter;
 	public static BlockGreenScreen green_screen;
 	public static ItemGrenade grenade;
-	public static ItemTest item_test;
+	public static ItemInventoryBase item_test;
 
 	public static void init()
 	{
 		blockLight = new BlockLight();
 		block_crafter = new BlockCrafter(CommonProxy.GUI.CRAFTER.getID());
-		item_test = new ItemTest();
+		item_test = new ItemInventoryBase("item_test", 1);
 	//	green_screen = new BlockGreenScreen();
 	//	grenade = new ItemGrenade();
 		
@@ -92,6 +93,7 @@ public class RangedWeapons
     @SideOnly(Side.CLIENT)
     public static void initModels() 
     {
+    	item_test.initModel();
     	//Guns
     	fabricated_pistol.initModel();
     	simple_pistol.initModel();

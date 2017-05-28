@@ -19,6 +19,7 @@ import com.bubbletrouble.gunmod.common.network.LeftGunShoot;
 import com.bubbletrouble.gunmod.common.network.RecoilLeftGun;
 import com.bubbletrouble.gunmod.common.network.RecoilRightGun;
 import com.bubbletrouble.gunmod.common.network.RightGunShoot;
+import com.bubbletrouble.gunmod.common.testing.InventoryCapability;
 import com.bubbletrouble.gunmod.events.KeyBindingEvent;
 import com.bubbletrouble.gunmod.utils.I18n;
 import com.mojang.realmsclient.gui.ChatFormatting;
@@ -40,7 +41,6 @@ import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.NonNullList;
@@ -51,7 +51,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -108,6 +108,12 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
 		this.twoHanded = twoHanded;	
 	}
 	
+	@Override
+	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) 
+	{
+		return new InventoryCapability(1, stack, nbt);
+	}
+	
 	@SideOnly(Side.CLIENT)
     public void initModel() 
 	{
@@ -122,7 +128,8 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
 
         ModelLoader.setCustomMeshDefinition(this, stack -> {
      //   	System.out.println(normal);
-            InventoryAttachment att = InventoryAttachment.create(stack);
+
+        	InventoryAttachment att = InventoryAttachment.create(stack);
     		if (att.getStackInSlot(0) != ItemStack.EMPTY) {
     			if (att.isScopePresent()) {
     				return scope;
@@ -149,7 +156,7 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
 	}
 	
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer player, EnumHand hand)
 	{
 		return null;
 	//	return new ActionResult<ItemStack>(EnumActionResult.PASS, itemStackIn);

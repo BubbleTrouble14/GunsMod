@@ -11,6 +11,7 @@ public class KeyBindings
 {
 	public static KeyBinding reload;
 	public static KeyBinding attachment;
+	public static KeyBinding inventory;
 
 	public static void init()
 	{	
@@ -19,5 +20,8 @@ public class KeyBindings
 		
 		attachment = new KeyBinding("key.gunmod.attachment", Keyboard.KEY_M, Main.MODID);
 		ClientRegistry.registerKeyBinding(attachment);
+		
+		inventory = new KeyBinding("key.gunmod.inventory", Keyboard.KEY_J, Main.MODID);
+		ClientRegistry.registerKeyBinding(inventory);
 	}
 }

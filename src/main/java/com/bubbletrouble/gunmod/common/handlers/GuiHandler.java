@@ -2,12 +2,12 @@ package com.bubbletrouble.gunmod.common.handlers;
 
 import com.bubbletrouble.gunmod.client.gui.GUIAttachment;
 import com.bubbletrouble.gunmod.client.gui.GuiCrafter;
-import com.bubbletrouble.gunmod.common.capaility.GuiTest;
-import com.bubbletrouble.gunmod.common.capaility.TestContainer;
 import com.bubbletrouble.gunmod.common.container.ContainerCrafter;
 import com.bubbletrouble.gunmod.common.container.ContainerInventoryAttachment;
 import com.bubbletrouble.gunmod.common.inventory.InventoryAttachment;
 import com.bubbletrouble.gunmod.common.proxy.CommonProxy;
+import com.bubbletrouble.gunmod.common.testing.GuiTest;
+import com.bubbletrouble.gunmod.common.testing.TestContainer;
 import com.bubbletrouble.gunmod.common.tileentity.TECrafter;
 
 import net.minecraft.entity.player.EntityPlayer;
