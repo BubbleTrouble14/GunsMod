@@ -2,6 +2,7 @@ package com.bubbletrouble.gunmod.common.proxy;
 
 import com.bubbletrouble.gunmod.Main;
 import com.bubbletrouble.gunmod.common.crafting.CrafterCraftingManager;
+import com.bubbletrouble.gunmod.common.handlers.CapabilityHandler;
 import com.bubbletrouble.gunmod.common.handlers.GuiHandler;
 import com.bubbletrouble.gunmod.common.network.LeftGunReloadStarted;
 import com.bubbletrouble.gunmod.common.network.LeftGunShoot;
@@ -15,6 +16,7 @@ import com.bubbletrouble.gunmod.init.RangedWeapons;
 import com.bubbletrouble.gunmod.init.Recipes;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -31,7 +33,9 @@ public abstract class CommonProxy
 	{
 
 		ATTACHMENTS(0),
-		CRAFTER(1);
+		CRAFTER(1),
+		TEST(2);
+		
 		public final int id;
 
 		GUI(int id)
@@ -46,7 +50,7 @@ public abstract class CommonProxy
 			return idCounter++;
 		}
 		
-		public int getID()
+		public final int getID()
 		{
 			return id;
 		}
@@ -73,6 +77,7 @@ public abstract class CommonProxy
 	
 	protected void registerEventHandlers()
 	{
+        MinecraftForge.EVENT_BUS.register(new CapabilityHandler());
 		//MinecraftForge.EVENT_BUS.register(PlayerUpdateEvent.class);
 	}
 	

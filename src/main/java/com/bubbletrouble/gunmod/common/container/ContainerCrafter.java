@@ -81,11 +81,10 @@ public class ContainerCrafter extends Container
 		super.onContainerClosed(playerIn);
 	}
 
-	@Override
+/*	@Override
 	public ItemStack transferStackInSlot(EntityPlayer playerIn, int sourceSlotIndex)
 	{
 		//LogHelper.info("ARKContainerSmithy: transferStackInSlot called.");
-		System.out.println("Called");
 		Slot sourceSlot = (Slot) inventorySlots.get(sourceSlotIndex);
 		if (sourceSlot == null || !sourceSlot.getHasStack()) { return ItemStack.EMPTY; }
 		ItemStack sourceStack = sourceSlot.getStack();
@@ -133,7 +132,7 @@ public class ContainerCrafter extends Container
 
 		sourceSlot.onTake(playerIn, sourceStack);
 		return copyOfSourceStack;
-	}
+	}	*/
 
 	@Override
 	public boolean canInteractWith(EntityPlayer playerIn)

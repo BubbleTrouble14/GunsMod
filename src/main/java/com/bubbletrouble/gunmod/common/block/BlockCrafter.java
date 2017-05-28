@@ -65,7 +65,7 @@ public class BlockCrafter extends Block
     public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer,
     		ItemStack stack) 
     {
-    	TECrafter.setStacksEmpty();
+  //  	TECrafter.setStacksEmpty();
     }
     
     @Override

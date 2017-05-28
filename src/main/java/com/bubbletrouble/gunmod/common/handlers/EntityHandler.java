@@ -2,8 +2,6 @@ package com.bubbletrouble.gunmod.common.handlers;
 
 import java.util.Random;
 
-import com.bubbletrouble.gunmod.Main;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.init.Biomes;
@@ -36,24 +34,6 @@ public class EntityHandler
     {
         registerMonster(eClass, name, Biomes.BEACH, Biomes.DESERT, Biomes.FOREST, Biomes.BIRCH_FOREST, Biomes.EXTREME_HILLS);
     }
-
-    // public static void registerPassive(Class eClass, String name) {
-    // int entityID = EntityRegistry.findGlobalUniqueEntityId();
-    // Random rand = new Random(name.hashCode());
-    // int mainColor = rand.nextInt() * 16777215;
-    // int secondColor = rand.nextInt() * 16777215;
-    //
-    // EntityRegistry.registerGlobalEntityID(eClass, name, entityID);
-    // EntityRegistry.addSpawn(eClass, 15, 2, 4, EnumCreatureType.CREATURE,
-    // BiomeGenBase.plains, BiomeGenBase.savanna,
-    // BiomeGenBase.beach, BiomeGenBase.desert, BiomeGenBase.extremeHills,
-    // BiomeGenBase.coldBeach, BiomeGenBase.jungleEdge,
-    // BiomeGenBase.jungle, BiomeGenBase.plains, BiomeGenBase.swampland);
-    // EntityRegistry.registerModEntity(eClass, name, entityID,
-    // ARKCraft.instance(), 64, 10, true);
-    // EntityList.entityEggs.put(Integer.valueOf(entityID), new
-    // EntityList.EntityEggInfo(entityID, mainColor, secondColor));
-    // }
 
     public static void registerModEntity(ResourceLocation registryName, Class<? extends Entity> eClass, String name, Object mod, int trackRange, int updateFreq, boolean sVU)
     {

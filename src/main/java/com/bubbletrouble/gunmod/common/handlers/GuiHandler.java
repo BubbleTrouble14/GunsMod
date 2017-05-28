@@ -2,6 +2,8 @@ package com.bubbletrouble.gunmod.common.handlers;
 
 import com.bubbletrouble.gunmod.client.gui.GUIAttachment;
 import com.bubbletrouble.gunmod.client.gui.GuiCrafter;
+import com.bubbletrouble.gunmod.common.capaility.GuiTest;
+import com.bubbletrouble.gunmod.common.capaility.TestContainer;
 import com.bubbletrouble.gunmod.common.container.ContainerCrafter;
 import com.bubbletrouble.gunmod.common.container.ContainerInventoryAttachment;
 import com.bubbletrouble.gunmod.common.inventory.InventoryAttachment;
@@ -18,8 +20,7 @@ public class GuiHandler implements IGuiHandler
 {
 	@Override
 	public Object getServerGuiElement(int id, EntityPlayer player, World world, int x, int y, int z)
-	{
-		
+	{	
 		if (id == CommonProxy.GUI.ATTACHMENTS.id)
 		{
 			return new ContainerInventoryAttachment(player, player.inventory, InventoryAttachment.create(player.getHeldItemMainhand()));
@@ -38,6 +39,10 @@ public class GuiHandler implements IGuiHandler
 			//	LogHelper
 				//		.info("GuiHandler - getServerGuiElement: TileEntitySmithy not found!");
 			}
+		}
+		else if (id == CommonProxy.GUI.TEST.id)
+		{
+			return new TestContainer(player.inventory, player);
 		}
 		return null;
 	}
@@ -63,6 +68,10 @@ public class GuiHandler implements IGuiHandler
 			//	LogHelper
 		//				.info("GuiHandler - getClientGuiElement: TileEntitySmithy not found!");
 			}
+		}
+		else if (id == CommonProxy.GUI.TEST.id)
+		{
+			return new GuiTest(player.inventory, player);
 		}
 		return null;
 	}
