@@ -49,7 +49,7 @@ public class ItemInventoryBase extends Item
 			EntityPlayer p = (EntityPlayer) entity;
 			IItemHandler handler = p.getHeldItemMainhand().getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 	//		System.out.println(stack);
-			System.out.println(handler);
+		//	System.out.println(handler);
 		//	System.out.println(handler.getStackInSlot(0));
 		}
 	}

@@ -1,6 +1,11 @@
 package com.bubbletrouble.gunmod.common.proxy;
 
 import com.bubbletrouble.gunmod.Main;
+import com.bubbletrouble.gunmod.common.cap.DecreaseStamina;
+import com.bubbletrouble.gunmod.common.cap.IStamina;
+import com.bubbletrouble.gunmod.common.cap.IncreaseStamina;
+import com.bubbletrouble.gunmod.common.cap.Stamina;
+import com.bubbletrouble.gunmod.common.cap.StaminaStorage;
 import com.bubbletrouble.gunmod.common.crafting.CrafterCraftingManager;
 import com.bubbletrouble.gunmod.common.handlers.GuiHandler;
 import com.bubbletrouble.gunmod.common.network.LeftGunReloadStarted;
@@ -19,6 +24,7 @@ import com.bubbletrouble.gunmod.init.Recipes;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -79,6 +85,7 @@ public abstract class CommonProxy
 	
 	protected void registerEventHandlers()
 	{
+        CapabilityManager.INSTANCE.register(IStamina.class, new StaminaStorage(), Stamina.class);
         MinecraftForge.EVENT_BUS.register(new CapabilityHandler());
 		//MinecraftForge.EVENT_BUS.register(PlayerUpdateEvent.class);
 	}
@@ -101,6 +108,8 @@ public abstract class CommonProxy
 		modChannel.registerMessage(UpdateCrafterToCraftItem.Handler.class, UpdateCrafterToCraftItem.class, id++, Side.SERVER);
 		modChannel.registerMessage(setAttachment.Handler.class, setAttachment.class, id++, Side.SERVER);
 		modChannel.registerMessage(OpenItemInventory.Handler.class, OpenItemInventory.class, id++, Side.SERVER);
+		modChannel.registerMessage(DecreaseStamina.Handler.class, DecreaseStamina.class, id++, Side.SERVER);
+		modChannel.registerMessage(IncreaseStamina.Handler.class, IncreaseStamina.class, id++, Side.SERVER);
 	}
 	
 	public EntityPlayer getPlayer()
