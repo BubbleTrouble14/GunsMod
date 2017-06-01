@@ -29,7 +29,6 @@ public class Main
 	public static CommonProxy proxy;
 	
 	public static CreativeTabs tabGuns = new GunTab("gunTab");
-	public static final EventBus EVENT_BUS = new EventBus();
 	public static SimpleNetworkWrapper modChannel;
 
     

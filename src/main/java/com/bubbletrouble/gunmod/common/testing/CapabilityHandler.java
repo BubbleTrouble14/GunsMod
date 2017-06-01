@@ -1,9 +1,7 @@
 package com.bubbletrouble.gunmod.common.testing;
 
 import com.bubbletrouble.gunmod.Main;
-import com.bubbletrouble.gunmod.common.cap.DecreaseStamina;
 import com.bubbletrouble.gunmod.common.cap.IStamina;
-import com.bubbletrouble.gunmod.common.cap.IncreaseStamina;
 import com.bubbletrouble.gunmod.common.cap.StaminaCapability;
 
 import net.minecraft.entity.Entity;
@@ -49,12 +47,6 @@ public class CapabilityHandler
     
     int stackCount; 
     
-    private float sprintingValue = 15;
-    private float walkingValue = 5;
-    private float sneakingValue = 2;
-    private float standingValue = 20;
-    private float jumpingValue = 20;
-    
     @SubscribeEvent   
     public void onPlayerJoin(PlayerLoggedInEvent evt)
     {
@@ -62,6 +54,12 @@ public class CapabilityHandler
 		IStamina stam = p.getCapability(StaminaCapability.Stamina, null);
 		stam.setStamina(300);
     }
+    
+    private float sprintingValue = 15;
+    private float walkingValue = 5;
+    private float sneakingValue = 2;
+    private float standingValue = 20;
+    private float jumpingValue = 20;
     
     @SubscribeEvent   
     public void onPlayerUpdate(PlayerTickEvent evt)
@@ -73,31 +71,33 @@ public class CapabilityHandler
 		
     	if(evt.phase == Phase.END) //&& p.world.isRemote)
     	{
+    		System.out.println(stam.getStamina());
+
 	    	if(isPlayerMoving(evt, p))
 	    	{
 	    		if(p.isSprinting())
 	    		{
-	    			if(DelayInHalfaSecond(evt))	stam.decreaseStamina(walkingValue);	
+	    			if(DelayInHalfaSecond(evt))	stam.decreaseStamina(sprintingValue);	
 	    		}
 	    		else if(p.isSneaking())
 	    		{
-	    			if(DelayInHalfaSecond(evt))Main.modChannel.sendToServer(new DecreaseStamina(sneakingValue));
+	    			if(DelayInHalfaSecond(evt))stam.decreaseStamina(sneakingValue);	
 	    		}
 	    		else 
 	    		{
-	    			if(DelayInHalfaSecond(evt))Main.modChannel.sendToServer(new DecreaseStamina(walkingValue));  			
+	    			if(DelayInHalfaSecond(evt))stam.decreaseStamina(walkingValue);		
 	    		} 
 	    	}
 	    	else 
 	    	{
-	    		if(DelayInHalfaSecond(evt))Main.modChannel.sendToServer(new IncreaseStamina(standingValue));
+	    		if(DelayInHalfaSecond(evt))stam.decreaseStamina(standingValue);		
 	    	} 
 	    	if(!p.onGround && !p.capabilities.isFlying)
 	    	{    	
 	    		jumped = true;
 	    		if(jumped)
 	    		{
-	    			if(DelayInHalfaSecond(evt))Main.modChannel.sendToServer(new DecreaseStamina(jumpingValue));  			
+	    			if(DelayInHalfaSecond(evt))stam.decreaseStamina(jumpingValue);		
 	    			jumped = false;
 	    		}
 	    	}
