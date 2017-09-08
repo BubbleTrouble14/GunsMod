@@ -63,7 +63,7 @@ public class setAttachment implements IMessage
 				if(handler.getStackInSlot(0).getItem() instanceof ItemAttachment)
 				{
 					ItemAttachment item = (ItemAttachment) handler.getStackInSlot(0).getItem();
-					System.out.println(item.getType());
+//					System.out.println(item.getType());
 					weapon.setAttachment(stack, item.getType().toString());
 				}
 				else weapon.setAttachment(stack, "empty");

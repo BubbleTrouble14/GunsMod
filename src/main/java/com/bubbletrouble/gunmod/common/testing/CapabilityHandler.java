@@ -71,7 +71,7 @@ public class CapabilityHandler
 		
     	if(evt.phase == Phase.END) //&& p.world.isRemote)
     	{
-    		System.out.println(stam.getStamina());
+//    		System.out.println(stam.getStamina());
 
 	    	if(isPlayerMoving(evt, p))
 	    	{

@@ -24,13 +24,15 @@ public class WeaponDamageSource extends EntityDamageSourceIndirect
 	}
 
 	@Override
-	public Entity getEntity()
+	public Entity getTrueSource()
 	{
 		return thrower;
 	}
 
-	public static DamageSource causeProjectileWeaponDamage(EntityProjectile projectile, Entity entity)
+	public static DamageSource causeProjectileWeaponDamage(
+			EntityProjectile projectile, Entity entity)
 	{
-		return (new WeaponDamageSource("weapon", projectile, entity)).setProjectile();
+		return (new WeaponDamageSource("weapon", projectile, entity))
+				.setProjectile();
 	}
 }

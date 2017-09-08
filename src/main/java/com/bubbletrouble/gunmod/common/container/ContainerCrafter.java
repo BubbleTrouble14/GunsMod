@@ -177,7 +177,7 @@ public class ContainerCrafter extends Container
 			for (int fieldID = 0; fieldID < tileInventory.getFieldCount(); ++fieldID) {
 				if (fieldHasChanged[fieldID]) {
 					// Note that although sendProgressBarUpdate takes 2 ints on a server these are truncated to shorts
-          listener.sendProgressBarUpdate(this, fieldID, cachedFields[fieldID]);
+          listener.sendWindowProperty(this, fieldID, cachedFields[fieldID]);
 				}
 			}
 		}

@@ -261,7 +261,7 @@ public abstract class EntityProjectile extends Entity implements IProjectile
         {
             AxisAlignedBB axisalignedbb = iblockstate.getCollisionBoundingBox(this.world, blockpos);
 
-            if (axisalignedbb != Block.NULL_AABB && axisalignedbb.offset(blockpos).isVecInside(new Vec3d(this.posX, this.posY, this.posZ)))
+            if (axisalignedbb != Block.NULL_AABB && axisalignedbb.offset(blockpos).contains(new Vec3d(this.posX, this.posY, this.posZ)))
             {
                 this.inGround = true;
             }
@@ -310,7 +310,7 @@ public abstract class EntityProjectile extends Entity implements IProjectile
 
             if (raytraceresult != null)
             {
-                vec3d = new Vec3d(raytraceresult.hitVec.xCoord, raytraceresult.hitVec.yCoord, raytraceresult.hitVec.zCoord);
+                vec3d = new Vec3d(raytraceresult.hitVec.x, raytraceresult.hitVec.y, raytraceresult.hitVec.z);
             }
 
             Entity entity = this.findEntityOnPath(vec3d1, vec3d);
@@ -533,9 +533,9 @@ public abstract class EntityProjectile extends Entity implements IProjectile
         IBlockState iblockstate = this.world.getBlockState(blockpos);
         this.inTile = iblockstate.getBlock();
         this.inData = this.inTile.getMetaFromState(iblockstate);
-        this.motionX = (double)((float)(raytraceresult.hitVec.xCoord - this.posX));
-        this.motionY = (double)((float)(raytraceresult.hitVec.yCoord - this.posY));
-        this.motionZ = (double)((float)(raytraceresult.hitVec.zCoord - this.posZ));
+        this.motionX = (double)((float)(raytraceresult.hitVec.x - this.posX));
+        this.motionY = (double)((float)(raytraceresult.hitVec.y - this.posY));
+        this.motionZ = (double)((float)(raytraceresult.hitVec.z - this.posZ));
         float f2 = MathHelper.sqrt(this.motionX * this.motionX + this.motionY * this.motionY + this.motionZ * this.motionZ);
         this.posX -= this.motionX / (double)f2 * 0.05000000074505806D;
         this.posY -= this.motionY / (double)f2 * 0.05000000074505806D;
@@ -576,8 +576,8 @@ public abstract class EntityProjectile extends Entity implements IProjectile
     @Nullable
     protected Entity findEntityOnPath(Vec3d start, Vec3d end)
     {
-        Entity entity = null;
-        List<Entity> list = this.world.getEntitiesInAABBexcluding(this, this.getEntityBoundingBox().addCoord(this.motionX, this.motionY, this.motionZ).expandXyz(1.0D), ARROW_TARGETS);
+        Entity entity = null; //TODO check line below
+        List<Entity> list = this.world.getEntitiesInAABBexcluding(this, this.getEntityBoundingBox().offset(this.motionX, this.motionY, this.motionZ).grow(1.0D), ARROW_TARGETS);
         double d0 = 0.0D;
 
         for (int i = 0; i < list.size(); ++i)
@@ -586,7 +586,7 @@ public abstract class EntityProjectile extends Entity implements IProjectile
 
             if (entity1 != this.shootingEntity || this.ticksInAir >= 5)
             {
-                AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().expandXyz(0.30000001192092896D);
+                AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().grow(0.30000001192092896D);
                 RayTraceResult raytraceresult = axisalignedbb.calculateIntercept(start, end);
 
                 if (raytraceresult != null)

@@ -92,9 +92,9 @@ public interface IUpdateAttachments
 		
 		if (mop == null) return;
 		if (mop.typeOfHit == RayTraceResult.Type.BLOCK || mop.typeOfHit == RayTraceResult.Type.ENTITY) {
-			double x = mop.hitVec.xCoord;
-			double y = mop.hitVec.yCoord;
-			double z = mop.hitVec.zCoord;
+			double x = mop.hitVec.x;
+			double y = mop.hitVec.y;
+			double z = mop.hitVec.z;
 			w.spawnParticle(EnumParticleTypes.REDSTONE, x, y, z, 0, 0, 0, 0);
 		}
 	}		
@@ -136,11 +136,11 @@ public interface IUpdateAttachments
 				}
 
 				Vec3d vec3d1 = entity.getLook(partialTicks);
-				Vec3d vec3d2 = vec3d.addVector(vec3d1.xCoord * d0, vec3d1.yCoord * d0, vec3d1.zCoord * d0);
+				Vec3d vec3d2 = vec3d.addVector(vec3d1.x * d0, vec3d1.y * d0, vec3d1.z * d0);
 				Entity pointedEntity = null;
 				Vec3d vec3d3 = null;
 				List<Entity> list = mc.world.getEntitiesInAABBexcluding(entity, entity.getEntityBoundingBox()
-						.addCoord(vec3d1.xCoord * d0, vec3d1.yCoord * d0, vec3d1.zCoord * d0).expand(1.0D, 1.0D, 1.0D),
+						.offset(vec3d1.x * d0, vec3d1.y * d0, vec3d1.z * d0).expand(1.0D, 1.0D, 1.0D),
 						Predicates.and(EntitySelectors.NOT_SPECTATING, new Predicate<Entity>() {
 							public boolean apply(@Nullable Entity p_apply_1_) {
 								return p_apply_1_ != null && p_apply_1_.canBeCollidedWith();
@@ -151,10 +151,10 @@ public interface IUpdateAttachments
 				for (int j = 0; j < list.size(); ++j) {
 					Entity entity1 = (Entity) list.get(j);
 					AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox()
-							.expandXyz((double) entity1.getCollisionBorderSize());
+							.grow((double) entity1.getCollisionBorderSize());
 					RayTraceResult raytraceresult2 = axisalignedbb.calculateIntercept(vec3d, vec3d2);
 
-					if (axisalignedbb.isVecInside(vec3d)) {
+					if (axisalignedbb.contains(vec3d)) {
 						if (d2 >= 0.0D) {
 							pointedEntity = entity1;
 							vec3d3 = raytraceresult2 == null ? vec3d : raytraceresult2.hitVec;
