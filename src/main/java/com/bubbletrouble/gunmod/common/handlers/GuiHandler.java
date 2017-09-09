@@ -6,8 +6,6 @@ import com.bubbletrouble.gunmod.common.container.ContainerCrafter;
 import com.bubbletrouble.gunmod.common.container.ContainerInventoryAttachment;
 import com.bubbletrouble.gunmod.common.inventory.InventoryAttachment;
 import com.bubbletrouble.gunmod.common.proxy.CommonProxy;
-import com.bubbletrouble.gunmod.common.testing.GuiTest;
-import com.bubbletrouble.gunmod.common.testing.TestContainer;
 import com.bubbletrouble.gunmod.common.tileentity.TECrafter;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -40,10 +38,6 @@ public class GuiHandler implements IGuiHandler
 				//		.info("GuiHandler - getServerGuiElement: TileEntitySmithy not found!");
 			}
 		}
-		else if (id == CommonProxy.GUI.TEST.id)
-		{
-			return new TestContainer(player.inventory, player);
-		}
 		return null;
 	}
 
@@ -68,10 +62,6 @@ public class GuiHandler implements IGuiHandler
 			//	LogHelper
 		//				.info("GuiHandler - getClientGuiElement: TileEntitySmithy not found!");
 			}
-		}
-		else if (id == CommonProxy.GUI.TEST.id)
-		{
-			return new GuiTest(player.inventory, player);
 		}
 		return null;
 	}

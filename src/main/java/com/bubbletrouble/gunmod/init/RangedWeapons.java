@@ -4,8 +4,6 @@ import com.bubbletrouble.gunmod.Main;
 import com.bubbletrouble.gunmod.common.block.BlockCrafter;
 import com.bubbletrouble.gunmod.common.block.BlockGreenScreen;
 import com.bubbletrouble.gunmod.common.block.BlockLight;
-import com.bubbletrouble.gunmod.common.capaility.ItemContainer;
-import com.bubbletrouble.gunmod.common.capaility.ItemInventoryBase;
 import com.bubbletrouble.gunmod.common.entity.EntityAdvancedBullet;
 import com.bubbletrouble.gunmod.common.entity.EntitySimpleBullet;
 import com.bubbletrouble.gunmod.common.entity.EntitySimpleRifleAmmo;
@@ -21,7 +19,6 @@ import com.bubbletrouble.gunmod.common.item.ItemSimplePistol;
 import com.bubbletrouble.gunmod.common.item.attachments.AttachmentType;
 import com.bubbletrouble.gunmod.common.item.attachments.ItemAttachment;
 import com.bubbletrouble.gunmod.common.proxy.CommonProxy;
-import com.bubbletrouble.gunmod.common.testing.ItemInventoryGiver;
 import com.bubbletrouble.gunmod.common.tileentity.TECrafter;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -47,15 +44,11 @@ public class RangedWeapons
 	public static BlockCrafter block_crafter;
 	public static BlockGreenScreen green_screen;
 	public static ItemGrenade grenade;
-	public static ItemInventoryBase item_test;
-	public static ItemInventoryGiver inv_giver;
 
 	public static void init()
 	{
 		blockLight = new BlockLight();
 		block_crafter = new BlockCrafter(CommonProxy.GUI.CRAFTER.getID());
-		item_test = new ItemInventoryBase("item_test", 1);
-		inv_giver = new ItemInventoryGiver("inv_giver");
 	//	green_screen = new BlockGreenScreen();
 	//	grenade = new ItemGrenade();
 		
@@ -96,7 +89,6 @@ public class RangedWeapons
     @SideOnly(Side.CLIENT)
     public static void initModels() 
     {
-    	item_test.initModel();
     	//Guns
     	fabricated_pistol.initModel();
     	simple_pistol.initModel();

@@ -17,8 +17,6 @@ import com.bubbletrouble.gunmod.common.network.RecoilRightGun;
 import com.bubbletrouble.gunmod.common.network.RightGunReloadStarted;
 import com.bubbletrouble.gunmod.common.network.RightGunShoot;
 import com.bubbletrouble.gunmod.common.network.UpdateCrafterToCraftItem;
-import com.bubbletrouble.gunmod.common.network.setAttachment;
-import com.bubbletrouble.gunmod.common.testing.CapabilityHandler;
 import com.bubbletrouble.gunmod.init.RangedWeapons;
 import com.bubbletrouble.gunmod.init.Recipes;
 
@@ -86,7 +84,7 @@ public abstract class CommonProxy
 	protected void registerEventHandlers()
 	{
         CapabilityManager.INSTANCE.register(IStamina.class, new StaminaStorage(), Stamina.class);
-        MinecraftForge.EVENT_BUS.register(new CapabilityHandler());
+     //   MinecraftForge.EVENT_BUS.register(new CapabilityHandler());
 		//MinecraftForge.EVENT_BUS.register(PlayerUpdateEvent.class);
 	}
 	
@@ -106,7 +104,6 @@ public abstract class CommonProxy
 		modChannel.registerMessage(RecoilLeftGun.Handler.class, RecoilLeftGun.class, id++, Side.CLIENT);
 		modChannel.registerMessage(RecoilRightGun.Handler.class, RecoilRightGun.class, id++, Side.CLIENT);
 		modChannel.registerMessage(UpdateCrafterToCraftItem.Handler.class, UpdateCrafterToCraftItem.class, id++, Side.SERVER);
-		modChannel.registerMessage(setAttachment.Handler.class, setAttachment.class, id++, Side.SERVER);
 		modChannel.registerMessage(OpenItemInventory.Handler.class, OpenItemInventory.class, id++, Side.SERVER);
 		modChannel.registerMessage(DecreaseStamina.Handler.class, DecreaseStamina.class, id++, Side.SERVER);
 		modChannel.registerMessage(IncreaseStamina.Handler.class, IncreaseStamina.class, id++, Side.SERVER);
