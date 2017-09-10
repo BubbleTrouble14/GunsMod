@@ -86,6 +86,11 @@ public class RangedWeapons {
 					public int getAmmunitionCapacity() {
 						return 4;
 					}
+
+					@Override
+					public int getReloadingTime() {
+						return 100;
+					}
 				});
 		item_test_ammo = new ItemAmmunition(new ResourceLocation(Main.MODID, "test_ammo")) {
 			@Override

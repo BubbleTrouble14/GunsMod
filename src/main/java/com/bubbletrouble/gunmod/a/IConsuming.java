@@ -28,28 +28,47 @@ public interface IConsuming {
 		}
 	}
 
+	public static final String AMMUNITION_AMOUNT_KEY = "ammunition";
+	public static final String AMMUNITION_TYPE_KEY = "ammunitionitem";
+	public static final String RELOADING_PROGRESS = "reloadingtime";
+
 	public default int getAmmunition(ItemStack stack) {
 		NBTTagCompound nbt = Util.getNBT(stack);
-		return nbt.getInteger("ammunition");
+		return nbt.getInteger(AMMUNITION_AMOUNT_KEY);
 	}
 
 	public default void setAmmunition(ItemStack stack, int amount) {
 		NBTTagCompound nbt = Util.getNBT(stack);
-		nbt.setInteger("ammunition", amount);
+		nbt.setInteger(AMMUNITION_AMOUNT_KEY, amount);
 	}
 
 	public default ItemAmmunition getAmmunitionItem(ItemStack stack) {
 		NBTTagCompound nbt = Util.getNBT(stack);
-		String item = nbt.getString("ammunitionitem");
+		String item = nbt.getString(AMMUNITION_TYPE_KEY);
 		return !item.isEmpty() ? (ItemAmmunition) Item.getByNameOrId(item) : null;
 	}
 
 	public default void setAmmunitionItem(ItemStack stack, ItemAmmunition ammunition) {
 		NBTTagCompound nbt = Util.getNBT(stack);
 		ResourceLocation resourcelocation = Item.REGISTRY.getNameForObject(ammunition);
-		nbt.setString("ammunitionitem", resourcelocation.toString());
-
+		nbt.setString(AMMUNITION_TYPE_KEY, resourcelocation.toString());
 	}
+
+	public default int getReloadingProgress(ItemStack stack) {
+		NBTTagCompound nbt = Util.getNBT(stack);
+		return nbt.getInteger(RELOADING_PROGRESS);
+	}
+
+	public default void setReloadingProgress(ItemStack stack, int value) {
+		NBTTagCompound nbt = Util.getNBT(stack);
+		nbt.setInteger(RELOADING_PROGRESS, value);
+	}
+
+	public default boolean isReloading(ItemStack stack) {
+		return getReloadingProgress(stack) > 0;
+	}
+
+	public int getReloadingTime();
 
 	public int getAmmunitionCapacity();
 }
