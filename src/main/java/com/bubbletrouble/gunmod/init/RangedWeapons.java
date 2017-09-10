@@ -52,46 +52,47 @@ public class RangedWeapons {
 	public static ItemGrenade grenade;
 	public static Item item_test_ammo;
 	public static Item item_test_attachment;
+	public static Item item_test_gun;
 
 	public static void init() {
-		GameRegistry.register(
-				new com.bubbletrouble.gunmod.a.ItemRangedWeapon(new ResourceLocation(Main.MODID, "test_gun")) {
-					@Override
-					public boolean isValidAmmunition(ItemAmmunition item) {
-						return item == item_test_ammo;
-					}
+		item_test_gun = new com.bubbletrouble.gunmod.a.ItemRangedWeapon(new ResourceLocation(Main.MODID, "test_gun")) {
+			@Override
+			public boolean isValidAmmunition(ItemAmmunition item) {
+				return item == item_test_ammo;
+			}
 
-					@Override
-					public boolean supportsAttachment(AttachmentType type) {
-						return type == AttachmentType.SCOPE;
-					}
+			@Override
+			public boolean supportsAttachment(AttachmentType type) {
+				return type == AttachmentType.SCOPE;
+			}
 
-					@Override
-					public ItemStack getAttachment(ItemStack itemStack) {
-						return itemStack.getTagCompound() != null && itemStack.getTagCompound().hasKey("attachment")
-								? new ItemStack(itemStack.getTagCompound().getCompoundTag("attachment"))
-								: ItemStack.EMPTY;
-					}
+			@Override
+			public ItemStack getAttachment(ItemStack itemStack) {
+				return itemStack.getTagCompound() != null && itemStack.getTagCompound().hasKey("attachment")
+						? new ItemStack(itemStack.getTagCompound().getCompoundTag("attachment"))
+						: ItemStack.EMPTY;
+			}
 
-					@Override
-					public void setAttachment(ItemStack itemStack, ItemStack attachment) {
-						if (itemStack.getTagCompound() == null)
-							itemStack.setTagCompound(new NBTTagCompound());
+			@Override
+			public void setAttachment(ItemStack itemStack, ItemStack attachment) {
+				if (itemStack.getTagCompound() == null)
+					itemStack.setTagCompound(new NBTTagCompound());
 
-						NBTTagCompound c = itemStack.getTagCompound();
-						c.setTag("attachment", attachment.serializeNBT());
-					}
+				NBTTagCompound c = itemStack.getTagCompound();
+				c.setTag("attachment", attachment.serializeNBT());
+			}
 
-					@Override
-					public int getAmmunitionCapacity() {
-						return 4;
-					}
+			@Override
+			public int getAmmunitionCapacity() {
+				return 4;
+			}
 
-					@Override
-					public int getReloadingTime() {
-						return 100;
-					}
-				});
+			@Override
+			public int getReloadingTime() {
+				return 40;
+			}
+		};
+		GameRegistry.register(item_test_gun);
 		item_test_ammo = new ItemAmmunition(new ResourceLocation(Main.MODID, "test_ammo")) {
 			@Override
 			public EntityProjectile createProjectile(EntityPlayer player) {
@@ -184,6 +185,9 @@ public class RangedWeapons {
 		shotgun.initModel();
 		block_crafter.initModel();
 		// green_screen.initModel();
+
+		ModelLoader.setCustomModelResourceLocation(item_test_gun, 0,
+				new ModelResourceLocation(Main.MODID + ":test_gun", "inventory"));
 
 		// Attachments
 		ModelLoader.setCustomModelResourceLocation(scope, 0,

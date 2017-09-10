@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-import javax.annotation.Nullable;
-
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
@@ -38,7 +36,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.EnumAction;
-import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
@@ -94,33 +91,37 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
 		super();
 		this.speed = speed;
 		this.inaccuracy = inaccuracy;
-//		this.addPropertyOverride(new ResourceLocation("attachment"), new IItemPropertyGetter() {
-//			@SideOnly(Side.CLIENT)
-//			public float apply(ItemStack stack, @Nullable World worldIn, @Nullable EntityLivingBase entityIn) {
-//				if (stack.getItem() instanceof ItemRangedWeapon) {
-//					InventoryAttachment att = InventoryAttachment.create(stack);
-//					if (att.isScopePresent()) {
-//						return 1.0f;
-//					} else if (att.isFlashPresent()) {
-//						return 2.0f;
-//					} else if (att.isLaserPresent()) {
-//						return 3.0f;
-//					} else if (att.isSilencerPresent()) {
-//						return 4.0f;
-//					}
-//				}
-//				return 0.0f;
-//			}
-//		});
-//		this.addPropertyOverride(new ResourceLocation("reloading"), new IItemPropertyGetter() {
-//			@SideOnly(Side.CLIENT)
-//			public float apply(ItemStack stack, @Nullable World worldIn, @Nullable EntityLivingBase entityIn) {
-//				if (isReloading(stack)) {
-//					return 1.0f;
-//				}
-//				return 0.0f;
-//			}
-//		});
+		// this.addPropertyOverride(new ResourceLocation("attachment"), new
+		// IItemPropertyGetter() {
+		// @SideOnly(Side.CLIENT)
+		// public float apply(ItemStack stack, @Nullable World worldIn, @Nullable
+		// EntityLivingBase entityIn) {
+		// if (stack.getItem() instanceof ItemRangedWeapon) {
+		// InventoryAttachment att = InventoryAttachment.create(stack);
+		// if (att.isScopePresent()) {
+		// return 1.0f;
+		// } else if (att.isFlashPresent()) {
+		// return 2.0f;
+		// } else if (att.isLaserPresent()) {
+		// return 3.0f;
+		// } else if (att.isSilencerPresent()) {
+		// return 4.0f;
+		// }
+		// }
+		// return 0.0f;
+		// }
+		// });
+		// this.addPropertyOverride(new ResourceLocation("reloading"), new
+		// IItemPropertyGetter() {
+		// @SideOnly(Side.CLIENT)
+		// public float apply(ItemStack stack, @Nullable World worldIn, @Nullable
+		// EntityLivingBase entityIn) {
+		// if (isReloading(stack)) {
+		// return 1.0f;
+		// }
+		// return 0.0f;
+		// }
+		// });
 		// Milliseconds
 		this.shotInterval = (long) (shotInterval * 1000);
 		this.ammoConsumption = ammoConsumption;
@@ -150,18 +151,27 @@ public abstract class ItemRangedWeapon extends ItemBow implements IUpdateAttachm
 		System.out.println("INIT MODEL");
 		ModelResourceLocation scope = new ModelResourceLocation(
 				Main.MODID + ":weapons/" + this.getUnlocalizedName() + "_scope", "inventory");
+		ModelResourceLocation scopereload = new ModelResourceLocation(
+				Main.MODID + ":weapons/" + this.getUnlocalizedName() + "_scope_reload", "inventory");
 		ModelResourceLocation laser = new ModelResourceLocation(
 				Main.MODID + ":weapons/" + this.getUnlocalizedName() + "_laser", "inventory");
+		ModelResourceLocation laserreload = new ModelResourceLocation(
+				Main.MODID + ":weapons/" + this.getUnlocalizedName() + "_laser_reload", "inventory");
 		ModelResourceLocation silencer = new ModelResourceLocation(
 				Main.MODID + ":weapons/" + this.getUnlocalizedName() + "_silencer", "inventory");
+		ModelResourceLocation silencerreload = new ModelResourceLocation(
+				Main.MODID + ":weapons/" + this.getUnlocalizedName() + "_silencer_reload", "inventory");
 		ModelResourceLocation flashlight = new ModelResourceLocation(
-				Main.MODID + ":weapons/" + this.getUnlocalizedName() + "_reload", "inventory");
-		ModelResourceLocation reload = new ModelResourceLocation(
 				Main.MODID + ":weapons/" + this.getUnlocalizedName() + "_flashlight", "inventory");
+		ModelResourceLocation flashlightreload = new ModelResourceLocation(
+				Main.MODID + ":weapons/" + this.getUnlocalizedName() + "_flashlight_reload", "inventory");
+		ModelResourceLocation reload = new ModelResourceLocation(
+				Main.MODID + ":weapons/" + this.getUnlocalizedName() + "_reload", "inventory");
 		ModelResourceLocation normal = new ModelResourceLocation(Main.MODID + ":weapons/" + this.getUnlocalizedName(),
 				"inventory");
 
-		ModelBakery.registerItemVariants(this, scope, laser, silencer, flashlight, reload, normal);
+		ModelBakery.registerItemVariants(this, scope, laser, silencer, flashlight, reload, normal, scopereload,
+				laserreload, silencerreload, flashlightreload);
 
 		ModelLoader.setCustomMeshDefinition(this, stack -> {
 			// System.out.println(normal);

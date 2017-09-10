@@ -1,5 +1,8 @@
 package com.bubbletrouble.gunmod.a;
 
+import com.bubbletrouble.gunmod.common.item.attachments.AttachmentType;
+
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -14,6 +17,25 @@ public abstract class ItemRangedWeapon extends Item implements IConsuming, ISupp
 		super();
 		setMaxStackSize(1);
 		setRegistryName(name);
+		// setUnlocalizedName("test_gun");
+		addPropertyOverride(new ResourceLocation("reloading"), (stack, world, entity) -> {
+			if (isReloading(stack))
+				return 1;
+			return 0;
+		});
+
+		addPropertyOverride(new ResourceLocation("attachment"), (stack, world, entity) -> {
+			AttachmentType at = getAttachmentType(stack);
+			if (at == null)
+				return 0;
+			for (AttachmentType type : getSupportedAttachmentTypes()) {
+				if (type == at) {
+					System.out.println(type);
+					return type.getId();
+				}
+			}
+			return 0;
+		});
 	}
 
 	@Override
@@ -49,6 +71,7 @@ public abstract class ItemRangedWeapon extends Item implements IConsuming, ISupp
 					}
 				}
 			}
+			Minecraft.getMinecraft().getItemRenderer().updateEquippedItem();
 		}
 	}
 
