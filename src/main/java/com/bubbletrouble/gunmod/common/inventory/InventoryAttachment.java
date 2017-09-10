@@ -20,8 +20,7 @@ import net.minecraft.util.NonNullList;
  * @author BubbleTrouble
  * @author Lewis_McReu
  */
-public class InventoryAttachment extends AbstractInventory
-{
+public class InventoryAttachment extends AbstractInventory {
 	private String name = "Attachment Inventory";
 
 	/** The key used to store and retrieve the inventory from NBT */
@@ -30,126 +29,111 @@ public class InventoryAttachment extends AbstractInventory
 
 	/** Provides NBT Tag Compound to reference */
 	private final ItemStack invStack;
-	
-//	NonNullList<ItemStack>
 
-	public static InventoryAttachment create(ItemStack stack)
-	{
-		if (!stack.isEmpty() && stack.getItem() instanceof ItemRangedWeapon && !(stack.getItem() instanceof NonSupporting))
+	// NonNullList<ItemStack>
+
+	public static InventoryAttachment create(ItemStack stack) {
+		if (!stack.isEmpty() && stack.getItem() instanceof ItemRangedWeapon
+				&& !(stack.getItem() instanceof NonSupporting))
 			return new InventoryAttachment(stack);
 		return new InventoryAttachment(ItemStack.EMPTY);
 	}
 
-	private InventoryAttachment(ItemStack stack)
-	{
+	private InventoryAttachment(ItemStack stack) {
 		inventory = NonNullList.<ItemStack>withSize(INV_SIZE, ItemStack.EMPTY);
 
 		this.invStack = stack;
-		if (!invStack.isEmpty() && !invStack.hasTagCompound())
-		{
-			invStack.setTagCompound(new NBTTagCompound());
+		if (!stack.isEmpty()) {
+			if (!invStack.isEmpty() && !invStack.hasTagCompound()) {
+				invStack.setTagCompound(new NBTTagCompound());
+			}
+			readFromNBT(invStack.getTagCompound());
 		}
-		readFromNBT(invStack.getTagCompound());
-	}
-	
-	@Override
-	public void closeInventory(EntityPlayer player)
-	{
 	}
 
 	@Override
-	public String getName()
-	{
+	public void closeInventory(EntityPlayer player) {
+	}
+
+	@Override
+	public String getName() {
 		return name;
 	}
 
 	@Override
-	public boolean hasCustomName()
-	{
+	public boolean hasCustomName() {
 		return name.length() > 0;
 	}
 
 	@Override
-	public int getInventoryStackLimit()
-	{
+	public int getInventoryStackLimit() {
 		return 1;
 	}
 
 	@Override
-	public void markDirty()
-	{
+	public void markDirty() {
 		super.markDirty();
-		for (int i = 0; i < getSizeInventory(); ++i)
-		{
-			if (getStackInSlot(i) != ItemStack.EMPTY && getStackInSlot(i).getCount() == 0) inventory.set(0, ItemStack.EMPTY);// = ItemStack.EMPTY; // = null;
+		for (int i = 0; i < getSizeInventory(); ++i) {
+			if (getStackInSlot(i) != ItemStack.EMPTY && getStackInSlot(i).getCount() == 0)
+				inventory.set(0, ItemStack.EMPTY);// = ItemStack.EMPTY; // = null;
 		}
 		writeToNBT(invStack.getTagCompound());
 	}
 
-	private boolean isInvOfType(AttachmentType type)
-	{
-	//	if(inventory[0] == ItemStack.EMPTY) return false;
-		return inventory.get(0) != ItemStack.EMPTY && ((ItemAttachment) inventory.get(0).getItem()).getType().equals(type);
+	private boolean isInvOfType(AttachmentType type) {
+		// if(inventory[0] == ItemStack.EMPTY) return false;
+		return inventory.get(0) != ItemStack.EMPTY
+				&& ((ItemAttachment) inventory.get(0).getItem()).getType().equals(type);
 	}
 
-	public boolean isScopePresent()
-	{
+	public boolean isScopePresent() {
 		return isInvOfType(AttachmentType.SCOPE);
 	}
 
-	public boolean isFlashPresent()
-	{
+	public boolean isFlashPresent() {
 		return isInvOfType(AttachmentType.FLASH);
 	}
 
-	public boolean isLaserPresent()
-	{
+	public boolean isLaserPresent() {
 		return isInvOfType(AttachmentType.LASER);
 	}
 
-	public boolean isSilencerPresent()
-	{
+	public boolean isSilencerPresent() {
 		return isInvOfType(AttachmentType.SILENCER);
 	}
 
-	public boolean isHoloScopePresent()
-	{
+	public boolean isHoloScopePresent() {
 		return isInvOfType(AttachmentType.HOLO_SCOPE);
 	}
 
 	@Override
-	protected String getNbtKey()
-	{
+	protected String getNbtKey() {
 		return SAVE_KEY;
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int index, ItemStack stack)
-	{
-		if (stack.getItem() instanceof ItemAttachment)
-		{
+	public boolean isItemValidForSlot(int index, ItemStack stack) {
+		if (stack.getItem() instanceof ItemAttachment) {
 			ItemAttachment item = (ItemAttachment) stack.getItem();
 			Item inv = invStack.getItem();
-			switch (item.getType())
-			{
-				case SCOPE:
-					return inv instanceof Scopeable;
-				case HOLO_SCOPE:
-					return inv instanceof HoloScopeable;
-				case FLASH:
-					return inv instanceof Flashable;
-				case LASER:
-					return inv instanceof Laserable;
-				case SILENCER:
-					return inv instanceof Silenceable;
+			switch (item.getType()) {
+			case SCOPE:
+				return inv instanceof Scopeable;
+			case HOLO_SCOPE:
+				return inv instanceof HoloScopeable;
+			case FLASH:
+				return inv instanceof Flashable;
+			case LASER:
+				return inv instanceof Laserable;
+			case SILENCER:
+				return inv instanceof Silenceable;
 			}
 		}
 		return false;
 	}
 
 	@Override
-	public ItemStack getStackInSlot(int slot)
-	{
+	public ItemStack getStackInSlot(int slot) {
 		return inventory.get(slot);
 	}
 
@@ -157,10 +141,9 @@ public class InventoryAttachment extends AbstractInventory
 	public ItemStack removeStackFromSlot(int index) {
 		return inventory.remove(index);
 	}
-	
+
 	@Override
-	public boolean isEmpty() 
-	{
+	public boolean isEmpty() {
 		return !inventory.contains(ItemStack.EMPTY);
 	}
 

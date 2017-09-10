@@ -1,6 +1,7 @@
 package com.bubbletrouble.gunmod.common.network;
 
 import com.bubbletrouble.gunmod.Main;
+import com.bubbletrouble.gunmod.a.ISupporting;
 import com.bubbletrouble.gunmod.common.item.ItemRangedWeapon;
 import com.bubbletrouble.gunmod.common.item.attachments.NonSupporting;
 import com.bubbletrouble.gunmod.common.proxy.CommonProxy;
@@ -12,34 +13,28 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 
-public class OpenAttachmentInventory implements IMessage
-{
-	public OpenAttachmentInventory()
-	{}
+public class OpenAttachmentInventory implements IMessage {
+	public OpenAttachmentInventory() {
+	}
 
 	@Override
-	public void fromBytes(ByteBuf buf)
-	{}
+	public void fromBytes(ByteBuf buf) {
+	}
 
 	@Override
-	public void toBytes(ByteBuf buf)
-	{}
+	public void toBytes(ByteBuf buf) {
+	}
 
-	public static class Handler implements IMessageHandler<OpenAttachmentInventory, IMessage>
-	{
+	public static class Handler implements IMessageHandler<OpenAttachmentInventory, IMessage> {
 		@Override
-		public IMessage onMessage(final OpenAttachmentInventory message, MessageContext ctx)
-		{
-			if (ctx.side != Side.SERVER)
-			{
+		public IMessage onMessage(final OpenAttachmentInventory message, MessageContext ctx) {
+			if (ctx.side != Side.SERVER) {
 				System.err.println("MPUpdateDoAttachment received on wrong side:" + ctx.side);
 				return null;
 			}
 			final EntityPlayerMP player = ctx.getServerHandler().player;
-			player.getServer().addScheduledTask(new Runnable()
-			{
-				public void run()
-				{
+			player.getServer().addScheduledTask(new Runnable() {
+				public void run() {
 					processMessage(message, player);
 				}
 			});
@@ -48,17 +43,15 @@ public class OpenAttachmentInventory implements IMessage
 	}
 
 	// On Server
-	static void processMessage(OpenAttachmentInventory message, EntityPlayerMP player)
-	{
-		if (player != null)
-		{
-			if(player.getHeldItemMainhand().getItem() instanceof ItemRangedWeapon)
-			{
+	static void processMessage(OpenAttachmentInventory message, EntityPlayerMP player) {
+		if (player != null) {
+			if (player.getHeldItemMainhand().getItem() instanceof ItemRangedWeapon) {
 				ItemRangedWeapon w = (ItemRangedWeapon) player.getHeldItemMainhand().getItem();
-				if(!(w instanceof NonSupporting))
-				{
+				if (!(w instanceof NonSupporting)) {
 					player.openGui(Main.instance(), CommonProxy.GUI.ATTACHMENTS.id, player.world, 0, 0, 0);
 				}
+			} else if (player.getHeldItemMainhand().getItem() instanceof ISupporting) {
+				player.openGui(Main.instance(), CommonProxy.GUI.TEST.id, player.world, 0, 0, 0);
 			}
 		}
 	}

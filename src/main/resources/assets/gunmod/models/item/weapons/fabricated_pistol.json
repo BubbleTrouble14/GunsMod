@@ -495,5 +495,65 @@
 			"translation":  [ -1.2, 3.8, 0 ],
 			"scale":  [ 1.2, 1.2, 1.2 ]
 		}
-    }
+    },
+    "overrides": [
+        {
+            "predicate": {
+                "reloading": 1
+            },
+            "model": "gunmod:item/weapons/fabricated_pistol_reload"
+        },
+        {
+            "predicate": {
+                "attachment": 1,
+                "reloading":1
+            },
+            "model": "gunmod:item/weapons/fabricated_pistol_scope_reload"
+        },
+        {
+            "predicate": {
+                "attachment": 2,
+                "reloading":1
+            },
+            "model": "gunmod:item/weapons/fabricated_pistol_flashlight_reload"
+        },
+        {
+            "predicate": {
+                "attachment": 3,
+                "reloading":1
+            },
+            "model": "gunmod:item/weapons/fabricated_pistol_laser_reload"
+        },
+        {
+            "predicate": {
+                "attachment": 4,
+                "reloading":1
+            },
+            "model": "gunmod:item/weapons/fabricated_pistol_silencer_reload"
+        },
+        {
+            "predicate": {
+                "attachment": 1
+            },
+            "model": "gunmod:item/weapons/fabricated_pistol_scope"
+        },
+        {
+            "predicate": {
+                "attachment": 2
+            },
+            "model": "gunmod:item/weapons/fabricated_pistol_flashlight"
+        },
+        {
+            "predicate": {
+                "attachment": 3
+            },
+            "model": "gunmod:item/weapons/fabricated_pistol_laser"
+        },
+        {
+            "predicate": {
+                "attachment": 4
+            },
+            "model": "gunmod:item/weapons/fabricated_pistol_silencer"
+        }
+    ]
 }
